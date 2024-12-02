@@ -127,7 +127,7 @@ class ApiServices{
     return null;
   }
 
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
     var box = Hive.box('userBox');
     await box.delete('authToken');
     print('Token cleared.');

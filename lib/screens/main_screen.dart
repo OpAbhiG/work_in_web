@@ -14,28 +14,28 @@ class MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
   List<Appointment> appointments = [];
 
-  final List<Doctor> doctors = [
-    // Doctor(
-    //     name: 'Dr. Shaikh',
-    //     specialty: 'General Physician',
-    //     // backgroundImage: AssetImage('assets/d4.jpeg'),
-    //     imagePath: 'assets/d3.jpeg', // Replace with actual image asset
-    //     experience: 7,
-    //     consultationFee: 199,
-    //     license: '66841',
-    //     about: 'Experienced general physician specializing in primary care and preventive medicine.',
-    // ),
-    // Doctor(
-    //   name: 'Dr. Sutar',
-    //   specialty: 'General Physician',
-    //   // backgroundImage: AssetImage('assets/d3.jpeg'),
-    //     imagePath: 'https://th.bing.com/th/id/OIP.APjmKmC7pAwcvBCbKoxVmgHaGO?rs=1&pid=ImgDetMain',
-    //   experience: 12,
-    //   consultationFee: 199,
-    //   license: 'I-60654-E',
-    //   about: 'Seasoned doctor with expertise in managing chronic diseases and providing comprehensive healthcare.'
-    // ),
-  ];
+  // final List<Doctor> doctors = [
+  //   // Doctor(
+  //   //     name: 'Dr. Shaikh',
+  //   //     specialty: 'General Physician',
+  //   //     // backgroundImage: AssetImage('assets/d4.jpeg'),
+  //   //     imagePath: 'assets/d3.jpeg', // Replace with actual image asset
+  //   //     experience: 7,
+  //   //     consultationFee: 199,
+  //   //     license: '66841',
+  //   //     about: 'Experienced general physician specializing in primary care and preventive medicine.',
+  //   // ),
+  //   // Doctor(
+  //   //   name: 'Dr. Sutar',
+  //   //   specialty: 'General Physician',
+  //   //   // backgroundImage: AssetImage('assets/d3.jpeg'),
+  //   //     imagePath: 'https://th.bing.com/th/id/OIP.APjmKmC7pAwcvBCbKoxVmgHaGO?rs=1&pid=ImgDetMain',
+  //   //   experience: 12,
+  //   //   consultationFee: 199,
+  //   //   license: 'I-60654-E',
+  //   //   about: 'Seasoned doctor with expertise in managing chronic diseases and providing comprehensive healthcare.'
+  //   // ),
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -47,10 +47,11 @@ class MainScreenState extends State<MainScreen> {
           DashboardScreen(
             appointments: appointments,
             onCancelAppointment: _cancelAppointment,
-            onBookAppointment: _bookAppointment,
-            doctors: doctors,
+            onBookAppointment: _bookAppointment, doctors: [],
+            // doctors: doctors,
           ),
-          DoctorScreen(doctors: doctors, onBookAppointment: _bookAppointment),
+          const DoctorListScreen(),
+          // DoctorScreen(doctors: doctors, onBookAppointment: _bookAppointment),
           // DoctorScreen(doctors: doctors, onBookAppointment: _bookAppointment),
           // DoctorScreen(doctors: [], onBookAppointment: (Doctor , DateTime ) {  },),
           // const DoctorProfile(),
@@ -131,7 +132,7 @@ class MainScreenState extends State<MainScreen> {
   }
 
 
-  void _bookAppointment(Doctor doctor, DateTime dateTime) {
+  Future<void> _bookAppointment(doctor, DateTime dateTime) async {
     setState(() {
       appointments.add(Appointment(doctorName: doctor.name, dateTime: dateTime,));
     });

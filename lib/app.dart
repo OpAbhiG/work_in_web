@@ -8,7 +8,7 @@ import 'package:untitled10/screens/main_screen.dart';
 // import 'package:untitled10/screens/login_screen.dart';
 import 'package:untitled10/screens/medical/medical1.dart';
 
-import 'models/dr.dart';
+// import 'models/dr.dart';
 
 // import 'package:login_registration_screen/screens/booking_screen.dart';
 // import 'package:login_registration_screen/screens/login_screen.dart';
