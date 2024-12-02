@@ -27,7 +27,6 @@ class _BharatTeleClinicAppState extends State<BharatTeleClinicApp> {
 
   // Retrieve token from Hive
   Future verifyToken() async {
-
       try {
         var box = await Hive.openBox('userBox');
         final token = box.get('authToken');
@@ -39,7 +38,6 @@ class _BharatTeleClinicAppState extends State<BharatTeleClinicApp> {
       } catch (e) {
         isLogined = false;
       }
-
   }
 
   @override
@@ -68,8 +66,6 @@ class _BharatTeleClinicAppState extends State<BharatTeleClinicApp> {
           child: const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blue)),
         ),
       )
-
-
           : isLogined == false
               ? const LoginScreen()
               : const MainScreen(),
