@@ -22,14 +22,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   // late TextEditingController gender=TextEditingController();
 
-  final TextEditingController age = TextEditingController();
+  final TextEditingController dob = TextEditingController();
   final TextEditingController aadhar_no=TextEditingController();
   final TextEditingController number=TextEditingController();
 
-
-
   bool isLoading=false;
-
 
   bool _isPasswordVisible = false; // Track the visibility of the password
 
@@ -87,7 +84,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               labelStyle: TextStyle(color: Colors.white,fontSize: 12),
 
                               prefixIcon: Icon(Icons.person,color: Colors.white),
-                            ),style: TextStyle(color: Colors.white), // White text in the input field
+                            ),style: const TextStyle(color: Colors.white), // White text in the input field
                         ),
                         SizedBox(height: screenHeight * 0.02),
                         TextFormField(
@@ -96,7 +93,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             labelText: 'Last Name',
                             labelStyle: TextStyle(color: Colors.white,fontSize: 12),
                             prefixIcon: Icon(Icons.person,color: Colors.white),
-                          ),style: TextStyle(color: Colors.white), // White text in the input field
+                          ),style: const TextStyle(color: Colors.white), // White text in the input field
 
 
                         ),
@@ -117,7 +114,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                                     value: value,
                                     child: Text(value,
-                                    style: TextStyle(color: Colors.white),),
+                                    style: const TextStyle(color: Colors.white),),
                                   );
                                 }).toList(),
                                 onChanged: (String? newVal) {
@@ -131,13 +128,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             SizedBox(width: screenWidth * 0.04),
                             Expanded(
                               child: TextFormField(
-                                controller: age,
+                                controller: dob,
                                 decoration: const InputDecoration(
                                   labelText: 'Age',
                                   labelStyle: TextStyle(color: Colors.white,fontSize: 12),
 
                                   prefixIcon: Icon(Icons.calendar_today,color: Colors.white),
-                                ),style: TextStyle(color: Colors.white), // White text in the input field
+                                ),style: const TextStyle(color: Colors.white), // White text in the input field
 
 
                                 keyboardType: TextInputType.number,
@@ -149,11 +146,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         SizedBox(height: screenHeight * 0.02),
                         TextFormField(
                           controller: aadhar_no,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Aadhaar Number',
-                            labelStyle: const TextStyle(color: Colors.white, fontSize: 12),
-                            prefixIcon: const Icon(Icons.credit_card, color: Colors.white),
-                            counterText: '', // Hides the character counter
+                            labelStyle: TextStyle(color: Colors.white, fontSize: 12),
+                            prefixIcon: Icon(Icons.credit_card, color: Colors.white),
+
                           ),
                           keyboardType: TextInputType.number,
                           maxLength: 12, // Limit to 12 digits
@@ -211,7 +208,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             labelStyle: TextStyle(color: Colors.white,fontSize: 12),
 
                             prefixIcon: Icon(Icons.email,color: Colors.white),
-                          ),style: TextStyle(color: Colors.white), // White text in the input field
+                          ),style: const TextStyle(color: Colors.white), // White text in the input field
 
 
                           keyboardType: TextInputType.emailAddress,
@@ -243,7 +240,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               },
                             ),
                           ),
-                          style: TextStyle(color: Colors.white), // White text in the input field
+                          style: const TextStyle(color: Colors.white), // White text in the input field
 
                         ),
 
@@ -336,17 +333,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   Future<void> RegistrationScreen() async {
     if (
     email.text.isEmpty || password.text.isEmpty || fname.text.isEmpty || lname.text.isEmpty || gender!.isEmpty||
-        aadhar_no.text.isEmpty||age.text.isEmpty) {
-
+        aadhar_no.text.isEmpty||dob.text.isEmpty||number.text.isEmpty) {
       _showErrorDialog("All fields are required. Please ensure no field is left blank.");
-
       return;
     }
-
     setState(() {
       isLoading = true;
     });
-
     try {
       await ApiServices().RegistrationScreen(
           email.text,
@@ -354,10 +347,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           fname.text,
           lname.text,
           gender!,
-
+          dob.text ,
           aadhar_no.text,
-          age.text,
           number.text
+
       );
 
       ScaffoldMessenger.of(context).showSnackBar(

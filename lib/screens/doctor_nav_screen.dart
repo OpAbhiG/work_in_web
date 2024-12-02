@@ -7,11 +7,21 @@ import 'booking_confirmation_screen.dart';
 import 'doctor_detail_screen.dart';
 
 
-class DoctorScreen extends StatelessWidget {
+class DoctorScreen extends StatefulWidget {
   final Function(Doctor, DateTime) onBookAppointment;
 
-  DoctorScreen({super.key, required this.onBookAppointment, required List<Doctor> doctors});
+  const DoctorScreen({super.key,
 
+    required this.onBookAppointment,
+    required List<Doctor> doctors
+
+  });
+
+  @override
+  State<DoctorScreen> createState() => _DoctorScreenState();
+}
+
+class _DoctorScreenState extends State<DoctorScreen> {
   // Define two unique doctor instances
   final List<Doctor> doctors = [
     Doctor(
@@ -23,27 +33,6 @@ class DoctorScreen extends StatelessWidget {
       about: "Dr. John Smith is a highly experienced cardiologist specializing in cardiovascular diseases.",
       imagePath: 'assets/d3.jpeg', // Replace with actual image asset
     ),
-    Doctor(
-      name: "Dr. Sarah Johnson",
-      specialty: "Dermatologist",
-      experience: 5,
-      consultationFee: 300,
-      license: '105h2',
-      about: "Dr. Sarah Johnson focuses on skin health and offers cosmetic dermatology services.",
-      imagePath: 'assets/d5.jpeg', // Replace with actual image asset
-    ),
-
-    Doctor(
-      name: "Dr. atish",
-      specialty: "brain",
-      experience: 4,
-      consultationFee: 200,
-      license: '021458d',
-      about: "Dr. atish is a highly experienced cardiologist specializing in brain diseases.",
-      imagePath: 'assets/d4.jpeg', // Replace with actual image asset
-    ),
-
-
 
 
   ];
@@ -185,8 +174,6 @@ class DoctorScreen extends StatelessWidget {
                             onPressed: () {
                               _bookAppointmentDialog(context, doctor);
 
-
-
                             },
                             child: const Text('Appointment',style: TextStyle(color: Colors.white),),
                           ),
@@ -213,12 +200,15 @@ class DoctorScreen extends StatelessWidget {
           ),
           child: BookAppointmentDialog(
             doctors: [doctor],  // Pass the selected doctor
-            onBookAppointment: onBookAppointment,  // Reference to the callback function
+            onBookAppointment: widget.onBookAppointment,  // Reference to the callback function
           ),
         );
       },
     );
   }
+
+
+
 }
 
 

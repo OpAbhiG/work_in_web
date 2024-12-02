@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../DOCTOR_SCREEN/doctor_model.dart';
 import '../models/doctor.dart';
 
 

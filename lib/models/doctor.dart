@@ -8,6 +8,7 @@ class Doctor {
   final String imagePath;
   final String license;
 
+
   Doctor({
     required this.name,
     required this.specialty,
@@ -15,6 +16,17 @@ class Doctor {
     required this.consultationFee,
     required this.about,
     required this.license,
-    required this.imagePath
+    required this.imagePath,
+
   });
+
+  static fromJson(json) {
+
+  }
+
+
+
+
 }
+
+

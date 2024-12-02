@@ -150,25 +150,27 @@ class ApiServices{
       String fname,
       String lname ,
       String gender,
-      String age,
+      String dob,
       String aadhar_no,
       String number,
+
       ) async {
     try {
       var url = Uri.parse("$baseapi/user/create_user");
       var response = await http.post(
         url,
         body: {
-          "user_type":"3",
+          "user_type":3,
 
           "email": email,
           "password": password,
           "fname":fname,
           "lname":lname,
           "gender":gender,
-          "age":age,
+          "dob":dob,
           "aadhar_no":aadhar_no,
           "number":number,
+
 
         },
       );

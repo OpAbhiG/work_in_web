@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-// import 'package:login_registration_screen/APIServices/base_api.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+import '../APIServices/base_api.dart';
+import 'change_password.dart';
 import 'login_screen.dart';
-
 class Profile extends StatefulWidget {
   final VoidCallback onLogout;
   const Profile({super.key, required this.onLogout});
@@ -15,20 +14,21 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-
-
   String fname = '';
   String lname = '';
   String aadhar_no='';
   // String blood_group='';
-  // String dob='';
+
   String email='';
   String gender='';
   String number='';
-  String age='';
+  String dob='';
+  String id='';
 
 
   bool isLoading = true;
+
+
 
   @override
   void initState() {
@@ -51,7 +51,7 @@ class _ProfileState extends State<Profile> {
       return;
     }
 
-    var url = Uri.parse('http://api.bharatteleclinic.co/user/get_profile');
+    var url = Uri.parse('$baseapi/user/get_profile');
     var response = await http.get(
       url,
       headers: {
@@ -96,7 +96,7 @@ class _ProfileState extends State<Profile> {
         return;
       }
 
-      var url = Uri.parse("http://api.bharatteleclinic.co/user/get_profile");
+      var url = Uri.parse("$baseapi/user/get_profile");//get profile to get data from BE
       var response = await http.get(
         url,
         headers: {
@@ -110,18 +110,21 @@ class _ProfileState extends State<Profile> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {
-          fname = data['profile']['fname'] ?? '';
-          lname = data['profile']['lname'] ?? '';
-          aadhar_no = data['profile']['aadhar_no'] ?? '';
-          email = data['profile']['email'] ?? '';
-          gender = data['profile']['gender'] ?? '';
-          number = data['profile']['number'] ?? '';
-          age = data['profile']['age'] ?? '';
-
-
-
+          fname = data['data']['fname'] ?? '';
+          lname = data['data']['lname'] ?? '';
+          aadhar_no = data['data']['aadhar_no'] ?? '';
+          email = data['data']['email'] ?? '';
+          gender = data['data']['gender'] ?? '';
+          number = data['data']['number'] ?? '';
+          dob = data['data']['dob'] ?? '';
+          id = data['data']['id'].toString(); // Convert id to String
           isLoading = false;
         });
+
+        // fname = data['profile']['fname'] ?? '';
+        // lname = data['profile']['lname'] ?? '';
+        // id = data['profile']['id'].toString(); // Convert id to String
+
       } else {
         setState(() {
           isLoading = false;
@@ -196,13 +199,11 @@ class _ProfileState extends State<Profile> {
                                 ),
                               ),
 
-
-
                               // const SizedBox(height: 1,),
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: const Text(
-                                  'Clinics Patient ID', // Replace with API data
+                               Padding(
+                                padding: EdgeInsets.all(10.0),
+                                child: Text(
+                                  'Clinics Patient ID $id' , // Replace with API data
                                   style: TextStyle(
                                     fontSize: 10,
                                     color: Colors.grey,
@@ -228,12 +229,13 @@ class _ProfileState extends State<Profile> {
                       padding: const EdgeInsets.all(15),
                       child: Column(
                         children: [
+                          // _buildProfileDetail(label: 'Patient ID', value: '$id', isEditable: false, hasCalendarIcon: false),
                           _buildProfileDetail(label: 'First Name', value: '$fname', isEditable: false, hasCalendarIcon: false,),
                           _buildProfileDetail(label: 'Last Name', value: '$lname', isEditable: false, hasCalendarIcon: false),
                           // _buildProfileDetail(label: 'Date of Birth', value: 'DOB', isEditable: true, hasCalendarIcon: true),
                           _buildProfileDetail(label: 'Gender', value: '$gender', isEditable: false, hasCalendarIcon: false, isDropdown: false),
-                          _buildProfileDetail(label: 'Age', value: '$age', isEditable: false, hasCalendarIcon: false),
                           _buildProfileDetail(label: 'Aadhaar Number', value: '$aadhar_no', isEditable: false, hasCalendarIcon: false),
+                          _buildProfileDetail(label: 'Age', value: '$dob', isEditable: false, hasCalendarIcon: false),
                           _buildProfileDetail(label: 'Email', value: '$email', isEditable: false, hasCalendarIcon: false),
                           _buildProfileDetail(label: 'Mobile Number', value: '$number', isEditable: false, hasCalendarIcon: false),
                           // _buildProfileDetail(label: 'Address', value: 'Maharashtra', isEditable: false, hasCalendarIcon: false),
@@ -244,49 +246,152 @@ class _ProfileState extends State<Profile> {
                 ],
               ),
             ),
+
+
+            ListTile(
+              title: const Text(
+              'Change Password',
+              style: TextStyle(color: Colors.orangeAccent, fontWeight: FontWeight.bold),
+            ),
+              trailing: const Icon(
+                Icons.arrow_forward_ios,
+                color: Colors.orangeAccent,
+                size: 18,
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ChangePasswordScreen()),
+                );
+              },
+
+            ),
+
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Logout'),
-                      content: const Text('Are you sure you want to logout?'),
-                      actions: <Widget>[
-                        TextButton(
-                          child: const Text('Cancel'),
-                          onPressed: () => Navigator.of(context).pop(),
+                    return Dialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: IconButton(
+                                icon: const Icon(Icons.close_rounded),
+                                onPressed: () => Navigator.of(context).pop(),
+                              ),
+                            ),
+                            Container(
+                              width: 80,
+                              height: 80,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.orange,
+                              ),
+                              child: const Icon(
+                                Icons.logout_rounded,
+                                color: Colors.white,
+                                size: 50,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            const Text(
+                              'Logout',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF1B2559),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            const Text(
+                              'Are you sure you want to logout?',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Color(0xFF1B2559),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: const Color(0xFF1B2559),
+                                      backgroundColor: Colors.white,
+                                      side: const BorderSide(color: Color(0xFF1B2559)),
+                                      padding: const EdgeInsets.symmetric(vertical: 15),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                    ),
+                                    onPressed: () => Navigator.of(context).pop(),
+                                    child: const Text(
+                                      'Cancel',
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                      backgroundColor: Colors.orange,
+                                      padding: const EdgeInsets.symmetric(vertical: 15),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      var box = await Hive.openBox('userBox');
+                                      await box.delete('authToken');
+                                      widget.onLogout();
+                                      Navigator.of(context).pushAndRemoveUntil(
+                                        MaterialPageRoute(
+                                          builder: (context) => const LoginScreen(),
+                                        ),
+                                            (route) => false,
+                                      );
+                                    },
+                                    child: const Text(
+                                      'Logout',
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        TextButton(
-                          child: const Text('Logout'),
-                          onPressed: () async {
-                            // Clear the token on logout
-                            var box = await Hive.openBox('userBox');
-                            await box.delete('authToken');
-                            widget.onLogout();
-                            Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(builder: (context) => const LoginScreen()),
-                                  (route) => false,
-                            );
-                          },
-                        ),
-                      ],
+                      ),
                     );
                   },
                 );
               },
-
-
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange,
                 padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
               ),
               child: const Text(
                 'Logout',
-                style: TextStyle(fontSize: 14, color: Colors.white,fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
+
 
 
 
@@ -330,7 +435,7 @@ class _ProfileState extends State<Profile> {
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.2),
                   blurRadius: 5,
-                  offset: Offset(0, 3),
+                  offset: const Offset(0, 3),
 
                 ),
               ],
@@ -357,7 +462,7 @@ class _ProfileState extends State<Profile> {
                     : null,
                 border: InputBorder.none,
               ),
-              style: TextStyle(color: isEditable ? Colors.black : Colors.grey),
+              style: TextStyle(color: isEditable ? Colors.black : Colors.grey[600]),
             ),
           ),
         ],

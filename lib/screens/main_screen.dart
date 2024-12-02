@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+// import '../DOCTOR_SCREEN/doctor_nav.dart';
 import '../models/appointment.dart';
 import '../models/doctor.dart';
+// import '../models/dr.dart';
 import 'appointments_nav_screen.dart';
 import 'dashboard_screen.dart';
 import 'doctor_nav_screen.dart';
@@ -49,17 +51,19 @@ class MainScreenState extends State<MainScreen> {
             doctors: doctors,
           ),
           DoctorScreen(doctors: doctors, onBookAppointment: _bookAppointment),
+          // DoctorScreen(doctors: doctors, onBookAppointment: _bookAppointment),
+          // DoctorScreen(doctors: [], onBookAppointment: (Doctor , DateTime ) {  },),
+          // const DoctorProfile(),
           Profile(onLogout: () {
             Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context)=> LoginScreen()),
+                MaterialPageRoute(builder: (context)=> const LoginScreen()),
             );
           },),
           AppointmentsScreen(appointments: appointments),
-          TreatmentScreen(),
+          const TreatmentScreen(),
         ],
       ),
       bottomNavigationBar: _buildBottomNavBar(),
-
     );
   }
 

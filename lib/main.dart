@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+// import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:untitled10/screens/booking_screen.dart';
+import 'package:untitled10/screens/medical/medical2.dart';
+// import 'package:path_provider/path_provider.dart';
 // import 'package:hive/hive.dart';
 // import 'package:hive_flutter/adapters.dart';
 // import 'package:login_registration_screen/screens/login_screen.dart';
@@ -11,9 +14,12 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized(); // Initialize Flutter bindings
   await Hive.initFlutter(); // Initialize Hive for Flutter
   await Hive.openBox('userBox'); // Open the box
+  await Hive.openBox('doctorCache');
   // var dict=await getApplicationDocumentsDirectory();
   // Hive.init(dict.path);
 
+
+  await Hive.openBox<MedicalRecord>('medical_records');
 
   runApp(const BharatTeleClinicApp());
 }

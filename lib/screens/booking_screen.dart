@@ -1,9 +1,15 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:untitled10/screens/payment_screen.dart';
 // import 'package:login_registration_screen/screens/payment_screen.dart';
-
+import 'package:http/http.dart' as http;
+import '../APIServices/base_api.dart';
 import '../models/doctor.dart';
+import 'profile_screen.dart';
+
 
 class AppointmentBookingScreen extends StatefulWidget {
   const AppointmentBookingScreen({super.key});
@@ -14,24 +20,182 @@ class AppointmentBookingScreen extends StatefulWidget {
 
 class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   late final Doctor doctor;
-
-  int currentStep = 0;
+  Box doctorCacheBox = Hive.box('doctorCache');
+  int currentStep = 0;// for select step by step option
+  bool isLoading = false;
   String? selectedSpecialty;
   String? selectedDoctor;
+
   bool isVideoConsultation = true;
+
   DateTime selectedDate = DateTime.now();
   String? selectedTimeSlot;
 
   // Dummy data - replace with API calls later
-  final List<String> specialties = [
-    'General Physician',
-    'Cardiologist',
-    'Dermatologist'];
+  final Map<int, String> specialties = {
+    1: 'Physician',
+    2: 'Dentist',
+    3: 'Child Specialist',
+    4: 'Counselling Psychologist',
+  };
 
-  final List<String> doctors = [
-    'Dr. Kulsum Khan',
-    'Dr. Sarah Smith'
-  ];
+  List<Map<String,dynamic>> doctors = [];//i get dynamic doctor name as per key mention in map above
+
+  @override
+  void initState() {
+    super.initState();
+    
+    _initializeHive();
+    
+  }
+
+  Future<void> _initializeHive() async {
+
+  }
+
+  @override
+  void dispose() {
+    doctorCacheBox.close();
+    Hive.close();
+    super.dispose();
+  }
+
+  Future<void> fetchAndInitializeHive() async {
+    await _initializeHive();
+  }
+  // Future<String> getDocumentsDirectoryPath() async {
+  //   final directory = await getApplicationDocumentsDirectory();
+  //   return directory.path;
+  // }
+
+  //old dr api 1.1
+  // Future<List<String>> fetchDoctors(int specialtyKey) async {
+  //   final response = await http.get(Uri.parse('$baseapi/patient/filter_doctor?speciality=$specialtyKey'));
+  //
+  //   if (response.statusCode == 200) {
+  //
+  //     // print(response);
+  //
+  //     // Assuming the response is a JSON array of doctor names
+  //     List<dynamic> doctorData = json.decode(response.body);
+  //     return List<String>.from(doctorData);
+  //   } else {
+  //     throw Exception('Failed to load doctors');
+  //   }
+  // }
+
+
+  //old api 1.2
+  // Future<List<String>> fetchDoctors(int specialtyKey) async {
+  //   try {
+  //     print("-------------------------");
+  //     final response = await http.get(
+  //       Uri.parse('$baseapi/patient/filter_doctor?speciality=$specialtyKey'),
+  //     );
+  //
+  //     print("++++++++++++++++++++");
+  //
+  //     if (response.statusCode == 200) {
+  //
+  //       List<dynamic> doctorData = json.decode(response.body);
+  //       return List<String>.from(doctorData);
+  //     } else {
+  //       print(response.body);
+  //       throw Exception('Failed to load doctors');
+  //     }
+  //     print(response.body);
+  //   } catch (e) {
+  //     throw Exception('Error fetching doctors: $e');
+  //
+  //   }
+  //
+  // }
+
+
+
+  // Save the token to Hive
+  Future<void> saveToken(String token) async {
+    var box = await Hive.openBox('userBox');
+    await box.put('authToken', token);
+    print('Token saved: $token');
+  }
+  // Retrieve token from Hive
+  Future<String?> getToken() async {
+    try {
+      var box = await Hive.openBox('userBox');
+      final token = box.get('authToken');
+      print('Token retrieved: $token');  // Debug: Check the value here
+      return token;
+    } catch (e) {
+      print('Error retrieving token: $e');
+      return null;
+    }
+  }
+
+
+
+
+  Future<List<Map<String, dynamic>>?> fetchDoctors(int specialtyKey) async {
+
+    // if (doctorCacheBox.containsKey(specialtyKey)) {
+    //   var a=doctorCacheBox.get(specialtyKey);
+    //   print(a);
+    //   return List<String>.from(a);
+    //
+    // }
+    // if (doctorCacheBox.containsKey(specialtyKey)) {
+    //   // Use cached data
+    //   final cachedDoctors = doctorCacheBox.get(specialtyKey);
+    //   return List<String>.from(cachedDoctors);
+    // }
+
+    try {
+      String? bearerToken = await getToken();
+
+      final response = await http.get(
+        Uri.parse('$baseapi/patient/filter_doctor?speciality=$specialtyKey'),
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+
+        print("!!!!!!!!!!!!!!!!");
+        print(response.body);
+
+
+        // List<Map<String, dynamic>> doctorData = json.decode(response.body)['data'];
+
+        // Safely cast the data to a list of maps
+        List<Map<String, dynamic>> doctorData = (['data'] as List)
+            .map((item) => item as Map<String, dynamic>)
+            .toList();
+
+
+
+        print("!!!!!!!!!133344!!!!!!!");
+        print(doctorData);
+
+
+
+        return doctorData;
+      }
+
+      else {
+        final errorMsg = json.decode(response.body)['message'] ?? 'Failed to fetch doctors';
+
+        throw Exception(errorMsg+'Failed to load doctors');
+      }
+    } catch (e) {
+      throw Exception('Error fetching doctors: $e');
+    }
+  }
+
+
+
+
   final List<String> timeSlots = List.generate(73, (index) {
     final time = DateTime(2024, 1, 1, 0, index * 5);
     return DateFormat('h:mm a').format(time);
@@ -46,10 +210,9 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text('Book Appointment', style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold)),
+        title: const Text('Book Appointment',
+            style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold)),
       ),
-
-
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -73,7 +236,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PaymentScreen(),
+                      builder: (context) => const PaymentScreen(),
                     ),
                   );
                 },
@@ -103,63 +266,220 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     );
   }
 
+  // Widget _buildSpecialtyDropdown() {
+  //old drop down code 1.1
+  //   return DropdownButtonFormField<String>(
+  //     decoration: InputDecoration(
+  //       border: OutlineInputBorder(
+  //         borderSide: BorderSide(color: Colors.grey),
+  //         borderRadius: BorderRadius.circular(12.0),  // Rounded edges
+  //
+  //       ),
+  //       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+  //     ),
+  //     value: selectedSpecialty,
+  //     items: specialties.map((String item) {
+  //       return DropdownMenuItem<String>(
+  //         value: item,
+  //         child: Text(item,
+  //           style: const TextStyle(color: Colors.purple,fontSize: 11),
+  //         ),
+  //       );
+  //     }).toList(),
+  //     onChanged: (value) {
+  //       setState(() {
+  //         selectedSpecialty = value;
+  //         currentStep = 1;
+  //         selectedDoctor = null;  // Reset doctor when specialty changes
+  //       });
+  //     },
+  //     hint: isLoading
+  //         ? const Text('Loading...', style: TextStyle(fontSize: 10))
+  //         : const Text('Select Specialty', style: TextStyle(fontSize: 10)),
+  //   );
+  // }
+  // Widget _buildDoctorDropdown() {
+  //   return DropdownButtonFormField<String>(
+  //     decoration:  InputDecoration(
+  //       border: OutlineInputBorder(
+  //
+  //         borderSide: const BorderSide(color: Colors.grey),
+  //
+  //         borderRadius: BorderRadius.circular(12.0),  // Rounded edges
+  //       ),
+  //       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+  //     ),
+  //     value: selectedDoctor,
+  //     items: doctors.map((String item) {
+  //       return DropdownMenuItem<String>(
+  //         value: item,
+  //         child: Text(item,
+  //           style: const TextStyle(color: Colors.purple,fontSize: 11),
+  //         ),
+  //       );
+  //     }).toList(),
+  //     onChanged: (value) {
+  //       setState(() {
+  //         selectedDoctor = value;
+  //         currentStep = 2;
+  //       });
+  //     },
+  //     hint: isLoading
+  //         ? const Text('Loading...', style: TextStyle(fontSize: 10))
+  //         : const Text('Select Doctor', style: TextStyle(fontSize: 10)),
+  //   );
+  // }
+
+  // old 1.2
+  // Widget _buildSpecialtyDropdown() {
+  //   return DropdownButtonFormField<int>(
+  //     decoration: InputDecoration(
+  //       border: OutlineInputBorder(
+  //         borderSide: const BorderSide(color: Colors.grey),
+  //         borderRadius: BorderRadius.circular(12.0),
+  //       ),
+  //       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+  //     ),
+  //     value: selectedSpecialty != null ? int.tryParse(selectedSpecialty!) : null,
+  //     items: specialties.entries.map((entry) {
+  //       return DropdownMenuItem<int>(
+  //         value: entry.key,
+  //         child: Text(
+  //           entry.value,
+  //           style: const TextStyle(color: Colors.purple, fontSize: 11),
+  //         ),
+  //       );
+  //     }).toList(),
+  //     onChanged: (value) async {
+  //       setState(() {
+  //         selectedSpecialty = value.toString();
+  //         currentStep = 1;
+  //         selectedDoctor = null; // Reset doctor when specialty changes
+  //         isLoading = true;
+  //       });
+  //       try {
+  //         final doctorList = await fetchDoctors(value!);
+  //         setState(() {
+  //           doctors.clear();
+  //           doctors.addAll(doctorList);
+  //         });
+  //       } catch (e) {
+  //         // Handle error
+  //         print('Error fetching doctors: $e');
+  //       } finally {
+  //         setState(() {
+  //           isLoading = false;
+  //         });
+  //       }
+  //     },
+  //     hint: isLoading
+  //         ? const Text('Loading...', style: TextStyle(fontSize: 10))
+  //         : const Text('Select Specialty', style: TextStyle(fontSize: 10)),
+  //   );
+  // }
+  // Widget _buildDoctorDropdown() {
+  //   return DropdownButtonFormField<String>(
+  //     decoration: InputDecoration(
+  //       border: OutlineInputBorder(
+  //         borderSide: const BorderSide(color: Colors.grey),
+  //         borderRadius: BorderRadius.circular(12.0),
+  //       ),
+  //       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+  //     ),
+  //     value: selectedDoctor,
+  //     items: doctors.map((String item) {
+  //       return DropdownMenuItem<String>(
+  //         value: item,
+  //         child: Text(
+  //           item,
+  //           style: const TextStyle(color: Colors.purple, fontSize: 11),
+  //         ),
+  //       );
+  //     }).toList(),
+  //     onChanged: (value) {
+  //       setState(() {
+  //         selectedDoctor = value;
+  //         currentStep = 2;
+  //       });
+  //     },
+  //     hint: const Text('Select Doctor', style: TextStyle(fontSize: 10)),
+  //   );
+  // }
+
   Widget _buildSpecialtyDropdown() {
-    return DropdownButtonFormField<String>(
+    return DropdownButtonFormField<int>(
       decoration: InputDecoration(
         border: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey),
-          borderRadius: BorderRadius.circular(12.0),  // Rounded edges
-
+          borderRadius: BorderRadius.circular(12.0),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       ),
-      value: selectedSpecialty,
-      items: specialties.map((String item) {
-        return DropdownMenuItem<String>(
-          value: item,
-          child: Text(item,
-            style: const TextStyle(color: Colors.purple,fontSize: 11),
-          ),
+      value: selectedSpecialty != null ? int.tryParse(selectedSpecialty!) : null,
+      items: specialties.entries.map((entry) {
+        return DropdownMenuItem<int>(
+          value: entry.key,
+          child: Text(entry.value, style: const TextStyle(fontSize: 11)),
         );
       }).toList(),
-      onChanged: (value) {
+      onChanged: (value) async {
         setState(() {
-          selectedSpecialty = value;
+          selectedSpecialty = value.toString();
           currentStep = 1;
-          selectedDoctor = null;  // Reset doctor when specialty changes
+          isLoading = true;
         });
+
+        try {
+          final doctorList = await fetchDoctors(value!);
+          print("***********************");
+          print(doctorList);
+          setState(() {
+            doctors = doctorList!;
+            selectedDoctor = null; // Reset doctor selection
+
+          })
+          ;
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.toString())),
+          );
+        } finally {
+          setState(() {
+            isLoading = false;
+          });
+        }
       },
-      hint: const Text('Select Specialty',style: TextStyle(fontSize: 10),),
+      hint: isLoading
+          ? const Text('Loading...', style: TextStyle(fontSize: 10))
+          : const Text('Select Specialty', style: TextStyle(fontSize: 10)),
     );
   }
-
   Widget _buildDoctorDropdown() {
-    return DropdownButtonFormField<String>(
-      decoration:  InputDecoration(
+    return DropdownButtonFormField<int>(
+      decoration: InputDecoration(
         border: OutlineInputBorder(
-
-          borderSide: BorderSide(color: Colors.grey),
-
-          borderRadius: BorderRadius.circular(12.0),  // Rounded edges
+          borderRadius: BorderRadius.circular(12.0),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       ),
-      value: selectedDoctor,
-      items: doctors.map((String item) {
-        return DropdownMenuItem<String>(
-          value: item,
-          child: Text(item,
-            style: const TextStyle(color: Colors.purple,fontSize: 11),
+      value: 1,
+      items: doctors.map<DropdownMenuItem<int>>((Map<String, dynamic> doctor) {
+        return DropdownMenuItem<int>(
+          value: doctor['id'], // The ID of the doctor
+          child: Text(
+            doctor['full_name'], // The full name of the doctor
+            style: const TextStyle(fontSize: 14),
           ),
         );
       }).toList(),
+
+
       onChanged: (value) {
         setState(() {
-          selectedDoctor = value;
+          selectedDoctor = "";
           currentStep = 2;
         });
       },
-      hint: const Text('Select Doctor',style: TextStyle(fontSize: 10),),
+      hint: const Text('Select Doctor', style: TextStyle(fontSize: 10)),
     );
   }
 
@@ -298,7 +618,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                   currentStep = 5;
                 });
               },
-              child: Text(timeSlots[index], style: const TextStyle(fontSize: 11)),
+              child: Text(timeSlots[index], style: const TextStyle(fontSize: 11,fontWeight: FontWeight.bold)),
             );
 
           },
