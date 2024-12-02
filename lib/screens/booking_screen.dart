@@ -8,6 +8,7 @@ import 'package:untitled10/screens/payment_screen.dart';
 import 'package:http/http.dart' as http;
 import '../APIServices/base_api.dart';
 import '../models/doctor.dart';
+import 'doctor_nav_screen.dart';
 import 'profile_screen.dart';
 
 

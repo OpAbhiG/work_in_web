@@ -9,6 +9,7 @@ import '../models/doctor.dart';
 import 'appointments_nav_screen.dart';
 import 'book_appoinment_dialog_status.dart';
 import 'booking_screen.dart';
+import 'doctor_nav_screen.dart';
 import 'drugs_tests_screen.dart';
 import 'medical/medical1.dart';
 import 'medical_history_screen.dart';
@@ -124,11 +125,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {
-          fname = data['profile']['fname'] ?? '';
-          lname = data['profile']['lname'] ?? '';
-          id = data['profile']['id'] ??''; // Convert id to String
-          dob = data['profile']['dob'] ?? '';
-          blood_group=data['profile']['blood_group']??'';
+          fname = data['data']['fname'] ?? '';
+          lname = data['data']['lname'] ?? '';
+          id = data['data']['id'] ??''; // Convert id to String
+          dob = data['data']['dob'] ?? '';
+          blood_group=data['data']['blood_group']??'';
 
 
           isLoading = false;
@@ -645,21 +646,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton.icon(
-        // onPressed: () => _bookAppointmentDialog(context,doctors as Doctor),
-
-        // onPressed: () {
-        //   // Navigate to the ConfirmationScreen
-        //   Nav<Doctor>igator.of(context).push(
-        //     MaterialPageRoute(builder: (context) => DoctorScreen(onBookAppointment: (Doctor , DateTime ) {  }, doctors: [],)),
-        //   );
-        // },
 
         onPressed: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => AppointmentBookingScreen()),
           ),
-
-
-
 
 
         icon: const Icon(Icons.calendar_today,color: Colors.white,),

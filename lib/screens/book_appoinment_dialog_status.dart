@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../DOCTOR_SCREEN/doctor_model.dart';
 import '../models/doctor.dart';
+import 'doctor_nav_screen.dart';
 
 class BookAppointmentDialogState extends State<BookAppointmentDialog> {
   Doctor? selectedDoctor;
@@ -52,7 +53,7 @@ class BookAppointmentDialogState extends State<BookAppointmentDialog> {
       items: widget.doctors.map((Doctor doctor) {
         return DropdownMenuItem<Doctor>(
           value: doctor,
-          child: Text(doctor.name),
+          child: Text(doctor.fullName),
         );
       }).toList(),
     );

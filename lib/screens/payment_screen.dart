@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../models/doctor.dart';
 import 'booking_confirmation_screen.dart';
+import 'doctor_nav_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key,

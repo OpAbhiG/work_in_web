@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import '../DOCTOR_SCREEN/doctor_model.dart';
 import '../models/doctor.dart';
+import 'booking_screen.dart';
+import 'doctor_nav_screen.dart';
 
 
-class DoctorDetailScreen extends StatelessWidget {
+class DoctorDetailScreen extends StatefulWidget {
   final Doctor doctor;
 
   const DoctorDetailScreen({super.key, required this.doctor});
 
   @override
+  State<DoctorDetailScreen> createState() => _DoctorDetailScreenState();
+}
+
+class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(doctor.name),
+        title: Text(widget.doctor.fullName),
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
       ),
@@ -23,17 +30,17 @@ class DoctorDetailScreen extends StatelessWidget {
           children: [
             Center(
               child: CircleAvatar(
-                backgroundImage: AssetImage(doctor.imagePath),
+                // backgroundImage: AssetImage(widget.doctor.imagePath),
                 radius: 50,
               ),
             ),
             const SizedBox(height: 16),
             Text(
-              doctor.name,
+              widget.doctor.fullName,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             Text(
-              doctor.specialty,
+              widget.doctor.specialty,
               style: TextStyle(fontSize: 18, color: Colors.grey[600]),
             ),
             const SizedBox(height: 16),
@@ -41,11 +48,11 @@ class DoctorDetailScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '${doctor.experience} Years of Experience',
+                  '${widget.doctor.experience} Years of Experience',
                   style: const TextStyle(fontSize: 16),
                 ),
                 Text(
-                  '₹${doctor.consultationFee}',
+                  '₹${widget.doctor.consultationFee}',
                   style: const TextStyle(fontSize: 16, color: Colors.blue),
                 ),
               ],
@@ -55,11 +62,25 @@ class DoctorDetailScreen extends StatelessWidget {
               'About Doctor',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 8),
-            Text(
-              doctor.about,
-              style: const TextStyle(fontSize: 16),
+            // const SizedBox(height: 8),
+            // Text(
+            //   widget.doctor.about,
+            //   style: const TextStyle(fontSize: 16),
+            // ),
+
+
+            Center(
+
+            child: Expanded(
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const AppointmentBookingScreen()),
+                  ),
+                  child: const Text('Appointment'),
+                ),
+              ),
             ),
+
           ],
         ),
       ),

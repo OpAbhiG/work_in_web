@@ -9,6 +9,7 @@ import 'book_appoinment_dialog_status.dart';
 // import 'book_appointment_dialog.dart';
 // import '../widgets/doctor_detail_screen.dart';
 import 'booking_confirmation_screen.dart';
+import 'booking_screen.dart';
 import 'doctor_detail_screen.dart';
 
 
@@ -21,6 +22,7 @@ class Doctor {
   final String specialty;
   final int experience;
   final int consultationFee;
+
 
   Doctor({
     required this.id,
@@ -221,17 +223,23 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                           Expanded(
                             child: ElevatedButton(
                               onPressed: () {
-                                // Navigate to detailed doctor profile
+                                // Navigate to DoctorDetailScreen with the selected doctor
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => DoctorDetailScreen(doctor: doctor,),
+                                  ),
+                                );
                               },
+
                               child: const Text('View Profile'),
                             ),
                           ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: ElevatedButton(
-                              onPressed: () {
-                                // Handle booking functionality
-                              },
+                              onPressed: () => Navigator.of(context).push(
+                                MaterialPageRoute(builder: (context) => const AppointmentBookingScreen()),
+                              ),
                               child: const Text('Appointment'),
                             ),
                           ),
