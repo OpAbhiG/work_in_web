@@ -20,11 +20,11 @@ class AppointmentBookingScreen extends StatefulWidget {
 
 class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   late final Doctor doctor;
-  Box doctorCacheBox = Hive.box('doctorCache');
+  // Box doctorCacheBox = Hive.box('doctorCache');
   int currentStep = 0;// for select step by step option
   bool isLoading = false;
   String? selectedSpecialty;
-  String? selectedDoctor;
+  int? selectedDoctor;
 
   bool isVideoConsultation = true;
 
@@ -44,9 +44,9 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   @override
   void initState() {
     super.initState();
-    
+
     _initializeHive();
-    
+
   }
 
   Future<void> _initializeHive() async {
@@ -55,7 +55,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
 
   @override
   void dispose() {
-    doctorCacheBox.close();
+    // doctorCacheBox.close();
     Hive.close();
     super.dispose();
   }
@@ -159,6 +159,9 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
           'Content-Type': 'application/json',
         },
       );
+      print('$baseapi/patient/filter_doctor?speciality=$specialtyKey');
+      print(response.body);
+      print(response.statusCode);
 
       if (response.statusCode == 200) {
 
@@ -169,7 +172,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
         // List<Map<String, dynamic>> doctorData = json.decode(response.body)['data'];
 
         // Safely cast the data to a list of maps
-        List<Map<String, dynamic>> doctorData = (['data'] as List)
+        List<Map<String, dynamic>> doctorData = (json.decode(response.body)['data'] as List)
             .map((item) => item as Map<String, dynamic>)
             .toList();
 
@@ -181,9 +184,13 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
 
 
         return doctorData;
+      }else if (response.statusCode == 200) {
+
+        return [];
       }
 
       else {
+        return  [];
         final errorMsg = json.decode(response.body)['message'] ?? 'Failed to fetch doctors';
 
         throw Exception(errorMsg+'Failed to load doctors');
@@ -454,28 +461,25 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     );
   }
   Widget _buildDoctorDropdown() {
-    return DropdownButtonFormField<int>(
+    return  doctors.length  == 0 ? const Text("No Doctors Found Please Select Other Specialty",style: TextStyle(color: Colors.red),):   DropdownButtonFormField<int>(
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       ),
-      value: 1,
-      items: doctors.map<DropdownMenuItem<int>>((Map<String, dynamic> doctor) {
+      value: selectedDoctor,
+      items: doctors.map<DropdownMenuItem<int>>((doctor) {
         return DropdownMenuItem<int>(
-          value: doctor['id'], // The ID of the doctor
-          child: Text(
-            doctor['full_name'], // The full name of the doctor
-            style: const TextStyle(fontSize: 14),
-          ),
+          value: doctor['id'],
+          child: Text(doctor['full_name']),
         );
       }).toList(),
 
 
       onChanged: (value) {
         setState(() {
-          selectedDoctor = "";
+          selectedDoctor = value;
           currentStep = 2;
         });
       },
