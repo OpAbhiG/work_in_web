@@ -5,7 +5,7 @@ import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import '../APIServices/base_api.dart';
 import '../models/appointment.dart';
-import '../models/doctor.dart';
+// import '../models/doctor.dart';
 import 'appointments_nav_screen.dart';
 import 'book_appoinment_dialog_status.dart';
 import 'booking_screen.dart';
@@ -167,35 +167,47 @@ class _DashboardScreenState extends State<DashboardScreen> {
           fontSize: 18, // Adjust font size
           fontWeight: FontWeight.bold, // Make text bold
           // fontFamily: 'Schyler', // Optional: Set a custom font family if you have one
-        )),
 
+        )),
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
+
       ),
 
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+      body: Stack(
+        children: [
 
-              _buildProfileCard(),
-              const SizedBox(height: 16),
-              _buildActionButtons(context),
-              const SizedBox(height: 16),
-              _buildUpcomingAppointments(),
-              const SizedBox(height: 16),
-              _buildBookAppointmentButton(context),
-            ],
+          SingleChildScrollView(
+
+            child: Padding(
+
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+
+                  _buildProfileCard(),
+                  const SizedBox(height: 16),
+                  _buildActionButtons(context),
+                  const SizedBox(height: 16),
+                  _buildUpcomingAppointments(),
+                  const SizedBox(height: 16),
+                  _buildBookAppointmentButton(context),
+                ],
+              ),
+            ),
           ),
-        ),
+        ],
       ),
+
+
     );
   }
 
   Widget _buildProfileCard() {
-    return Card(
+    return
+      Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: Padding(

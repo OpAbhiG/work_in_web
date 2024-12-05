@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../DOCTOR_SCREEN/doctor_model.dart';
-import '../models/doctor.dart';
+// import '../models/doctor.dart';
 import 'booking_screen.dart';
 import 'doctor_nav_screen.dart';
 

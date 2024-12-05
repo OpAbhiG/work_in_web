@@ -43,7 +43,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/bkimg.jpg'), // Path to your background image
+                image: AssetImage('bottomdesignbk.jpg'), // Path to your background image
                 fit: BoxFit.cover, // Cover the entire screen
               ),
             ),
@@ -277,12 +277,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ),
                   ),
 
-                  SizedBox(height: screenHeight * 0.01),
+                  SizedBox(height: screenHeight * 0.03),
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: const Text('Existing User? Sign In'),
+                    child: const Text('Existing User? Sign In',style: TextStyle(color: Colors.white),),
                   ),
                 ],
               ),

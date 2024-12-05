@@ -5,13 +5,9 @@ class Appointment {
   final DateTime dateTime;
   // final String imagePath;
 
-  Appointment(
-       {
-
+  Appointment({
     required this.doctorName,
     required this.dateTime,
-
-
   });
 }
 

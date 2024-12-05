@@ -81,8 +81,6 @@ class ApiServices{
   // }
 
 
-
-
   Future<LoginModel?> loginWithModel(String email, String password) async {
     try {
       var url = Uri.parse("$baseapi/user/login");
@@ -141,9 +139,6 @@ class ApiServices{
 
 
 
-
-
-
   Future<void>RegistrationScreen(
       String email,
       String password,
@@ -160,8 +155,7 @@ class ApiServices{
       var response = await http.post(
         url,
         body: {
-          "user_type":3,
-
+          "user_type":"3",
           "email": email,
           "password": password,
           "fname":fname,
@@ -174,7 +168,6 @@ class ApiServices{
 
         },
       );
-
       if (response.statusCode != 200) {
         throw Exception('Sign up failed: ${response.body}');
       }
@@ -183,7 +176,6 @@ class ApiServices{
       throw e;
     }
   }
-
 
 
 // Future<RegistrationModel?> registerUser({

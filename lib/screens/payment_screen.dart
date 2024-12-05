@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:login_registration_screen/models/doctor.dart';
 
-import '../models/doctor.dart';
+// import '../models/doctor.dart';
 import 'booking_confirmation_screen.dart';
 import 'doctor_nav_screen.dart';
 
@@ -22,9 +22,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF1A237E),
+        backgroundColor: Colors.indigo,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -95,10 +95,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-
-
                       Navigator.push(
-
                         context,
                         MaterialPageRoute(
                           builder: (context) => BookingConfirmationScreen(),

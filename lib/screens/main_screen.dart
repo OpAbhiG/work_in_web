@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 // import '../DOCTOR_SCREEN/doctor_nav.dart';
 import '../models/appointment.dart';
-import '../models/doctor.dart';
+// import '../models/doctor.dart';
 // import '../models/dr.dart';
 import 'appointments_nav_screen.dart';
+import 'booking_confirmation_screen.dart';
 import 'dashboard_screen.dart';
 import 'doctor_nav_screen.dart';
 import 'login_screen.dart';
@@ -13,29 +14,6 @@ import 'treatment_screen.dart';
 class MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
   List<Appointment> appointments = [];
-
-  // final List<Doctor> doctors = [
-  //   // Doctor(
-  //   //     name: 'Dr. Shaikh',
-  //   //     specialty: 'General Physician',
-  //   //     // backgroundImage: AssetImage('assets/d4.jpeg'),
-  //   //     imagePath: 'assets/d3.jpeg', // Replace with actual image asset
-  //   //     experience: 7,
-  //   //     consultationFee: 199,
-  //   //     license: '66841',
-  //   //     about: 'Experienced general physician specializing in primary care and preventive medicine.',
-  //   // ),
-  //   // Doctor(
-  //   //   name: 'Dr. Sutar',
-  //   //   specialty: 'General Physician',
-  //   //   // backgroundImage: AssetImage('assets/d3.jpeg'),
-  //   //     imagePath: 'https://th.bing.com/th/id/OIP.APjmKmC7pAwcvBCbKoxVmgHaGO?rs=1&pid=ImgDetMain',
-  //   //   experience: 12,
-  //   //   consultationFee: 199,
-  //   //   license: 'I-60654-E',
-  //   //   about: 'Seasoned doctor with expertise in managing chronic diseases and providing comprehensive healthcare.'
-  //   // ),
-  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +25,7 @@ class MainScreenState extends State<MainScreen> {
           DashboardScreen(
             appointments: appointments,
             onCancelAppointment: _cancelAppointment,
-            onBookAppointment: _bookAppointment, doctors: [],
+            onBookAppointment: _bookAppointment, doctors: const [],
             // doctors: doctors,
           ),
           const DoctorListScreen(),
@@ -109,7 +87,7 @@ class MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.grid_view), label: 'Dashboard'),
           BottomNavigationBarItem(icon: Icon(Icons.monitor_heart), label: 'Doctors'),
 
-          // BottomNavigationBarItem(icon: Icon(Icons.manage_accounts), label: 'Profile'),
+          // BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Profile'),
 
           BottomNavigationBarItem(icon: _buildImage('assets/Bharat Icon.jpg'),label: 'Profile'),
 

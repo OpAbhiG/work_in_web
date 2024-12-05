@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../APIServices/api_services.dart';
 import '../APIServices/base_api.dart';
-import '../models/doctor.dart';
+// import '../models/doctor.dart';
 import 'book_appoinment_dialog_status.dart';
 // import 'book_appointment_dialog.dart';
 // import '../widgets/doctor_detail_screen.dart';

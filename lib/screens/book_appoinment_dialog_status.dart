@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../DOCTOR_SCREEN/doctor_model.dart';
-import '../models/doctor.dart';
+// import '../models/doctor.dart';
 import 'doctor_nav_screen.dart';
 
 class BookAppointmentDialogState extends State<BookAppointmentDialog> {

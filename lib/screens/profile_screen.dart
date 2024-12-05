@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import '../APIServices/base_api.dart';
 import 'change_password.dart';
+import 'edit_profile_screen.dart';
 import 'login_screen.dart';
 class Profile extends StatefulWidget {
   final VoidCallback onLogout;
@@ -18,17 +19,12 @@ class _ProfileState extends State<Profile> {
   String lname = '';
   String aadhar_no='';
   // String blood_group='';
-
   String email='';
   String gender='';
   String number='';
   String dob='';
   String id='';
-
-
   bool isLoading = true;
-
-
 
   @override
   void initState() {
@@ -42,7 +38,6 @@ class _ProfileState extends State<Profile> {
     await box.put('authToken', token);
     print('Token saved: $token');
   }
-
   Future<void> someApiCall() async {
     String? token = await getToken();
 
@@ -66,7 +61,6 @@ class _ProfileState extends State<Profile> {
       print('API call failed: ${response.body}');
     }
   }
-
   // Retrieve token from Hive
   Future<String?> getToken() async {
     try {
@@ -79,7 +73,6 @@ class _ProfileState extends State<Profile> {
       return null;
     }
   }
-
   // Fetch profile data from API
   Future<void> fetchProfile() async {
     try {
@@ -138,7 +131,6 @@ class _ProfileState extends State<Profile> {
       showError('An error occurred: $e');
     }
   }
-
   // Show error messages
   void showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -168,8 +160,7 @@ class _ProfileState extends State<Profile> {
             Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-
-                children: [
+                children:[
                   // Profile Picture and User Info Card
                   Card(
                     shape: RoundedRectangleBorder(
@@ -178,45 +169,76 @@ class _ProfileState extends State<Profile> {
                     elevation: 4,
                     margin: const EdgeInsets.symmetric(horizontal: 15),
                     child: Padding(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(15),
                       child: Row(
-
+                        crossAxisAlignment: CrossAxisAlignment.start,  // Aligns the children at the top
                         children: [
                           const CircleAvatar(
                             radius: 40,
                             backgroundImage: AssetImage('assets/limg.jpg'),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-
-                            children: [
-                              // const SizedBox(height: 10,),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  '$fname $lname',
-                                  style: const TextStyle(fontSize: 15, color: Colors.red),
-                                ),
-                              ),
-
-                              // const SizedBox(height: 1,),
-                               Padding(
-                                padding: EdgeInsets.all(10.0),
-                                child: Text(
-                                  'Clinics Patient ID $id' , // Replace with API data
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.grey,
+                          const SizedBox(width: 20),  // Adds spacing between avatar and text
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 20.0),
+                                  child: Text(
+                                    '$fname $lname',
+                                    style: const TextStyle(fontSize: 15, color: Colors.red),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 0.0),
+                                  child: Text(
+                                    'Clinics Patient ID $id', // Replace with API data
+                                    style: const TextStyle(fontSize: 10, color: Colors.grey),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.centerRight, // Align button to the right
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 5.0),
+                                    child: IconButton(
+                                      onPressed: () async {
+                                        final result = await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => EditProfileScreen(
+                                              fname: fname,
+                                              lname: lname,
+                                              email: email,
+                                              aadhar_no: aadhar_no,
+                                              number: number,
+                                              dob: dob,
+                                            ),
+                                          ),
+                                        );
 
+                                        if (result == true) {
+                                          // Refresh profile data after editing
+                                          fetchProfile();
+                                        }
+                                      },
+                                      icon: const Icon(
+                                        Icons.edit,
+                                        color: Colors.indigo, // Change color as needed
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ),
+
+
+
                   const SizedBox(height: 5),
                   // Profile Details Card
                   Card(
@@ -391,10 +413,6 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
             ),
-
-
-
-
             const Padding(
               padding: EdgeInsets.all(8.0),
               child: Text(
@@ -427,7 +445,6 @@ class _ProfileState extends State<Profile> {
           ),
           const SizedBox(height: 5.0),
           Container(
-
             decoration: BoxDecoration(
               color: Colors.grey[100],
               borderRadius: BorderRadius.circular(10),

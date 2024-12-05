@@ -28,16 +28,24 @@ class _LanguageClinicSelectionScreenState extends State<LanguageClinicSelectionS
       body: Stack(
 
         children: [
-          Container(
-
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/bkimg.jpg'), // Path to your background image 1st page
-                fit: BoxFit.cover,
-                // Cover the entire screen
-              ),
+          // Background Image
+          SizedBox.expand(
+            child: Image.asset(
+              'assets/bottomdesignbk.jpg', // background img login 2nd screen
+              fit: BoxFit.cover,
             ),
           ),
+          // Container(
+          //
+          //   decoration: const BoxDecoration(
+          //     image: DecorationImage(
+          //       image: AssetImage('assets/bkimg.jpg'), // Path to your background image 1st page
+          //       fit: BoxFit.cover,
+          //       // Cover the entire screen
+          //     ),
+          //   ),
+          // ),
+
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(20),

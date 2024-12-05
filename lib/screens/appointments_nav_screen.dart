@@ -126,14 +126,14 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Video Consultation',
-                        style: TextStyle(
-                          color: Colors.green[700],
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                      // Text(
+                      //   'Video Consultation',
+                      //   style: TextStyle(
+                      //     color: Colors.green[700],
+                      //     fontSize: 10,
+                      //     fontWeight: FontWeight.w500,
+                      //   ),
+                      // ),
                       Text(
                         DateFormat('MMM dd, yyyy, hh:mm a').format(appointment.dateTime),
                         style: const TextStyle(fontSize: 10, color: Colors.grey),
