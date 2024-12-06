@@ -40,7 +40,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   String fname = '';
   String lname = '';
-   int id = 0 ;
+  int id = 0 ;
   String blood_group='';
   String dob='';
 
@@ -58,7 +58,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     await box.put('authToken', token);
     print('Token saved: $token');
   }
-
   Future<void> someApiCall() async {
     String? token = await getToken();
 
@@ -82,7 +81,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       print('API call failed: ${response.body}');
     }
   }
-
   // Retrieve token from Hive
   Future<String?> getToken() async {
     try {
@@ -95,7 +93,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       return null;
     }
   }
-
   // Fetch profile data from API
   Future<void> fetchProfile() async {
     try {
@@ -149,14 +146,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
       showError('An error occurred: $e');
     }
   }
-
   // Show error messages
   void showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -176,17 +171,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
       body: Stack(
         children: [
-
           SingleChildScrollView(
-
             child: Padding(
-
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
-
                   _buildProfileCard(),
                   const SizedBox(height: 16),
                   _buildActionButtons(context),
@@ -431,7 +421,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        appointment.doctorName,
+                        appointment.fullName,
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,color: Colors.indigo
@@ -490,13 +480,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-
                       "Appointment ID:",
                       style: TextStyle(fontSize: 10, color: Colors.grey),
                     ),
-
                     const Text(
-
                       "Appointment Type:",
                       style: TextStyle(fontSize: 10, color: Colors.grey),
                     ),
@@ -524,7 +511,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     Text(
                       DateFormat('MMM dd, yyyy, hh:mm a')
-                          .format(appointment.dateTime),
+                          .format(appointment.date),
                       style: const TextStyle(
                         fontSize: 10,color: Colors.blueGrey
                       ),
@@ -660,7 +647,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: ElevatedButton.icon(
 
         onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => AppointmentBookingScreen()),
+            MaterialPageRoute(builder: (context) => const AppointmentBookingScreen()),
           ),
 
 
@@ -694,203 +681,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       },
     );
   }
-
-
 }
 
 
-
-
-// class BookAppointmentDialogState extends State<BookAppointmentDialog> {
-//   Doctor? selectedDoctor;
-//   DateTime selectedDate = DateTime.now();
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.all(16.0),
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min,
-//         children: [
-//           const Text(
-//             'Book an Appointment',
-//             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-//           ),
-//           const SizedBox(height: 16),
-//           _buildDoctorDropdown(),
-//           const SizedBox(height: 16),
-//           _buildDateTimePicker(),
-//           const SizedBox(height: 16),
-//           ElevatedButton(
-//             onPressed: selectedDoctor != null
-//                 ? () {
-//               widget.onBookAppointment(selectedDoctor!, selectedDate);
-//               Navigator.of(context).pop();
-//             }
-//                 : null,
-//             child: const Text('Book Appointment'),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   Widget _buildDoctorDropdown() {
-//     return DropdownButton<Doctor>(
-//       value: selectedDoctor,
-//       onChanged: (Doctor? newValue) {
-//         setState(() {
-//           selectedDoctor = newValue;
-//         });
-//       },
-//       hint: const Text('Select Doctor'),
-//       isExpanded: true,
-//       items: widget.doctors.map((Doctor doctor) {
-//         return DropdownMenuItem<Doctor>(
-//           value: doctor,
-//           child: Text(doctor.name),
-//         );
-//       }).toList(),
-//     );
-//   }
-//   Widget _buildDateTimePicker() {
-//     return InkWell(
-//       onTap: () async {
-//         DateTime? pickedDate = await showDatePicker(
-//           context: context,
-//           initialDate: DateTime.now(),
-//           firstDate: DateTime.now(),
-//           lastDate: DateTime.now().add(const Duration(days: 365)),
-//         );
-//         if (pickedDate != null) {
-//           setState(() {
-//             selectedDate = pickedDate;
-//           });
-//           // Call the time picker after selecting the date
-//           await _selectTime(context);
-//         }
-//       },
-//       child: InputDecorator(
-//         decoration: const InputDecoration(
-//           labelText: 'Select Date',
-//           border: OutlineInputBorder(),
-//         ),
-//         child: Text(DateFormat('yyyy-MM-dd HH:mm').format(selectedDate)), // Update this line to show both date and time
-//       ),
-//     );
-//   }
-//   Future<void> _selectTime(BuildContext context) async {
-//     TimeOfDay? pickedTime = await showTimePicker(
-//       context: context,
-//       initialTime: TimeOfDay.now(),
-//     );
-//     if (pickedTime != null) {
-//       setState(() {
-//         selectedDate = DateTime(
-//           selectedDate.year,
-//           selectedDate.month,
-//           selectedDate.day,
-//           pickedTime.hour,
-//           pickedTime.minute,
-//         );
-//       });
-//     }
-//   }
-//
-// }
-// class BookAppointmentDialog extends StatefulWidget {
-//   final List<Doctor> doctors;
-//   final Function(Doctor, DateTime) onBookAppointment;
-//
-//   const BookAppointmentDialog({
-//     super.key,
-//     required this.doctors,
-//     required this.onBookAppointment,
-//
-//   });
-//
-//   @override
-//   BookAppointmentDialogState createState() => BookAppointmentDialogState();
-// }
-
-
-
-
-
-// class MedicalRecordScreen extends StatelessWidget {
-//   const MedicalRecordScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//
-//       appBar: AppBar(title: const Text('Medical Record'),
-//         backgroundColor: Theme.of(context).primaryColor,
-//         foregroundColor: Colors.white,
-//
-//
-//       ),
-//
-//       body: Center(
-//         child: const Text('Medical Record Content'),
-//       ),
-//     );
-//   }
-// }
-// class MedicalHistoryScreen extends StatelessWidget {
-//   const MedicalHistoryScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('Medical History'),
-//         backgroundColor: Theme.of(context).primaryColor,
-//         foregroundColor: Colors.white,
-//
-//       ),
-//       body: Center(
-//         child: const Text('Medical Record Content'),
-//       ),
-//     );
-//   }
-// }
-// class DrugsTestsScreen extends StatelessWidget {
-//   const DrugsTestsScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return DefaultTabController(
-//       length: 2,
-//       child: Scaffold(
-//         appBar: AppBar(
-//           title: const Text('Drug & Lab Tests'),
-//           backgroundColor: Theme.of(context).primaryColor,
-//           foregroundColor: Colors.white,
-//           bottom: const TabBar(
-//
-//             labelColor: Colors.white, // Active tab color
-//             unselectedLabelColor: Colors.white54, // Inactive tab color
-//             indicatorColor: Colors.orange, // Line under the active tab
-//
-//             labelStyle: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold), // Active tab text style
-//             unselectedLabelStyle: TextStyle(fontSize: 10.0), // Inactive tab text style
-//
-//             tabs: [
-//               Tab(icon: Icon(Icons.receipt_long), text: 'My ePrescription'),
-//               Tab(icon: Icon(Icons.science), text: 'Lab Test'),
-//             ],
-//           ),
-//         ),
-//         body: const TabBarView(
-//           children: [
-//             Center(child: Text('ePrescription Content', style: TextStyle(fontSize: 18))),
-//             Center(child: Text('Lab Test Content', style: TextStyle(fontSize: 18))),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 
 

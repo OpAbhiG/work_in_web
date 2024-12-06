@@ -94,7 +94,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
           throw Exception('Invalid data format received from the server');
         }
       } else if (response.statusCode == 401) {
-        // await ApiServices().logout(context);
+        await ApiServices().logout(context);
         throw Exception('Authentication failed. Please log in again.');
       } else {
         throw Exception('Failed to load doctors. Status code: ${response.statusCode}');
@@ -231,7 +231,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                                 );
                               },
 
-                              child: const Text('View Profile'),
+                              child: const Text('View Profile',style: TextStyle(fontSize: 10),),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -240,7 +240,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                               onPressed: () => Navigator.of(context).push(
                                 MaterialPageRoute(builder: (context) => const AppointmentBookingScreen()),
                               ),
-                              child: const Text('Appointment'),
+                              child: const Text(' Book Appointment',style: TextStyle(fontSize: 10),),
                             ),
                           ),
                         ],

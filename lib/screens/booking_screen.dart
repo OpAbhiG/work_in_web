@@ -10,7 +10,9 @@ import 'doctor_nav_screen.dart';
 import 'profile_screen.dart';
 //patient not create
 class AppointmentBookingScreen extends StatefulWidget {
-  const AppointmentBookingScreen({super.key});
+  const AppointmentBookingScreen({super.key,
+
+  });
 
   @override
   _AppointmentBookingScreenState createState() => _AppointmentBookingScreenState();
@@ -174,37 +176,84 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     }
   }
 
+  // Future<void> bookAppointment() async {
+  //   try {
+  //     String? bearerToken = await getToken();
+  //
+  //     var request = http.MultipartRequest('POST', Uri.parse('$baseapi/patient/book_slot='));
+  //     print('Sending request to: .......$request');
+  //
+  //     request.headers['Authorization'] = 'Bearer $bearerToken';
+  //
+  //     request.fields['doctor_id'] = selectedDoctor.toString();
+  //     request.fields['date'] = DateFormat('yyyy-MM-dd').format(selectedDate);
+  //     request.fields['time'] = selectedTimeSlot!;
+  //
+  //     // var response = await request.send();
+  //     // print('Request fields: ${request.fields}');
+  //     // print('Response Status Code: ${response.statusCode}');
+  //     // print('Response Body: ${response}');
+  //
+  //
+  //     print('Request fields:******${request.fields}');
+  //     var streamedResponse = await request.send();
+  //     var response = await http.Response.fromStream(streamedResponse);
+  //     print('Response Status Code: -----${response.statusCode}');
+  //     print('Response Body: +++++${response.body}');
+  //
+  //
+  //
+  //
+  //     if (response.statusCode == 200) {
+  //       print('$response');
+  //       // Appointment booked successfully
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //           builder: (context) => const PaymentScreen(),
+  //         ),
+  //       );
+  //     } else {
+  //       // throw Exception('Failed to book appointment');
+  //     }
+  //   } catch (e) {
+  //     print('Error booking appointment: $e');
+  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to book appointment: ')));
+  //     // print('$e');
+  //   }
+  // }
+
+
+
   Future<void> bookAppointment() async {
+    setState(() => isLoading = true);
     try {
       String? bearerToken = await getToken();
+      if (bearerToken == null) {
+        throw Exception('Authentication token is missing');
+      }
 
-      var request = http.MultipartRequest('POST', Uri.parse('$baseapi/patient/book_slot'));
-      print('Sending request to: .......$request');
+      // Dynamically constructing the URL with query parameters
+      final url = Uri.parse(
+        '$baseapi/patient/book_slot?doctor_id=$selectedDoctor&date=${DateFormat('yyyy-MM-dd').format(selectedDate)}&start_time=$selectedTimeSlot',
+      );
 
-      request.headers['Authorization'] = 'Bearer $bearerToken';
+      print('Request URL: $url');
 
-      request.fields['doctor_id'] = selectedDoctor.toString();
-      request.fields['date'] = DateFormat('yyyy-MM-dd').format(selectedDate);
-      request.fields['time'] = selectedTimeSlot!;
+      // Sending GET request with parameters in the URL
+      final response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+        },
+      );
 
-      // var response = await request.send();
-      // print('Request fields: ${request.fields}');
-      // print('Response Status Code: ${response.statusCode}');
-      // print('Response Body: ${response}');
-
-
-      print('Request fields:******${request.fields}');
-      var streamedResponse = await request.send();
-      var response = await http.Response.fromStream(streamedResponse);
-      print('Response Status Code: -----${response.statusCode}');
-      print('Response Body: +++++${response.body}');
-
-
-
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
-        print('$response');
-        // Appointment booked successfully
+        print('Appointment booked successfully');
+        // Navigate to the PaymentScreen
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -212,12 +261,18 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
           ),
         );
       } else {
-        // throw Exception('Failed to book appointment');
+        print('Failed to book appointment: ${response.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to book appointment: ${response.body}')),
+        );
       }
     } catch (e) {
       print('Error booking appointment: $e');
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to book appointment: ')));
-      // print('$e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to book appointment: $e')),
+      );
+    } finally {
+      setState(() => isLoading = false);
     }
   }
 

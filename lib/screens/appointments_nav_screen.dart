@@ -114,7 +114,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    appointment.doctorName,
+                    appointment.fullName,
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4),
@@ -135,7 +135,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
                       //   ),
                       // ),
                       Text(
-                        DateFormat('MMM dd, yyyy, hh:mm a').format(appointment.dateTime),
+                        DateFormat('MMM dd, yyyy, hh:mm a').format(appointment.date),
                         style: const TextStyle(fontSize: 10, color: Colors.grey),
                       ),
                     ],

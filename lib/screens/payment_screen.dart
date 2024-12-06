@@ -7,9 +7,9 @@ import 'doctor_nav_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key,
-     Doctor? doctor,
-     TimeOfDay? time,
-     DateTime? date});
+    Doctor? doctor,
+    TimeOfDay? time,
+    DateTime? date});
 
   @override
   _PaymentScreenState createState() => _PaymentScreenState();

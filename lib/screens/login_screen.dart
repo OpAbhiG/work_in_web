@@ -72,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
           // Background Image
           SizedBox.expand(
             child: Image.asset(
-              'assets/@.png', // background img login 2nd screen
+              'assets/bkimg.jpg', // background img login 2nd screen
               fit: BoxFit.cover,
               width: double.infinity,
               height: double.infinity,

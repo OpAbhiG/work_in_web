@@ -1,4 +1,4 @@
-import 'dart:convert';
+// import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
@@ -15,7 +15,7 @@ class EditProfileScreen extends StatefulWidget {
     required this.email,
     required this.aadhar_no,
     required this.number,
-    required this.dob,
+    required this.dob, required String gender,
   }) : super(key: key);
 
   @override
@@ -117,66 +117,146 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Profile'),
+        title: const Text('Edit Profile', style: TextStyle(color: Colors.white, fontSize: 18)),
         backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                controller: fnameController,
-                decoration: const InputDecoration(labelText: 'First Name'),
-                validator: (value) => value!.isEmpty ? 'First name is required' : null,
-              ),
-              TextFormField(
-                controller: lnameController,
-                decoration: const InputDecoration(labelText: 'Last Name'),
-                validator: (value) => value!.isEmpty ? 'Last name is required' : null,
-              ),
-              TextFormField(
-                controller: emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) => value!.isEmpty ? 'Email is required' : null,
-              ),
-              TextFormField(
-                controller: aadharController,
-                decoration: const InputDecoration(labelText: 'Aadhaar Number'),
-              ),
-              TextFormField(
-                controller: numberController,
-                decoration: const InputDecoration(labelText: 'Mobile Number'),
-                keyboardType: TextInputType.phone,
-              ),
-              TextFormField(
-                controller: dobController,
-                decoration: const InputDecoration(labelText: 'Date of Birth'),
-                keyboardType: TextInputType.datetime,
-              ),
-              DropdownButtonFormField<String>(
-                value: selectedGender,
-                items: const [
-                  DropdownMenuItem(value: 'Male', child: Text('Male')),
-                  DropdownMenuItem(value: 'Female', child: Text('Female')),
-                ],
-                onChanged: (value) => setState(() => selectedGender = value),
-                decoration: const InputDecoration(labelText: 'Gender'),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: updateProfile,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
+        child: SingleChildScrollView(  // To handle keyboard appearance on smaller screens
+          child: Card(
+            elevation: 8,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildTextField(fnameController, 'First Name', (value) => value!.isEmpty ? 'First name is required' : null),
+                    _buildTextField(lnameController, 'Last Name', (value) => value!.isEmpty ? 'Last name is required' : null),
+                    _buildTextField(emailController, 'Email', (value) => value!.isEmpty ? 'Email is required' : null, keyboardType: TextInputType.emailAddress),
+                    _buildTextField(aadharController, 'Aadhaar Number', _validateAadhar, keyboardType: TextInputType.number),
+                    _buildTextField(numberController, 'Mobile Number',_validateMobile, keyboardType: TextInputType.number),
+                    _buildTextField(dobController, 'Date of Birth', null, keyboardType: TextInputType.datetime),
+                    _buildDropdown(),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: updateProfile,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                          backgroundColor: Theme.of(context).primaryColor,
+                        ),
+                        child: const Text(
+                          'Save Changes',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                child: const Text('Save Changes'),
               ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
+
+  Widget _buildTextField(TextEditingController controller, String label, String? Function(String?)? validator, {TextInputType keyboardType = TextInputType.text}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.grey), // Gray border
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.blue), // Gray border when enabled
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.grey), // Gray border when focused
+          ),
+        ),
+        validator: validator,
+        keyboardType: keyboardType,
+      ),
+    );
+  }
+  // Widget _buildDropdown() {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 8.0),
+  //     child: DropdownButtonFormField<String>(
+  //       value: selectedGender,
+  //       items: const [
+  //         DropdownMenuItem(value: 'Male', child: Text('Male')),
+  //         DropdownMenuItem(value: 'Female', child: Text('Female')),
+  //       ],
+  //       onChanged: (value) => setState(() => selectedGender = value),
+  //       decoration: InputDecoration(
+  //         labelText: 'Gender',
+  //         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+  //
+  //       ),
+  //     ),
+  //   );
+  // }
+  Widget _buildDropdown() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: DropdownButtonFormField<String>(
+        value: selectedGender,
+        items: const [
+          DropdownMenuItem(value: 'Male', child: Text('Male')),
+          DropdownMenuItem(value: 'Female', child: Text('Female')),
+        ],
+        onChanged: (value) => setState(() => selectedGender = value),
+        decoration: InputDecoration(
+          labelText: 'Gender',
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.grey), // Gray border
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.blue), // Gray border when enabled
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.green), // Gray border when focused
+          ),
+        ),
+        // validator: validator,
+        // keyboardType: keyboardType,
+      ),
+    );
+  }
+  String? _validateAadhar(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Aadhaar number is required';
+    }
+    if (value.length != 12) {
+      return 'Aadhaar number must be 12 digits';
+    }
+    return null;
+  }
+
+  String? _validateMobile(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Mobile number is required';
+    }
+    if (value.length != 10) {
+      return 'Mobile number must be 10 digits';
+    }
+    return null;
+  }
+
 }

@@ -4,6 +4,7 @@ import 'package:untitled10/screens/booking_screen.dart';
 import 'package:untitled10/screens/language_clinic_selection_screen.dart';
 import 'package:untitled10/screens/login_screen.dart';
 import 'package:untitled10/screens/main_screen.dart';
+import 'package:untitled10/screens/splash_screen.dart';
 
 
 class BharatTeleClinicApp extends StatefulWidget {
@@ -29,11 +30,10 @@ class _BharatTeleClinicAppState extends State<BharatTeleClinicApp> {
         isLogined = false;
       }
   }
-
   @override
   void initState() {
     setState(()  {
-    verifyToken();    });
+    verifyToken();});
     // TODO: implement initState
     super.initState();
   }
@@ -49,17 +49,12 @@ class _BharatTeleClinicAppState extends State<BharatTeleClinicApp> {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: LoginScreen()
-    //   isLogined == null
-    //       ?
-    //   Center(child: Container(color: Colors.white, // Set the background color to white
-    //       padding: const EdgeInsets.all(16), // Add some padding if needed
-    //       child: const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blue)),
-    //     ),
-    //   )
-    //       : isLogined == false
-    //           ? const LoginScreen()
-    //           : const MainScreen(),
+      home: isLogined == null
+          ?
+          const SplashScreen(user:true)
+          : isLogined == false
+              ? const LoginScreen()
+              : const MainScreen(),
     );
   }
 }

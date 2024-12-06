@@ -109,10 +109,9 @@ class MainScreenState extends State<MainScreen> {
     );
   }
 
-
   Future<void> _bookAppointment(doctor, DateTime dateTime) async {
     setState(() {
-      appointments.add(Appointment(doctorName: doctor.name, dateTime: dateTime,));
+      appointments.add(Appointment(date: dateTime, fullName: '',));
     });
   }
   void _cancelAppointment(Appointment appointment) {

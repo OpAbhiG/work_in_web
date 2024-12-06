@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../DOCTOR_SCREEN/doctor_model.dart';
+// import '../DOCTOR_SCREEN/doctor_model.dart';
 // import '../models/doctor.dart';
 import 'booking_screen.dart';
 import 'doctor_nav_screen.dart';
@@ -19,7 +19,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.doctor.fullName),
+        title: Text('Doctor Profile'),
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
       ),
@@ -67,20 +67,16 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
             //   widget.doctor.about,
             //   style: const TextStyle(fontSize: 16),
             // ),
-
-
             Center(
-
             child: Expanded(
                 child: ElevatedButton(
                   onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => const AppointmentBookingScreen()),
                   ),
-                  child: const Text('Appointment'),
+                  child: const Text('Book an Appointment'),
                 ),
               ),
             ),
-
           ],
         ),
       ),
