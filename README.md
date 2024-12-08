@@ -4,8 +4,6 @@
 
 This is a Flutter-based app for booking doctor appointments, including features for patients and doctors. The app allows users to register, log in, manage appointments, and more.
 
----
-
 ## Project File Structure
 
 The following flowchart explains the structure of the project:
