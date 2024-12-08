@@ -152,30 +152,6 @@ This is a **Doctor Appointment Booking App** developed using **Flutter, React, F
    - Generates reports and analytics.
 ```
 
----
-
-## 🔧 How to Run the Project
-
-### 1. **Backend (Flask)**
-```bash
-cd backend
-python app.py
-```
-
-### 2. **Mobile Frontend (Flutter)**
-```bash
-cd flutter-app
-flutter run
-```
-
-### 3. **Web Frontend (React)**
-```bash
-cd web-app
-npm start
-```
-
----
-
 ## 📋 Screenshots (Sample)
 
 ### Mobile App
