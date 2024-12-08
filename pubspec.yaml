@@ -47,6 +47,7 @@ dependencies:
   flutter_datetime_picker:
 #  path_provider_android:
   path_provider:
+  shared_preferences:
 
 
 

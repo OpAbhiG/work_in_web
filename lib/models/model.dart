@@ -1,3 +1,9 @@
+
+
+
+
+
+
 class LoginModel {
   String? message;
   UserData? userData;
@@ -44,10 +50,6 @@ class UserData {
     return data;
   }
 }
-
-
-
-
 class RegistrationModel {
   String? message;
 

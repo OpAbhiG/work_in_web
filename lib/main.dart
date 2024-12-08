@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:untitled10/screens/booking_screen.dart';
+import 'package:untitled10/screens/medical/medical1.dart';
 import 'package:untitled10/screens/medical/medical2.dart';
 import 'app.dart';
 void main() async{
@@ -11,7 +12,12 @@ void main() async{
   await Hive.openBox('doctorCache');
   // var dict=await getApplicationDocumentsDirectory();
   // Hive.init(dict.path);
+  await Hive.openBox<MedicalRecordsScreen>('MedicalRecordsScreen');
   await Hive.openBox<MedicalRecord>('medical_records');
+  // await Hive.openBox('appointmentsBox'); // Open Hive box for temporary storage
+  await Hive.openBox('appointments'); // Open a Hive box for temporary storage
+
+
   runApp(const BharatTeleClinicApp());
 }
 

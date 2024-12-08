@@ -10,7 +10,7 @@ import 'doctor_nav_screen.dart';
 import 'profile_screen.dart';
 //patient not create
 class AppointmentBookingScreen extends StatefulWidget {
-  const AppointmentBookingScreen({super.key,
+  const AppointmentBookingScreen({super.key, required List<Doctor> doctors, required Function(Doctor p1, DateTime p2) onBookAppointment,
 
   });
 
@@ -31,7 +31,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   String? selectedTimeSlot;
 
   final Map<int, String> specialties = {
-    1: 'Physician',
+    1: 'General Physician',
     2: 'Dentist',
     3: 'Child Specialist',
     4: 'Counselling Psychologist',
@@ -223,8 +223,6 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   //   }
   // }
 
-
-
   Future<void> bookAppointment() async {
     setState(() => isLoading = true);
     try {
@@ -338,7 +336,11 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     return DropdownButtonFormField<int>(
       decoration: InputDecoration(
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide: const BorderSide(color: Colors.grey), // Gray border
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       ),
@@ -346,7 +348,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       items: specialties.entries.map((entry) {
         return DropdownMenuItem<int>(
           value: entry.key,
-          child: Text(entry.value, style: const TextStyle(fontSize: 11)),
+          child: Text(entry.value, style: const TextStyle(fontSize: 10)),
         );
       }).toList(),
       onChanged: (value) async {
@@ -381,14 +383,18 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   }
 
   Widget _buildDoctorDropdown() {
-    return doctors.length == 0
+    return doctors.isEmpty
         ? const Text("No Doctors Found Please Select Other Specialty",
-      style: TextStyle(color: Colors.red),
+      style: TextStyle(color: Colors.red,fontSize: 10),
     )
         : DropdownButtonFormField<int>(
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide: const BorderSide(color: Colors.grey), // Gray border
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       ),
@@ -396,7 +402,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       items: doctors.map<DropdownMenuItem<int>>((doctor) {
         return DropdownMenuItem<int>(
           value: doctor['id'],
-          child: Text(doctor['full_name']),
+          child: Text(doctor['full_name'],style: const TextStyle(fontSize: 10),),
         );
       }).toList(),
       onChanged: (value) {

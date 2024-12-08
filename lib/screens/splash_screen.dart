@@ -7,8 +7,9 @@ import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   final bool user;
-
-  const SplashScreen({required this.user, Key? key}) : super(key: key);
+  const SplashScreen({
+    required this.user,
+    Key? key}) : super(key: key);
 
   @override
   _SplashScreenState createState() => _SplashScreenState();

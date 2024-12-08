@@ -1,151 +1,419 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-// import 'package:login_registration_screen/screens/main_screen.dart';
-import '../models/appointment.dart';
-import 'main_screen.dart';
-// import 'doctor_nav_screen.dart';
+import 'package:hive/hive.dart';
+import 'package:http/http.dart' as http;
 
+import '../APIServices/base_api.dart';
 
-class AppointmentsScreen extends StatefulWidget {
-  final List<Appointment> appointments;
-
-  const AppointmentsScreen({super.key, required this.appointments});
-
+class AppointmentScreen extends StatefulWidget {
   @override
-  _AppointmentsScreenState createState() => _AppointmentsScreenState();
+  _AppointmentScreenState createState() => _AppointmentScreenState();
 }
 
-class _AppointmentsScreenState extends State<AppointmentsScreen>
-    with SingleTickerProviderStateMixin {
+class _AppointmentScreenState extends State<AppointmentScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  Map<String, List<dynamic>> appointments = {
+    'today': [],
+    'upcoming': [],
+    'past': [],
+    'cancelled': [],
+  };
+  String? token;
+  final String baseUrl = "$baseapi/patient/list_appoint/";
+  bool isLoading = false; // To manage the loading state
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this); // Four tabs
+    _tabController = TabController(length: 4, vsync: this);
+    fetchAppointments('today'); // Fetch "today" appointments by default
+  }
+
+  Future<String?> getToken() async {
+    try {
+      var box = await Hive.openBox('userBox');
+      final token = box.get('authToken');
+      print('Token retrieved: $token');  // Debug: Check the value here
+      return token;
+    } catch (e) {
+      print('Error retrieving token: $e');
+      return null;
+    }
+  }
+  Future<void> someApiCall() async {
+    String? token = await getToken();
+    if (token == null) {
+      print('Token not available, please login.');
+      return;
+    }
+    var url = Uri.parse('$baseapi/user/get_profile');
+    var response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print('API call successful');
+    } else {
+      print('API call failed: ${response.body}');
+    }
+  }
+
+  Future<void> fetchAppointments(String section) async {
+    setState(() {
+      isLoading = true; // Show loading indicator
+    });
+
+    try {
+      String? bearerToken = await getToken();
+      final response = await http.post(
+        Uri.parse("$baseUrl$section"),
+        headers: {
+          'Authorization': 'Bearer $bearerToken',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+
+        }), // Add required parameters if needed
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        // Update the appointments list for the given section
+        setState(() {
+          appointments[section] = data['data'] ?? [];
+        });
+      } else {
+        print("Error fetching $section data: ${response.body}");
+      }
+    } catch (e) {
+      print("Error: $e");
+    } finally {
+      setState(() {
+        isLoading = false; // Hide loading indicator
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-    onPressed: () {
-      // Navigate to the AppointmentsScreen
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => MainScreen()),);
-    }
-
-
+        title: Text('My Appointments'),
+        bottom: TabBar(
+          controller: _tabController,
+          indicatorColor: Colors.orange,
+          onTap: (index) {
+            // Fetch data based on the selected tab
+            switch (index) {
+              case 0:
+                fetchAppointments('today');
+                break;
+              case 1:
+                fetchAppointments('upcoming');
+                break;
+              case 2:
+                fetchAppointments('past');
+                break;
+              case 3:
+                fetchAppointments('cancelled');
+                break;
+            }
+          },
+          tabs: [
+            Tab(text: 'Today'),
+            Tab(text: 'Upcoming'),
+            Tab(text: 'Past'),
+            Tab(text: 'Cancelled'),
+          ],
         ),
-        title: const Text(
-          'Appointments',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
       ),
-      body: Column(
+      body: TabBarView(
+        controller: _tabController,
         children: [
-          Container(
-            color: Theme.of(context).primaryColor, // Set your desired background color here
-            child: TabBar(
-              controller: _tabController,
-              tabs: const [
-                Tab(text: 'Today'),
-                Tab(text: 'Upcoming'),
-                Tab(text: 'Past'),
-                Tab(text: 'Cancel'),
-              ],
-              labelStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.white,
-              indicatorColor: Colors.orange,
-              indicatorSize: TabBarIndicatorSize.label,
-            ),
-          ),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                _buildAppointmentList(widget.appointments),
-                _buildAppointmentList(widget.appointments),
-                _buildAppointmentList(widget.appointments),
-                _buildAppointmentList(widget.appointments),
-              ],
-            ),
-          ),
+          buildAppointmentList('today'),
+          buildAppointmentList('upcoming'),
+          buildAppointmentList('past'),
+          buildAppointmentList('cancelled'),
         ],
       ),
     );
   }
 
+  Widget buildAppointmentList(String section) {
+    final List<dynamic> sectionAppointments = appointments[section] ?? [];
 
-  Widget _buildAppointmentList(List<Appointment> appointments) {
-    if (appointments.isEmpty) {
-      return const Center(child: Text('No Appointments Found'));
+    if (isLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
     }
+
+    if (sectionAppointments.isEmpty) {
+      return Center(
+        child: Text('No Appointments Found'),
+      );
+    }
+
     return ListView.builder(
-      itemCount: appointments.length,
+      padding: EdgeInsets.all(10.0),
+      itemCount: sectionAppointments.length,
       itemBuilder: (context, index) {
-        return _buildAppointmentCard(appointments[index]);
+        final appointment = sectionAppointments[index];
+        return AppointmentCard(appointment: appointment);
       },
     );
   }
+}
 
-  Widget _buildAppointmentCard(Appointment appointment) {
+class AppointmentCard extends StatefulWidget {
+  final Map<String, dynamic> appointment;
+
+  const AppointmentCard({required this.appointment});
+
+  @override
+  State<AppointmentCard> createState() => _AppointmentCardState();
+}
+
+class _AppointmentCardState extends State<AppointmentCard> {
+
+  @override
+  Widget build(BuildContext context) {
+    // return Card(
+    //   margin: EdgeInsets.symmetric(vertical: 10.0),
+    //   shape: RoundedRectangleBorder(
+    //     borderRadius: BorderRadius.circular(10.0),
+    //   ),
+    //   elevation: 4.0,
+    //   child: Padding(
+    //     padding: const EdgeInsets.all(10.0),
+    //     child: Row(
+    //       crossAxisAlignment: CrossAxisAlignment.start,
+    //       children: [
+    //         // Placeholder image (or doctor image)
+    //         ClipRRect(
+    //           borderRadius: BorderRadius.circular(10.0),
+    //           // child: Image.network(
+    //           //   "https://via.placeholder.com/15", // Replace with an actual image URL
+    //           //   height: 50.0,
+    //           //   width: 50.0,
+    //           //   fit: BoxFit.cover,
+    //           // ),
+    //         ),
+    //         SizedBox(width: 10.0),
+    //         // Appointment details
+    //         Expanded(
+    //           child: Column(
+    //             crossAxisAlignment: CrossAxisAlignment.start,
+    //             children: [
+    //               Text(
+    //                 widget.appointment['full_name'] ?? 'Unknown',
+    //                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+    //               ),
+    //               SizedBox(height: 5.0),
+    //               Text(
+    //                 'Speciality: ${widget.appointment['speciality'] ?? 'N/A'}',
+    //                 style: TextStyle(color: Colors.grey[600], fontSize: 12.0),
+    //               ),
+    //               SizedBox(height: 10.0),
+    //               Row(
+    //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                 children: [
+    //                   Column(
+    //                     crossAxisAlignment: CrossAxisAlignment.start,
+    //                     children: [
+    //                       Text(
+    //                         'Date',
+    //                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0),
+    //                       ),
+    //                       SizedBox(height: 5.0),
+    //                       Text(
+    //                         widget.appointment['date'] ?? 'N/A',
+    //                         style: TextStyle(color: Colors.grey[700], fontSize: 10.0),
+    //                       ),
+    //                     ],
+    //                   ),
+    //                   Column(
+    //                     crossAxisAlignment: CrossAxisAlignment.start,
+    //                     children: [
+    //                       Text(
+    //                         'Time',
+    //                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0),
+    //                       ),
+    //                       SizedBox(height: 5.0),
+    //                       Text(
+    //                         widget.appointment['start_time'] ?? 'N/A',
+    //                         style: TextStyle(color: Colors.grey[700], fontSize: 10.0),
+    //                       ),
+    //                     ],
+    //                   ),
+    //                 ],
+    //               ),
+    //             ],
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // );
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: EdgeInsets.symmetric(vertical: 10.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      elevation: 4.0,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
           children: [
-            // CircleAvatar(
-            //   radius: 28,
-            //   // backgroundImage: AssetImage(appointment.imagePath), // Accessing instance member
-            //
-            // ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    appointment.fullName,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 4),
-                  // Text(
-                  //   appointment.specialization,
-                  //   style: const TextStyle(fontSize: 14, color: Colors.grey),
+            // Top section with doctor details and video call button
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Doctor image placeholder (or actual doctor image)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  // child: Image.network(
+                  //   widget.appointment['image_url'] ??
+                  //       "https://via.placeholder.com/50", // Replace with actual image URL
+                  //   height: 50.0,
+                  //   width: 50.0,
+                  //   fit: BoxFit.cover,
                   // ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Image.network(
+          widget.appointment['image_url'] ??
+              "https://via.placeholder.com/50", // Replace with actual image URL
+          height: 50.0,
+          width: 50.0,
+          fit: BoxFit.cover,
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) {
+              return child; // Image is fully loaded
+            }
+            return Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+              ),
+              height: 50.0,
+              width: 50.0,
+              alignment: Alignment.center,
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                    (loadingProgress.expectedTotalBytes ?? 1)
+                    : null,
+              ),
+            );
+          },
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+
+              height: 50.0,
+              width: 50.0,
+
+              color: Colors.grey[300],
+              child: Icon(
+                Icons.person,
+                color: Colors.grey,
+              ),
+            );
+          },
+        ),
+      ),
+
+                SizedBox(width: 10.0),
+                // Appointment details
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Text(
-                      //   'Video Consultation',
-                      //   style: TextStyle(
-                      //     color: Colors.green[700],
-                      //     fontSize: 10,
-                      //     fontWeight: FontWeight.w500,
-                      //   ),
-                      // ),
                       Text(
-                        DateFormat('MMM dd, yyyy, hh:mm a').format(appointment.date),
-                        style: const TextStyle(fontSize: 10, color: Colors.grey),
+                        // widget.appointment['full_name'] ?? 'Unknown',
+                        'Dr. ${widget.appointment['full_name'] ?? 'Unknown'}',
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+                      ),
+                      SizedBox(height: 5.0),
+                      Text(
+                        'Speciality: ${widget.appointment['speciality'] ?? 'N/A'}',
+                        style: TextStyle(color: Colors.grey[600], fontSize: 12.0),
+                      ),
+                      SizedBox(height: 5.0),
+                      Text(
+                        'Appointment ID: ${widget.appointment['appointment_id'] ?? 'N/A'}',
+                        style: TextStyle(color: Colors.grey[600], fontSize: 12.0),
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+                // Video call button
+                IconButton(
+                  onPressed: () {
+                    // Handle video call button press
+                  },
+                  icon: Container(
+                    padding: const EdgeInsets.all(12), // Add padding to give space around the icon
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.green, // Set the background color to orange
+                    ),
+                    child: const Icon(
+                      size: 25,
+                      Icons.video_call,
+                      color: Colors.white, // Set the icon color to white
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            // Divider (barline design)
+            Divider(color: Colors.grey[300], thickness: 1, height: 20),
+            // Bottom section with appointment type, date, and time
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Appointment type
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Appointment Type',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0),
+                    ),
+                    SizedBox(height: 5.0),
+                    Text(
+                      // widget.appointment['appointment_type'] ?? 'N/A',
+                      'Video Consultation',
+                      style: TextStyle(color: Colors.green, fontSize: 10.0),
+                    ),
+                  ],
+                ),
+                // Date and Time
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      'Date & Time',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0),
+                    ),
+                    SizedBox(height: 5.0),
+                    Text(
+                      '${widget.appointment['date'] ?? 'N/A'}\t${widget.appointment['start_time'] ?? 'N/A'}',
+                      textAlign: TextAlign.right,
+                      style: TextStyle(color: Colors.grey[700], fontSize: 10.0),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
+
+
   }
 }

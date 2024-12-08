@@ -13,8 +13,7 @@ import 'treatment_screen.dart';
 
 class MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
-  List<Appointment> appointments = [];
-
+  // List<Appointment> appointments = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,10 +21,10 @@ class MainScreenState extends State<MainScreen> {
       body: IndexedStack(
         index: _currentIndex,
         children: [
-          DashboardScreen(
-            appointments: appointments,
-            onCancelAppointment: _cancelAppointment,
-            onBookAppointment: _bookAppointment, doctors: const [],
+          DashboardScreen(onBookAppointment: (Doctor , DateTime ) {  }, doctors: [],
+            // appointments: appointments,
+            // onCancelAppointment: _cancelAppointment,
+            // onBookAppointment: _bookAppointment, doctors: const [],
             // doctors: doctors,
           ),
           const DoctorListScreen(),
@@ -38,7 +37,7 @@ class MainScreenState extends State<MainScreen> {
                 MaterialPageRoute(builder: (context)=> const LoginScreen()),
             );
           },),
-          AppointmentsScreen(appointments: appointments),
+          AppointmentScreen(),
           const TreatmentScreen(),
         ],
       ),
@@ -48,7 +47,6 @@ class MainScreenState extends State<MainScreen> {
 
   Widget _buildBottomNavBar() {
     return Container(
-
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -65,7 +63,6 @@ class MainScreenState extends State<MainScreen> {
         onTap: (index) {
           setState(() {
             _currentIndex = index;
-
           });
         },
 
@@ -75,11 +72,11 @@ class MainScreenState extends State<MainScreen> {
         selectedItemColor: const Color(0xFF0165FC),
         unselectedItemColor: const Color.fromARGB(255, 75, 75, 75),
         // Customize the text size for selected and unselected labels
-        selectedLabelStyle: TextStyle(
+        selectedLabelStyle: const TextStyle(
           fontSize: 13,  // Adjust text size for selected item
           fontWeight: FontWeight.bold,  // Optional: Make it bold for selected item
         ),
-        unselectedLabelStyle: TextStyle(
+        unselectedLabelStyle: const TextStyle(
           fontSize: 10,  // Adjust text size for unselected items
         ),
 
@@ -103,22 +100,22 @@ class MainScreenState extends State<MainScreen> {
       height: 35, // Adjust the height of the image
       child:  Image.asset(
         assetPath,
-
         fit: BoxFit.contain, // Ensures the image fits well within the box
       ),
     );
   }
 
-  Future<void> _bookAppointment(doctor, DateTime dateTime) async {
-    setState(() {
-      appointments.add(Appointment(date: dateTime, fullName: '',));
-    });
-  }
-  void _cancelAppointment(Appointment appointment) {
-    setState(() {
-      appointments.remove(appointment);
-    });
-  }
+//   Future<void> _bookAppointment(doctor, DateTime dateTime) async {
+//     setState(() {
+//       appointments.add(Appointment(clinicName: '', date: '', fullName: '', slotId: 0, startTime: ''));
+//     });
+//   }
+//   void _cancelAppointment(Appointment appointment) {
+//     setState(() {
+//       appointments.remove(appointment);
+//     });
+//   }
+//
 }
 
 class MainScreen extends StatefulWidget {

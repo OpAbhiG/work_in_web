@@ -31,7 +31,6 @@ class _ProfileState extends State<Profile> {
     super.initState();
     fetchProfile();
   }
-
   // Save the token to Hive
   Future<void> saveToken(String token) async {
     var box = await Hive.openBox('userBox');
@@ -40,12 +39,10 @@ class _ProfileState extends State<Profile> {
   }
   Future<void> someApiCall() async {
     String? token = await getToken();
-
     if (token == null) {
       print('Token not available, please login.');
       return;
     }
-
     var url = Uri.parse('$baseapi/user/get_profile');
     var response = await http.get(
       url,
@@ -78,10 +75,9 @@ class _ProfileState extends State<Profile> {
     try {
 
       String? bearerToken = await getToken();
+
       // String? bearerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTczMjIwMTg0MiwianRpIjoiNDAyYzkyMDMtMTkwMS00MmMxLWEwZTAtZDRjZTlkYTBkNjYzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MjUyLCJuYmYiOjE3MzIyMDE4NDIsImNzcmYiOiJhYzFlNmRlMC05ZTZlLTQ1MjYtYmQ5MC1lZDc0ZjAwOTdlMDciLCJleHAiOjE3MzIyMDIxNDJ9.qQ7bWDTavmTP-ugPA9z7WNdMcPBIMY6rXluDa4zXKLk";
-
       // print("+++++++++ token   +++++++");
-
       // print(bearerToken);
 
       if (bearerToken == null) {

@@ -71,7 +71,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
             child: Expanded(
                 child: ElevatedButton(
                   onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const AppointmentBookingScreen()),
+                    MaterialPageRoute(builder: (context) => AppointmentBookingScreen(doctors: const [], onBookAppointment: (Doctor, DateTime ) {  },)),
                   ),
                   child: const Text('Book an Appointment'),
                 ),

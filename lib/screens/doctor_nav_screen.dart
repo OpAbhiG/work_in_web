@@ -60,13 +60,11 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
     super.initState();
     fetchDoctors();
   }
-
   Future<void> fetchDoctors() async {
     setState(() {
       isLoading = true;
       errorMessage = '';
     });
-
     try {
       var box = await Hive.openBox('userBox');
       String? token = box.get('authToken');
@@ -238,13 +236,14 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                           Expanded(
                             child: ElevatedButton(
                               onPressed: () => Navigator.of(context).push(
-                                MaterialPageRoute(builder: (context) => const AppointmentBookingScreen()),
+                                MaterialPageRoute(builder: (context) => AppointmentBookingScreen(doctors: const [], onBookAppointment: (Doctor p1, DateTime p2) {  },)),
                               ),
                               child: const Text(' Book Appointment',style: TextStyle(fontSize: 10),),
                             ),
                           ),
                         ],
-                      ),
+                            // onBookAppointment: (Doctor p1, DateTime p2) {  },
+                        ),
                     ],
                   ),
                 ),
