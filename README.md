@@ -4,14 +4,13 @@
 
 This is a Flutter-based app for booking doctor appointments, including features for patients and doctors. The app allows users to register, log in, manage appointments, and more.
 
-
-
 ---
 ## Project File Structure
 
 The following flowchart explains the structure of the project:
 
 ```plaintext
+
 [main.dart] 
    |
    └── [app.dart]                   // Application entry point and routes
@@ -83,12 +82,6 @@ The following flowchart explains the structure of the project:
 - Multi-language Support
 
 ---
-
-## Setup Instructions
-1. Clone this repository.
-2. Run `flutter pub get` to install dependencies.
-3. Use the `main.dart` file as the entry point to run the app.
-4. Ensure the API services are correctly configured in the `services/` folder.
 
 ---
 
