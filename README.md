@@ -12,58 +12,64 @@ This is a Flutter-based app for booking doctor appointments, including features 
 The following flowchart explains the structure of the project:
 
 ```plaintext
-main.dart
-  |
-  ├── app.dart                     // Application entry point and routes
-  |
-  ├── screens/
-  │   ├── authentication/          // User authentication screens
-  │   │   ├── login_screen.dart       // Login screen for users
-  │   │   └── registration_screen.dart // Registration screen for users
-  │   ├── profile/                 // User profile management screens
-  │   │   ├── profile_screen.dart     // User profile display
-  │   │   └── edit_profile_screen.dart // Edit user profile details
-  │   ├── appointments/            // Appointment-related screens
-  │   │   ├── appointments_nav_screen.dart // Appointment navigation screen
-  │   │   ├── book_appointment_dialog_status.dart // Appointment booking dialog
-  │   │   ├── booking_screen.dart    // Appointment booking screen
-  │   │   └── booking_confirmation_screen.dart // Booking confirmation screen
-  │   ├── medical/                 // Medical records and history
-  │   │   ├── medical_record_screen.dart // User medical records
-  │   │   └── medical_history_screen.dart // User medical history
-  │   ├── dashboard/               // Dashboard and language settings
-  │   │   ├── dashboard_screen.dart   // Main dashboard
-  │   │   └── language_clinic_selection_screen.dart // Language and clinic selection
-  │   ├── doctor/                  // Doctor-related screens
-  │   │   ├── doctor_detail_screen.dart  // Doctor's profile and details
-  │   │   ├── doctor_nav_screen.dart     // Doctor navigation screen
-  │   │   └── drugs_tests_screen.dart    // Drugs and lab tests section
-  │   ├── others/                  // Miscellaneous screens
-  │       ├── splash_screen.dart      // Splash screen at app launch
-  │       ├── payment_screen.dart     // Payment integration screen
-  │       ├── video_call_screen.dart  // Video call consultation screen
-  │       └── confirmation_screen.dart // General confirmation screen
-  |
-  ├── widgets/                     // Reusable UI components
-  │   ├── custom_button.dart          // Custom button widget
-  │   └── custom_text_field.dart      // Custom text field widget
-  |
-  ├── models/                      // Data models for the app
-  │   ├── user_model.dart             // User data structure
-  │   └── appointment_model.dart      // Appointment data structure
-  |
-  ├── services/                    // API and service integrations
-  │   ├── api_service.dart           // API base and endpoints
-  │   └── auth_service.dart          // Authentication service
-  |
-  ├── utils/                       // Utilities and constants
-  │   ├── constants.dart             // App-wide constants
-  │   ├── app_theme.dart             // Theme configurations
-  │   └── helpers.dart               // Helper functions
-  |
-  └── providers/ (Optional)        // State management files
-      ├── auth_provider.dart         // Authentication state management
-      └── appointment_provider.dart  // Appointment state management
+[main.dart] 
+   |
+   └── [app.dart]                   // Application entry point and routes
+        |
+        └── [screens/]              // Folder containing screen files
+             ├── [authentication/]  
+             │     ├── login_screen.dart          // Login screen for users
+             │     └── registration_screen.dart   // Registration screen for users
+             │
+             ├── [profile/]                      
+             │     ├── profile_screen.dart        // User profile display screen
+             │     └── edit_profile_screen.dart   // Edit user profile details
+             │
+             ├── [appointments/]                 
+             │     ├── appointments_nav_screen.dart      // Navigation for appointments
+             │     ├── book_appointment_dialog_status.dart // Appointment booking dialog
+             │     ├── booking_screen.dart               // Appointment booking screen
+             │     └── booking_confirmation_screen.dart  // Booking confirmation screen
+             │
+             ├── [medical/]                     
+             │     ├── medical_record_screen.dart  // Medical records display
+             │     └── medical_history_screen.dart // Medical history screen
+             │
+             ├── [dashboard/]                 
+             │     ├── dashboard_screen.dart             // Main dashboard
+             │     └── language_clinic_selection_screen.dart // Language and clinic selection
+             │
+             ├── [doctor/]                     
+             │     ├── doctor_detail_screen.dart   // Doctor's profile and details
+             │     ├── doctor_nav_screen.dart      // Navigation for doctor-related screens
+             │     └── drugs_tests_screen.dart     // Drugs and lab test information
+             │
+             ├── [others/]                        
+                   ├── splash_screen.dart          // Splash screen at app startup
+                   ├── payment_screen.dart         // Payment screen for appointments
+                   ├── video_call_screen.dart      // Video consultation screen
+                   └── confirmation_screen.dart    // General confirmation screen
+
+        ├── [widgets/]                    
+        │     ├── custom_button.dart            // Reusable custom button widget
+        │     └── custom_text_field.dart        // Reusable custom text field widget
+
+        ├── [models/]                    
+        │     ├── user_model.dart              // Data model for user information
+        │     └── appointment_model.dart       // Data model for appointments
+
+        ├── [services/]                  
+        │     ├── api_service.dart            // API base and endpoint integrations
+        │     └── auth_service.dart           // Authentication-related services
+
+        ├── [utils/]                    
+        │     ├── constants.dart              // App-wide constants
+        │     ├── app_theme.dart              // Theme configurations
+        │     └── helpers.dart                // Utility/helper functions
+
+        ├── [providers/] (Optional)            
+              ├── auth_provider.dart           // State management for authentication
+              └── appointment_provider.dart    // State management for appointments
 
 ---
 
