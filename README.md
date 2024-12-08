@@ -4,9 +4,9 @@
 
 This is a Flutter-based app for booking doctor appointments, including features for patients and doctors. The app allows users to register, log in, manage appointments, and more.
 
----
-![flowchartBharatApp.webp](..%2F..%2F..%2FBharatTeliClinicMaterial%2FBharatTeleClinicLogo%2FflowchartBharatApp.webp)
 
+
+---
 ## Project File Structure
 
 The following flowchart explains the structure of the project:
