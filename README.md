@@ -5,6 +5,7 @@
 This is a Flutter-based app for booking doctor appointments, including features for patients and doctors. The app allows users to register, log in, manage appointments, and more.
 
 ---
+
 ## Project File Structure
 
 The following flowchart explains the structure of the project:
@@ -81,12 +82,11 @@ The following flowchart explains the structure of the project:
 - Video Call Consultations
 - Multi-language Support
 
----
-
----
 
 ## Flowchart
+
 ```plaintext
+
 [main.dart]
     |
     --> [app.dart]
@@ -126,9 +126,11 @@ The following flowchart explains the structure of the project:
                    ├── video_call_screen.dart
                    └── confirmation_screen.dart
 
-
+---
 
 The complete system architecture for your Doctor Appointment Booking System:
+
+```plaintext
 
 [System Overview]
    |
@@ -190,6 +192,8 @@ The complete system architecture for your Doctor Appointment Booking System:
          ├── Web (React ↔ Flask API ↔ PostgreSQL)
          ├── Shared APIs for all platforms (Authentication, Appointments, Payments)
          └── Real-time Communication (Video/Chat) using WebRTC or Socket.io
+
+---
 
 # Explanation
 
