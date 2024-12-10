@@ -36,7 +36,7 @@ class Doctor {
     return Doctor(
       id: json['id'],
       fullName: json['full_name'],
-      specialty: json['specialty'] ?? 'General',
+      specialty: json['specialty'] ?? '',
       experience: json['experience'] ?? 0,
       consultationFee: json['consultation_fee'] ?? 0,
     );

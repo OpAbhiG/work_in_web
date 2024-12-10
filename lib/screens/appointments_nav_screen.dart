@@ -4,8 +4,11 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 import '../APIServices/base_api.dart';
+import 'AppointmentDetailScreen.dart';
 
 class AppointmentScreen extends StatefulWidget {
+  final bool isFromDashboard;
+  const AppointmentScreen({this.isFromDashboard = false, Key? key}) : super(key: key);
   @override
   _AppointmentScreenState createState() => _AppointmentScreenState();
 }
@@ -16,7 +19,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
     'today': [],
     'upcoming': [],
     'past': [],
-    'cancelled': [],
+    'canceled': [],
   };
   String? token;
   final String baseUrl = "$baseapi/patient/list_appoint/";
@@ -52,8 +55,13 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
+
       },
     );
+
+    print("Response Status Code: ------: ${response.statusCode}");
+    print("Response Body: --------: ${response.body}");
+
 
     if (response.statusCode == 200) {
       print('API call successful');
@@ -69,15 +77,15 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
 
     try {
       String? bearerToken = await getToken();
-      final response = await http.post(
+      final response = await http.get(
         Uri.parse("$baseUrl$section"),
         headers: {
           'Authorization': 'Bearer $bearerToken',
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({
-
-        }), // Add required parameters if needed
+        // body: jsonEncode({
+        //
+        // }), // Add required parameters if needed
       );
 
       if (response.statusCode == 200) {
@@ -103,10 +111,21 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Appointments'),
+        title: Text('My Appointments',style: TextStyle(
+          fontSize: 18, // Adjust font size
+          fontWeight: FontWeight.bold, // Make text bold
+          // fontFamily: 'Schyler', // Optional: Set a custom font family if you have one
+        ),
+
+        ),
+
         bottom: TabBar(
+
           controller: _tabController,
           indicatorColor: Colors.orange,
+
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
           onTap: (index) {
             // Fetch data based on the selected tab
             switch (index) {
@@ -120,7 +139,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
                 fetchAppointments('past');
                 break;
               case 3:
-                fetchAppointments('cancelled');
+                fetchAppointments('canceled');
                 break;
             }
           },
@@ -128,17 +147,21 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
             Tab(text: 'Today'),
             Tab(text: 'Upcoming'),
             Tab(text: 'Past'),
-            Tab(text: 'Cancelled'),
+            Tab(text: 'canceled'),
           ],
         ),
+        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Colors.white,
       ),
       body: TabBarView(
+
         controller: _tabController,
         children: [
+
           buildAppointmentList('today'),
           buildAppointmentList('upcoming'),
           buildAppointmentList('past'),
-          buildAppointmentList('cancelled'),
+          buildAppointmentList('canceled'),
         ],
       ),
     );
@@ -149,7 +172,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
 
     if (isLoading) {
       return Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(color: Colors.blue,),
       );
     }
 
@@ -173,94 +196,113 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
 class AppointmentCard extends StatefulWidget {
   final Map<String, dynamic> appointment;
 
-  const AppointmentCard({required this.appointment});
+  // const AppointmentScreen({, Key? key}) : super(key: key);
+
+  const AppointmentCard({required this.appointment,});
 
   @override
   State<AppointmentCard> createState() => _AppointmentCardState();
 }
 
+final Map<int, String> specialties = {
+  1: 'General Physician',
+  2: 'Dentist',
+  3: 'Child Specialist',
+  4: 'Counselling Psychologist',
+};
+
 class _AppointmentCardState extends State<AppointmentCard> {
 
+  // return Card(
+  //   margin: EdgeInsets.symmetric(vertical: 10.0),
+  //   shape: RoundedRectangleBorder(
+  //     borderRadius: BorderRadius.circular(10.0),
+  //   ),
+  //   elevation: 4.0,
+  //   child: Padding(
+  //     padding: const EdgeInsets.all(10.0),
+  //     child: Row(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         // Placeholder image (or doctor image)
+  //         ClipRRect(
+  //           borderRadius: BorderRadius.circular(10.0),
+  //           // child: Image.network(
+  //           //   "https://via.placeholder.com/15", // Replace with an actual image URL
+  //           //   height: 50.0,
+  //           //   width: 50.0,
+  //           //   fit: BoxFit.cover,
+  //           // ),
+  //         ),
+  //         SizedBox(width: 10.0),
+  //         // Appointment details
+  //         Expanded(
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Text(
+  //                 widget.appointment['full_name'] ?? 'Unknown',
+  //                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+  //               ),
+  //               SizedBox(height: 5.0),
+  //               Text(
+  //                 'Speciality: ${widget.appointment['speciality'] ?? 'N/A'}',
+  //                 style: TextStyle(color: Colors.grey[600], fontSize: 12.0),
+  //               ),
+  //               SizedBox(height: 10.0),
+  //               Row(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                 children: [
+  //                   Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text(
+  //                         'Date',
+  //                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0),
+  //                       ),
+  //                       SizedBox(height: 5.0),
+  //                       Text(
+  //                         widget.appointment['date'] ?? 'N/A',
+  //                         style: TextStyle(color: Colors.grey[700], fontSize: 10.0),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                   Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text(
+  //                         'Time',
+  //                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0),
+  //                       ),
+  //                       SizedBox(height: 5.0),
+  //                       Text(
+  //                         widget.appointment['start_time'] ?? 'N/A',
+  //                         style: TextStyle(color: Colors.grey[700], fontSize: 10.0),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   ),
+  // );
   @override
   Widget build(BuildContext context) {
-    // return Card(
-    //   margin: EdgeInsets.symmetric(vertical: 10.0),
-    //   shape: RoundedRectangleBorder(
-    //     borderRadius: BorderRadius.circular(10.0),
-    //   ),
-    //   elevation: 4.0,
-    //   child: Padding(
-    //     padding: const EdgeInsets.all(10.0),
-    //     child: Row(
-    //       crossAxisAlignment: CrossAxisAlignment.start,
-    //       children: [
-    //         // Placeholder image (or doctor image)
-    //         ClipRRect(
-    //           borderRadius: BorderRadius.circular(10.0),
-    //           // child: Image.network(
-    //           //   "https://via.placeholder.com/15", // Replace with an actual image URL
-    //           //   height: 50.0,
-    //           //   width: 50.0,
-    //           //   fit: BoxFit.cover,
-    //           // ),
-    //         ),
-    //         SizedBox(width: 10.0),
-    //         // Appointment details
-    //         Expanded(
-    //           child: Column(
-    //             crossAxisAlignment: CrossAxisAlignment.start,
-    //             children: [
-    //               Text(
-    //                 widget.appointment['full_name'] ?? 'Unknown',
-    //                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-    //               ),
-    //               SizedBox(height: 5.0),
-    //               Text(
-    //                 'Speciality: ${widget.appointment['speciality'] ?? 'N/A'}',
-    //                 style: TextStyle(color: Colors.grey[600], fontSize: 12.0),
-    //               ),
-    //               SizedBox(height: 10.0),
-    //               Row(
-    //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                 children: [
-    //                   Column(
-    //                     crossAxisAlignment: CrossAxisAlignment.start,
-    //                     children: [
-    //                       Text(
-    //                         'Date',
-    //                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0),
-    //                       ),
-    //                       SizedBox(height: 5.0),
-    //                       Text(
-    //                         widget.appointment['date'] ?? 'N/A',
-    //                         style: TextStyle(color: Colors.grey[700], fontSize: 10.0),
-    //                       ),
-    //                     ],
-    //                   ),
-    //                   Column(
-    //                     crossAxisAlignment: CrossAxisAlignment.start,
-    //                     children: [
-    //                       Text(
-    //                         'Time',
-    //                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0),
-    //                       ),
-    //                       SizedBox(height: 5.0),
-    //                       Text(
-    //                         widget.appointment['start_time'] ?? 'N/A',
-    //                         style: TextStyle(color: Colors.grey[700], fontSize: 10.0),
-    //                       ),
-    //                     ],
-    //                   ),
-    //                 ],
-    //               ),
-    //             ],
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // );
-    return Card(
+    return GestureDetector(
+        onTap: () {
+      // Navigate to the Appointment Detail Screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AppointmentDetailScreen(appointment: widget.appointment),
+        ),
+      );
+    },
+      child:  Card(
       margin: EdgeInsets.symmetric(vertical: 10.0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
@@ -284,7 +326,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
                   //   width: 50.0,
                   //   fit: BoxFit.cover,
                   // ),
-        child: Image.network(
+              child: Image.network(
           widget.appointment['image_url'] ??
               "https://via.placeholder.com/50", // Replace with actual image URL
           height: 50.0,
@@ -338,12 +380,13 @@ class _AppointmentCardState extends State<AppointmentCard> {
                       ),
                       SizedBox(height: 5.0),
                       Text(
-                        'Speciality: ${widget.appointment['speciality'] ?? 'N/A'}',
+                        // 'Speciality: ${widget.appointment['speciality'] ?? 'N/A'}',
+                        '${specialties[widget.appointment['speciality']] ?? 'N/A'}',
                         style: TextStyle(color: Colors.grey[600], fontSize: 12.0),
                       ),
                       SizedBox(height: 5.0),
                       Text(
-                        'Appointment ID: ${widget.appointment['appointment_id'] ?? 'N/A'}',
+                        'Appointment ID: ${widget.appointment['slot_id'] ?? 'N/A'}',
                         style: TextStyle(color: Colors.grey[600], fontSize: 12.0),
                       ),
                     ],
@@ -412,6 +455,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
           ],
         ),
       ),
+    ),
     );
 
 

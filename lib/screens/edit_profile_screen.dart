@@ -6,7 +6,7 @@ import 'package:hive/hive.dart';
 import '../APIServices/base_api.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  final String fname, lname, email, aadhar_no, number, dob;
+  final String fname, lname, email, aadhar_no, number, dob,blood_group, gender;
 
   const EditProfileScreen({
     Key? key,
@@ -15,7 +15,11 @@ class EditProfileScreen extends StatefulWidget {
     required this.email,
     required this.aadhar_no,
     required this.number,
-    required this.dob, required String gender,
+    required this.dob,
+    // required String gender,
+    required this.blood_group,
+    required this.gender,
+
   }) : super(key: key);
 
   @override
@@ -31,6 +35,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late TextEditingController aadharController;
   late TextEditingController numberController;
   late TextEditingController dobController;
+  String? selectedBloodGroup;
+
 
   String? selectedGender;
 
@@ -43,6 +49,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     aadharController = TextEditingController(text: widget.aadhar_no);
     numberController = TextEditingController(text: widget.number);
     dobController = TextEditingController(text: widget.dob);
+
   }
 
   Future<String?> getToken() async {
@@ -80,6 +87,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           'gender': selectedGender ?? '',
           'number': numberController.text,
           'dob': dobController.text,
+          'blood_group': selectedBloodGroup ?? '',
         },
       );
 
@@ -113,6 +121,44 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.dispose();
   }
 
+
+
+  Widget _buildBloodGroupDropdown() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: DropdownButtonFormField<String>(
+        value: selectedBloodGroup,
+        items: const [
+          DropdownMenuItem(value: 'A+', child: Text('A+')),
+          DropdownMenuItem(value: 'A-', child: Text('A-')),
+          DropdownMenuItem(value: 'B+', child: Text('B+')),
+          DropdownMenuItem(value: 'B-', child: Text('B-')),
+          DropdownMenuItem(value: 'O+', child: Text('O+')),
+          DropdownMenuItem(value: 'O-', child: Text('O-')),
+          DropdownMenuItem(value: 'AB+', child: Text('AB+')),
+          DropdownMenuItem(value: 'AB-', child: Text('AB-')),
+        ],
+        onChanged: (value) => setState(() => selectedBloodGroup = value),
+        decoration: InputDecoration(
+          labelText: 'Blood Group',
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.grey),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.blue),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.green),
+          ),
+        ),
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,6 +187,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     _buildTextField(numberController, 'Mobile Number',_validateMobile, keyboardType: TextInputType.number),
                     _buildTextField(dobController, 'Date of Birth', null, keyboardType: TextInputType.datetime),
                     _buildDropdown(),
+                    _buildBloodGroupDropdown(),
                     const SizedBox(height: 20),
                     Center(
                       child: ElevatedButton(
@@ -191,24 +238,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
     );
   }
-  // Widget _buildDropdown() {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 8.0),
-  //     child: DropdownButtonFormField<String>(
-  //       value: selectedGender,
-  //       items: const [
-  //         DropdownMenuItem(value: 'Male', child: Text('Male')),
-  //         DropdownMenuItem(value: 'Female', child: Text('Female')),
-  //       ],
-  //       onChanged: (value) => setState(() => selectedGender = value),
-  //       decoration: InputDecoration(
-  //         labelText: 'Gender',
-  //         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-  //
-  //       ),
-  //     ),
-  //   );
-  // }
   Widget _buildDropdown() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 // import 'package:login_registration_screen/models/doctor.dart';
-
 // import '../models/doctor.dart';
 import 'booking_confirmation_screen.dart';
 import 'doctor_nav_screen.dart';
@@ -14,10 +13,8 @@ class PaymentScreen extends StatefulWidget {
   @override
   _PaymentScreenState createState() => _PaymentScreenState();
 }
-
 class _PaymentScreenState extends State<PaymentScreen> {
   bool isCashSelected = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,7 +86,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
             // Spacer(),
 
             SizedBox(height: 80),
-
             Row(
               children: [
                 Expanded(

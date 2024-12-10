@@ -23,12 +23,11 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   int currentStep = 0;
   bool isLoading = true;
   String? selectedSpecialty;
-  int? selectedDoctor;
-
   bool isVideoConsultation = true;
 
   DateTime selectedDate = DateTime.now();
   String? selectedTimeSlot;
+  int? selectedDoctor;
 
   final Map<int, String> specialties = {
     1: 'General Physician',
@@ -231,23 +230,30 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
         throw Exception('Authentication token is missing');
       }
 
+      // Creating the JSON payload
+
       // Dynamically constructing the URL with query parameters
-      final url = Uri.parse(
-        '$baseapi/patient/book_slot?doctor_id=$selectedDoctor&date=${DateFormat('yyyy-MM-dd').format(selectedDate)}&start_time=$selectedTimeSlot',
-      );
+      final url = Uri.parse('$baseapi/patient/book_slot');
 
       print('Request URL: $url');
+      print('$baseapi/patient/book_slot?doctor_id=$selectedDoctor&date=${DateFormat('yyyy-MM-dd').format(selectedDate)}&start_time=$selectedTimeSlot');
 
       // Sending GET request with parameters in the URL
       final response = await http.post(
         url,
+
         headers: {
           'Authorization': 'Bearer $bearerToken',
+          'Content-Type': 'application/x-www-form-urlencoded', // Form data content type
         },
+       body: {
+         "doctor_id": selectedDoctor.toString(),
+         "date": DateFormat('yyyy-MM-dd').format(selectedDate),
+         "start_time": selectedTimeSlot,
+       },
       );
 
-      print('Response Status Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
+      print('Request URL: $url');
 
       if (response.statusCode == 200) {
         print('Appointment booked successfully');
@@ -383,7 +389,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   }
 
   Widget _buildDoctorDropdown() {
-    return doctors.isEmpty
+    return doctors.length  == 0
         ? const Text("No Doctors Found Please Select Other Specialty",
       style: TextStyle(color: Colors.red,fontSize: 10),
     )
@@ -597,18 +603,5 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       ],
     );
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
+  }
 

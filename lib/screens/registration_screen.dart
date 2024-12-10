@@ -36,6 +36,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -50,7 +51,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           ),
           SafeArea(
             child: SingleChildScrollView(
-              padding: EdgeInsets.all(screenWidth * 0.04),
+              padding: EdgeInsets.all(screenWidth * 0.05),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -63,13 +64,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   SizedBox(height: screenHeight * 0.01),
                   Image.asset(
                     'assets/btclogo.png',
-                    height: screenHeight * 0.07, // 8% of screen height
-                    width: screenHeight * 0.07, // 8% of screen height
+                    height: screenHeight * 0.08, // 8% of screen height
+                    width: screenHeight * 0.08, // 8% of screen height
                   ),
                   SizedBox(height: screenHeight * 0.03), // Adjust height as needed
                   // Blue container around the form and button
                   Container(
-                    padding: EdgeInsets.all(screenWidth * 0.04),
+                    padding: EdgeInsets.all(screenWidth * 0.05),
                     decoration: BoxDecoration(
                       color: Colors.indigo,
                       borderRadius: BorderRadius.circular(15), // Rounded corners
@@ -82,7 +83,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             decoration: const InputDecoration(
                               labelText: 'First Name',
                               labelStyle: TextStyle(color: Colors.white,fontSize: 12),
-
                               prefixIcon: Icon(Icons.person,color: Colors.white),
                             ),style: const TextStyle(color: Colors.white), // White text in the input field
                         ),
@@ -150,6 +150,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             labelText: 'Aadhaar Number',
                             labelStyle: TextStyle(color: Colors.white, fontSize: 12),
                             prefixIcon: Icon(Icons.credit_card, color: Colors.white),
+                            counterText: '', // This hides the character counter
 
                           ),
                           keyboardType: TextInputType.number,
@@ -169,10 +170,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         ),
 
 
-
-
                         SizedBox(height: screenHeight * 0.02),
-
                         TextFormField(
                           controller: number,
                           decoration: const InputDecoration(
@@ -350,7 +348,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           dob.text ,
           aadhar_no.text,
           number.text
-
       );
 
       ScaffoldMessenger.of(context).showSnackBar(

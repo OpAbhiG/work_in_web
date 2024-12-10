@@ -100,8 +100,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       //     }, padding: EdgeInsets.zero,
                       //   ),
                       // ),
-
-
                       // const SizedBox(height: 30),
                       // Logo centered
                       Center(
@@ -137,8 +135,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontSize: 14
                             ),
                           ),
-
-
                         ),
                       ),
 

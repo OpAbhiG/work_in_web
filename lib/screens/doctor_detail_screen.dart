@@ -68,15 +68,34 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
             //   style: const TextStyle(fontSize: 16),
             // ),
             Center(
-            child: Expanded(
-                child: ElevatedButton(
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => AppointmentBookingScreen(doctors: const [], onBookAppointment: (Doctor, DateTime ) {  },)),
+              child: ElevatedButton.icon(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => AppointmentBookingScreen(
+                      doctors: const [],
+                      onBookAppointment: (Doctor p1, DateTime p2) {
+                      },
+                    ),
                   ),
-                  child: const Text('Book an Appointment'),
+                ),
+                icon: const Icon(
+                  Icons.calendar_today,
+                  color: Colors.white,
+                ),
+                label: const Text(
+                  'Book an Appointment',
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange, // Background color
+                  padding: const EdgeInsets.symmetric(vertical: 10), // Padding
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30), // Rounded corners
+                  ),
                 ),
               ),
             ),
+
           ],
         ),
       ),

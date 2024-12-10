@@ -18,7 +18,7 @@ class _ProfileState extends State<Profile> {
   String fname = '';
   String lname = '';
   String aadhar_no='';
-  // String blood_group='';
+  String blood_group = '';
   String email='';
   String gender='';
   String number='';
@@ -94,7 +94,7 @@ class _ProfileState extends State<Profile> {
         },
       );
 
-      print("================body============\n"+(response.body));
+      // print("================body============\n"+(response.body));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -107,6 +107,8 @@ class _ProfileState extends State<Profile> {
           number = data['data']['number'] ?? '';
           dob = data['data']['dob'] ?? '';
           id = data['data']['id'].toString(); // Convert id to String
+          blood_group=data['data']['blood_group']?? '';
+
           isLoading = false;
         });
 
@@ -804,7 +806,11 @@ class _ProfileState extends State<Profile> {
                                     aadhar_no: aadhar_no,
                                     number: number,
                                     dob: dob,
-                                    gender:gender
+                                    gender:gender,
+                                    blood_group: '',
+
+
+
                                   ),
                                 ),
                               );
@@ -895,6 +901,14 @@ class _ProfileState extends State<Profile> {
                               isEditable: false,
                               hasCalendarIcon: false,
                             ),
+                            // Add this inside your Column widget under the second Card
+                            _buildProfileDetail(
+                              label: 'Blood Group',
+                              value: '$blood_group',  // Display the blood group
+                              isEditable: false,
+                              hasCalendarIcon: false,
+                            ),
+
                           ],
                         ),
                       ),
