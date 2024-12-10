@@ -15,23 +15,39 @@ This is a **Doctor Appointment Booking App** developed using **Flutter, React, F
   ✅ Book & Manage Appointments  
   ✅ Payment Integration  
   ✅ Medical Records & History  
+<<<<<<< HEAD
   ✅ Video Consultation
+=======
+  ✅ Video Consultation  
+>>>>>>> 67c0ebdf7e0eebc08d75ec2e95c3c609017e53fc
 
 - **Doctor App**:  
   ✅ Manage Appointments  
   ✅ Specify Availability Slots  
   ✅ View Patient Details  
+<<<<<<< HEAD
   ✅ Chat & Video Call Consultations
+=======
+  ✅ Chat & Video Call Consultations  
+>>>>>>> 67c0ebdf7e0eebc08d75ec2e95c3c609017e53fc
 
 - **Admin Portal**:  
   ✅ Manage Users (Doctors, Patients)  
   ✅ Monitor Appointments & Payments  
+<<<<<<< HEAD
   ✅ Generate Reports
+=======
+  ✅ Generate Reports  
+>>>>>>> 67c0ebdf7e0eebc08d75ec2e95c3c609017e53fc
 
 - **Super Admin Portal**:  
   ✅ Manage Admins  
   ✅ View System Analytics  
+<<<<<<< HEAD
   ✅ Monitor Logs & Security
+=======
+  ✅ Monitor Logs & Security  
+>>>>>>> 67c0ebdf7e0eebc08d75ec2e95c3c609017e53fc
 
 ---
 
@@ -60,9 +76,15 @@ This is a **Doctor Appointment Booking App** developed using **Flutter, React, F
 
 ### **Frontend - React (Web App)**
 
+<<<<<<< HEAD
 - **Patient Portal**: Search Doctors, Book Appointments, View Profile
 - **Admin Portal**: Manage Users, Appointments, Generate Reports
 - **Super Admin Portal**: Manage Admins, View Analytics
+=======
+- **Patient Portal**: Search Doctors, Book Appointments, View Profile  
+- **Admin Portal**: Manage Users, Appointments, Generate Reports  
+- **Super Admin Portal**: Manage Admins, View Analytics  
+>>>>>>> 67c0ebdf7e0eebc08d75ec2e95c3c609017e53fc
 
 ### **Backend - Flask (Python)**
 
@@ -84,11 +106,19 @@ This is a **Doctor Appointment Booking App** developed using **Flutter, React, F
 ### **Database - PostgreSQL**
 
 - **Tables**:
+<<<<<<< HEAD
     - `Users`: Patients, Doctors, Admins, Super Admins
     - `Appointments`: Booking details, statuses
     - `MedicalRecords`: Prescriptions, reports
     - `Payments`: Payment history
     - `Logs`: Security logs for monitoring
+=======
+  - `Users`: Patients, Doctors, Admins, Super Admins  
+  - `Appointments`: Booking details, statuses  
+  - `MedicalRecords`: Prescriptions, reports  
+  - `Payments`: Payment history  
+  - `Logs`: Security logs for monitoring  
+>>>>>>> 67c0ebdf7e0eebc08d75ec2e95c3c609017e53fc
 
 ---
 
@@ -99,12 +129,21 @@ This is a **Doctor Appointment Booking App** developed using **Flutter, React, F
 - **React** (Web Apps - Patient, Admin, Super Admin)
 
 ### **Backend**
+<<<<<<< HEAD
 - **Flask (Python)** for API and logic
 - **PostgreSQL** as the database for structured data
 
 ### **Integration**
 - **WebRTC/Socket.io** for real-time communication (Chat/Video)
 - **REST APIs** for seamless data handling
+=======
+- **Flask (Python)** for API and logic  
+- **PostgreSQL** as the database for structured data  
+
+### **Integration**
+- **WebRTC/Socket.io** for real-time communication (Chat/Video)
+- **REST APIs** for seamless data handling  
+>>>>>>> 67c0ebdf7e0eebc08d75ec2e95c3c609017e53fc
 
 ---
 
@@ -155,6 +194,7 @@ This is a **Doctor Appointment Booking App** developed using **Flutter, React, F
 ## 📋 Screenshots (Sample)
 
 ### Mobile App
+<<<<<<< HEAD
 - Login & Registration
 - Doctor Search
 - Appointment Booking
@@ -162,10 +202,24 @@ This is a **Doctor Appointment Booking App** developed using **Flutter, React, F
 ### Web App
 - Admin Dashboard
 - Appointment Management
+=======
+- Login & Registration  
+- Doctor Search  
+- Appointment Booking  
+
+### Web App
+- Admin Dashboard  
+- Appointment Management  
+>>>>>>> 67c0ebdf7e0eebc08d75ec2e95c3c609017e53fc
 
 ---
 
 ## 📈 Future Enhancements
+<<<<<<< HEAD
 - Push Notifications for Appointments
 - AI-based Doctor Recommendations
+=======
+- Push Notifications for Appointments  
+- AI-based Doctor Recommendations  
+>>>>>>> 67c0ebdf7e0eebc08d75ec2e95c3c609017e53fc
 - Analytics Dashboard for Admins  
