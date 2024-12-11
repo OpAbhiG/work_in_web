@@ -197,7 +197,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: Padding(
-        padding: const EdgeInsets.all(5.0),
+        padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
              Row(
@@ -222,15 +222,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 15),
+            Divider(color: Colors.grey[300], thickness: 1, height: 20),
+          // const VerticalDivider(color: Colors.grey,thickness: 1,width: 20,),
+
+          const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildInfoItem('Blood Group', '$blood_group'),
+                const VerticalDivider(
+                  color: Colors.grey,
+                  thickness: 1,
+                  width: 20,
+                  indent: 5,
+                  endIndent: 5,
+                ),
                 _buildInfoItem('Weight', '-'),
+                const VerticalDivider(
+                  color: Colors.grey,
+                  thickness: 1,
+                  width: 20,
+                  indent: 5,
+                  endIndent: 5,
+                ),
                 _buildInfoItem('Age', '$dob'),
               ],
             ),
+
           ],
         ),
       ),

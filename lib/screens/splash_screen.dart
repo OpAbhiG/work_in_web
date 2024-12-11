@@ -53,8 +53,7 @@ class _SplashScreenState extends State<SplashScreen> {
     _timer = Timer(duration, () {
       if (mounted) {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const LoginScreen(),
+          MaterialPageRoute(builder: (context) => const LoginScreen(),
           ),
         );
       }
@@ -98,14 +97,14 @@ class _SplashScreenState extends State<SplashScreen> {
                 Text(
                   _quote,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 10,
+                  style: const TextStyle(
+                    fontSize: 12,
                     color: Colors.indigo,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                SizedBox(height: 100),
-                CircularProgressIndicator(color: Colors.indigo),
+                const SizedBox(height: 100),
+                const CircularProgressIndicator(color: Colors.indigo),
               ],
             ),
           ),

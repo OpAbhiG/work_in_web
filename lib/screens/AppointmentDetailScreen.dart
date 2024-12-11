@@ -7,18 +7,15 @@ import 'package:http/http.dart' as http;
 import '../APIServices/base_api.dart';
 class AppointmentDetailScreen extends StatefulWidget {
   final Map<String, dynamic> appointment;
+  final String section; // Add the section parameter
 
-  const AppointmentDetailScreen({required this.appointment});
+  const AppointmentDetailScreen({required this.appointment, required this.section});
 
   @override
   _AppointmentDetailScreenState createState() => _AppointmentDetailScreenState();
 }
-
 class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
   bool isLoading = false;
-
-
-
   Future<String?> getToken() async {
     try {
       var box = await Hive.openBox('userBox');
@@ -52,6 +49,55 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
     }
   }
 
+  // Future<void> cancelAppointment() async {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //
+  //
+  //   try {
+  //     String? token = await getToken(); // Fetch the token
+  //     final response = await http.post(
+  //       Uri.parse('$baseapi/patient/cancel_appoint'),
+  //           // '?patient_id=${widget.appointment['patient_id']}&appointment_id=${widget.appointment['appointment_id']}'),
+  //       headers: {
+  //         'Authorization': 'Bearer $token',
+  //         // 'Content-Type': 'application/json',
+  //
+  //       },
+  //       // body:{
+  //       //   // 'patient_id': widget.appointment['patient_id'].toString(),
+  //       //   'slot_id': widget.appointment['slot_id'].toString(),
+  //       // },
+  //     );
+  //
+  //
+  //
+  //     print('Response Status Code: ${response.statusCode}');
+  //     print('Response Body: ${response.body}');
+  //
+  //
+  //
+  //     if (response.statusCode == 200) {
+  //       print(response.body);
+  //
+  //       // Handle success
+  //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Appointment canceled successfully")));
+  //     } else {
+  //       // Handle failure
+  //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to cancel appointment")));
+  //     }
+  //   } catch (e) {
+  //     print("Error: $e");
+  //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("An error occurred")));
+  //   } finally {
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //   }
+  //
+  // }
+
   Future<void> cancelAppointment() async {
     setState(() {
       isLoading = true;
@@ -59,47 +105,60 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
 
     try {
       String? token = await getToken(); // Fetch the token
+
+      if (token == null) {
+        print('Error: Authorization token not available');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("User not logged in. Please log in to continue.")),
+        );
+        return;
+      }
+
+      // Construct the query parameters string
+      String params = "id=${widget.appointment['slot_id']}";
+
+      // Full URL with parameters
+      final url = Uri.parse('$baseapi/patient/cancel_appoint?$params');
+      print('Request URL: $url'); // Debugging
+
+
+
+      // Make the GET request
       final response = await http.post(
-        Uri.parse('$baseapi/patient/cancel_appoint?patient_id=${widget.appointment['patient_id']}&appointment_id=${widget.appointment['appointment_id']}'),
+        url,
         headers: {
           'Authorization': 'Bearer $token',
-          // 'Content-Type': 'application/json',
+          'Content-Type': 'application/json', // Optional depending on API requirements
         },
-
-
-
-        body: jsonEncode({
-          // 'patient_id': widget.appointment['patient_id'],
-          // 'appointment_id': widget.appointment['appointment_id'],
-        }),
       );
-
-
 
       print('Response Status Code: ${response.statusCode}');
       print('Response Body: ${response.body}');
 
-
-
       if (response.statusCode == 200) {
-        print(response.body);
-
-        // Handle success
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Appointment canceled successfully")));
+        print('Success: ${response.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Appointment canceled successfully")),
+        );
       } else {
-        // Handle failure
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to cancel appointment")));
+        print('Failure: ${response.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to cancel appointment: ${response.body}")),
+        );
       }
     } catch (e) {
       print("Error: $e");
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("An error occurred")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("An error occurred")),
+      );
     } finally {
       setState(() {
         isLoading = false;
       });
     }
-
   }
+
+
 
   final Map<int, String> specialties = {
     1: 'General Physician',
@@ -107,43 +166,189 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
     3: 'Child Specialist',
     4: 'Counselling Psychologist',
   };
-
-
   @override
   Widget build(BuildContext context) {
     final appointment = widget.appointment;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Appointment Details'),
-
+        title: Text('Appointment Details',style: TextStyle(fontSize: 18,color: Colors.white),),
+        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Colors.white,
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: isLoading
             ? Center(child: CircularProgressIndicator())
-            : Center(
-              child: Column(
+            : Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          elevation: 4,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              Text('Dr. ${appointment['full_name'] ?? 'Unknown'}',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-              SizedBox(height: 10),
-              Text('${specialties[widget.appointment['speciality']] ?? 'N/A'}',),
-              SizedBox(height: 10),
-              Text('Appointment ID: ${appointment['slot_id'] ?? 'N/A'}'),
-              SizedBox(height: 10),
-              Text('Date: ${appointment['date'] ?? 'N/A'}'),
-              SizedBox(height: 10),
-              Text('Time: ${appointment['start_time'] ?? 'N/A'}'),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: cancelAppointment,
-                child: Text('Cancel Appointment',style: TextStyle(color: Colors.white),),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-              ),
-                        ],
+                // Doctor's Info Section
+                Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: Image.network(
+                        widget.appointment['image_url'] ??
+                            "https://via.placeholder.com/50", // Replace with actual image URL
+                        height: 70.0,
+                        width: 70.0,
+                        fit: BoxFit.cover,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child; // Image is fully loaded
+                          }
+                          return Container(
+                            decoration: BoxDecoration(
+
+                              shape: BoxShape.circle,
+                            ),
+                            height: 50.0,
+                            width: 50.0,
+                            alignment: Alignment.center,
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                  (loadingProgress.expectedTotalBytes ?? 1)
+                                  : null,
+                            ),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            height: 50.0,
+                            width: 50.0,
+                            color: Colors.grey[300],
+                            child: Icon(
+                              Icons.person,
+                              color: Colors.grey,
+                            ),
+                          );
+                        },
                       ),
+                    ),
+                    SizedBox(width: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Dr. ${appointment['full_name'] ?? 'Unknown'}',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          specialties[appointment['speciality']] ?? 'N/A',
+                          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                        ),
+                      ],
+                    ),
+                    Spacer(),
+                    IconButton(
+                      icon: Icon(Icons.video_call, color: Colors.green, size: 28),
+                      onPressed: () {
+                        // Add video call functionality here
+                      },
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                // Appointment Info Section
+                Divider(color: Colors.grey[300], thickness: 1, height: 20),
+                ListTile(
+                  leading: Icon(Icons.calendar_today, color: Colors.blue),
+                  title: Text('Date & Time'),
+                  subtitle: Text(
+                    '${appointment['date'] ?? 'N/A'} at ${appointment['start_time'] ?? 'N/A'}',
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(Icons.local_hospital, color: Colors.blue),
+                  title: Text('Clinic Name'),
+                  subtitle: Text(appointment['clinic_name'] ?? 'N/A'),
+                ),
+                ListTile(
+                  leading: Icon(Icons.tag, color: Colors.blue),
+                  title: Text('Appointment ID'),
+                  subtitle: Text('${appointment['slot_id'] ?? 'N/A'}'),
+                ),
+
+                SizedBox(height: 20),
+                // Action Buttons
+                if (widget.section != 'past' && widget.section != 'canceled')
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Add reschedule functionality here
+                          },
+                          child: Text('Reschedule',style: TextStyle(color: Colors.white),),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                      SizedBox(
+                        width: 16,
+                      ),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Show confirmation popup
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Cancel Appointment'),
+                                  content: Text('Are you sure you want to cancel this appointment?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop(); // Close the dialog
+                                      },
+                                      child: Text('No', style: TextStyle(color: Colors.blue)),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop(); // Close the dialog
+                                        Navigator.of(context).pop();
+                                        cancelAppointment(); // Call the cancel appointment function
+                                      },
+                                      child: Text('Yes', style: TextStyle(color: Colors.red)),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Text('Cancel',style: TextStyle(color: Colors.white),),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                    ],
+                  ),
+              ],
             ),
+          ),
+
+        ),
       ),
+
     );
   }
 }

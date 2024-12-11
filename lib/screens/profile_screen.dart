@@ -863,7 +863,6 @@ class _ProfileState extends State<Profile> {
                               value: '$fname',
                               isEditable: false,
                               hasCalendarIcon: false,
-
                             ),
                             _buildProfileDetail(
                               label: 'Last Name',
@@ -871,6 +870,7 @@ class _ProfileState extends State<Profile> {
                               isEditable: false,
                               hasCalendarIcon: false,
                             ),
+
                             _buildProfileDetail(
                               label: 'Gender',
                               value: '$gender',
@@ -942,7 +942,6 @@ class _ProfileState extends State<Profile> {
                       },
                     ),
                     const SizedBox(height: 20),
-
                     // Logout Button
                     ElevatedButton(
                       onPressed: () {
@@ -1063,8 +1062,8 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
 
+                    const SizedBox(height: 10),
                     // Footer Text
                     const Text(
                       '© BharatTeleClinic, 2024 - All Rights Reserved.',

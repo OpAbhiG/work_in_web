@@ -41,7 +41,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       body: Stack(
         children: [
           Container(
-
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('bottomdesignbk.jpg'), // Path to your background image

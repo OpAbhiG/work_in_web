@@ -126,6 +126,7 @@ class _MedicalRecordsScreenState extends State<MedicalRecordsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
         backgroundColor: Color(0xFF1A237E),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -133,7 +134,7 @@ class _MedicalRecordsScreenState extends State<MedicalRecordsScreen> {
         ),
         title: Text(
           'Medical Records',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold),
         ),
       ),
       body: Column(
