@@ -1,9 +1,3 @@
-
-
-
-
-
-
 class LoginModel {
   String? message;
   UserData? userData;

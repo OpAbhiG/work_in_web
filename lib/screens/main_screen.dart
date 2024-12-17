@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 // import '../DOCTOR_SCREEN/doctor_nav.dart';
+import '../DOCTOR_SCREEN/today.dart';
 import '../models/appointment.dart';
 // import '../models/doctor.dart';
 // import '../models/dr.dart';
@@ -21,12 +22,8 @@ class MainScreenState extends State<MainScreen> {
       body: IndexedStack(
         index: _currentIndex,
         children: [
-          DashboardScreen(onBookAppointment: (Doctor , DateTime ) {  }, doctors: [],
-            // appointments: appointments,
-            // onCancelAppointment: _cancelAppointment,
-            // onBookAppointment: _bookAppointment, doctors: const [],
-            // doctors: doctors,
-          ),
+          DashboardScreen(onBookAppointment: (Doctor , DateTime ) {  }, doctors: []),
+          // DashboardScree(),
           const DoctorListScreen(),
           // DoctorScreen(doctors: doctors, onBookAppointment: _bookAppointment),
           // DoctorScreen(doctors: doctors, onBookAppointment: _bookAppointment),
@@ -37,7 +34,7 @@ class MainScreenState extends State<MainScreen> {
                 MaterialPageRoute(builder: (context)=> const LoginScreen()),
             );
           },),
-          AppointmentScreen(),
+          const AppointmentScreen(),
           const TreatmentScreen(),
         ],
       ),

@@ -767,7 +767,7 @@ class _ProfileState extends State<Profile> {
                 crossAxisAlignment: CrossAxisAlignment.start, // Aligns at the top
                 children: [
                   const CircleAvatar(
-                    radius: 40,
+                    radius: 30,
                     backgroundImage: AssetImage('assets/limg.jpg'),
                   ),
                   const SizedBox(width: 20),
@@ -808,8 +808,6 @@ class _ProfileState extends State<Profile> {
                                     dob: dob,
                                     gender:gender,
                                     blood_group: '',
-
-
 
                                   ),
                                 ),
@@ -853,7 +851,7 @@ class _ProfileState extends State<Profile> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      elevation: 2,
+                      elevation: 4,
                       child: Padding(
                         padding: const EdgeInsets.all(15),
                         child: Column(

@@ -9,7 +9,7 @@ class AppointmentDetailScreen extends StatefulWidget {
   final Map<String, dynamic> appointment;
   final String section; // Add the section parameter
 
-  const AppointmentDetailScreen({required this.appointment, required this.section});
+  const AppointmentDetailScreen({required this.appointment, required this.section,});
 
   @override
   _AppointmentDetailScreenState createState() => _AppointmentDetailScreenState();
@@ -49,54 +49,6 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
     }
   }
 
-  // Future<void> cancelAppointment() async {
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  //
-  //
-  //   try {
-  //     String? token = await getToken(); // Fetch the token
-  //     final response = await http.post(
-  //       Uri.parse('$baseapi/patient/cancel_appoint'),
-  //           // '?patient_id=${widget.appointment['patient_id']}&appointment_id=${widget.appointment['appointment_id']}'),
-  //       headers: {
-  //         'Authorization': 'Bearer $token',
-  //         // 'Content-Type': 'application/json',
-  //
-  //       },
-  //       // body:{
-  //       //   // 'patient_id': widget.appointment['patient_id'].toString(),
-  //       //   'slot_id': widget.appointment['slot_id'].toString(),
-  //       // },
-  //     );
-  //
-  //
-  //
-  //     print('Response Status Code: ${response.statusCode}');
-  //     print('Response Body: ${response.body}');
-  //
-  //
-  //
-  //     if (response.statusCode == 200) {
-  //       print(response.body);
-  //
-  //       // Handle success
-  //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Appointment canceled successfully")));
-  //     } else {
-  //       // Handle failure
-  //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to cancel appointment")));
-  //     }
-  //   } catch (e) {
-  //     print("Error: $e");
-  //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("An error occurred")));
-  //   } finally {
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //   }
-  //
-  // }
 
   Future<void> cancelAppointment() async {
     setState(() {
@@ -163,8 +115,14 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
   final Map<int, String> specialties = {
     1: 'General Physician',
     2: 'Dentist',
-    3: 'Child Specialist',
+    3: 'Child specialists',
     4: 'Counselling Psychologist',
+    5: 'Diabetologist',
+    6: 'Family Physician',
+    7: 'Orthologist ',
+    8: 'General Surgery',
+    9: 'Gynaecologist & OB',
+    10: 'Head andNeckSurgery',
   };
   @override
   Widget build(BuildContext context) {

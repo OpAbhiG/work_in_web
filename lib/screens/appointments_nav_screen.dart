@@ -753,8 +753,14 @@ class AppointmentCard extends StatefulWidget {
 final Map<int, String> specialties = {
   1: 'General Physician',
   2: 'Dentist',
-  3: 'Child Specialist',
+  3: 'Child specialists',
   4: 'Counselling Psychologist',
+  5: 'Diabetologist',
+  6: 'Family Physician',
+  7: 'Orthologist ',
+  8: 'General Surgery',
+  9: 'Gynaecologist & OB',
+  10: 'Head andNeckSurgery',
 };
 
 class _AppointmentCardState extends State<AppointmentCard> {

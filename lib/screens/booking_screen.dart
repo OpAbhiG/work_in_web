@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import '../APIServices/base_api.dart';
 import 'doctor_nav_screen.dart';
 import 'profile_screen.dart';
-//patient not create
+
 class AppointmentBookingScreen extends StatefulWidget {
   const AppointmentBookingScreen({super.key, required List<Doctor> doctors, required Function(Doctor p1, DateTime p2) onBookAppointment,
 
@@ -17,7 +17,6 @@ class AppointmentBookingScreen extends StatefulWidget {
   @override
   _AppointmentBookingScreenState createState() => _AppointmentBookingScreenState();
 }
-
 class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   late final Doctor doctor;
   int currentStep = 0;
@@ -32,9 +31,15 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   final Map<int, String> specialties = {
     1: 'General Physician',
     2: 'Dentist',
-    3: 'Child Specialist',
+    3: 'Child specialists',
     4: 'Counselling Psychologist',
-  };
+    5: 'Diabetologist',
+    6: 'Family Physician',
+    7: 'Orthologist ',
+    8: 'General Surgery',
+    9: 'Gynaecologist & OB',
+    10: 'Head andNeckSurgery',
+};
 
   List<Map<String, dynamic>> doctors = [];
   List<Map<String, dynamic>> availableTimeSlots = [];
@@ -115,35 +120,6 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     }
   }
 
-  // Future<void> fetchAvailableSlots() async {
-  //   try {
-  //     String? bearerToken = await getToken();
-  //     final response = await http.get(
-  //       Uri.parse('$baseapi/patient/get_slote?doctor_id=$selectedDoctor&date=${DateFormat('yyyy-MM-dd').format(selectedDate)}'),
-  //       headers: {
-  //         'Authorization': 'Bearer $bearerToken',
-  //       },
-  //     );
-  //
-  //     if (response.statusCode == 200) {
-  //       final data = json.decode(response.body);
-  //       setState(() {
-  //         availableTimeSlots = (data['slots']['slots'] as List<dynamic>)
-  //             .map((slot) => slot as Map<String, dynamic>)
-  //             .toList();
-  //       });
-  //     } else {
-  //       throw Exception('Failed to load available slots');
-  //     }
-  //   } catch (e) {
-  //     print('Error fetching available slots: $e');
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text('Failed to load available slots')),
-  //     );
-  //   }
-  // }
-
-
   Future<void> fetchAvailableSlots() async {
     setState(() => isLoading = true);
     try {
@@ -158,7 +134,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
-          availableTimeSlots = (data['slots']['slots'] as List<dynamic>)
+          availableTimeSlots = (data['slots']['slots'] as List<dynamic>? ?? [] )
               .map((slot) => slot as Map<String, dynamic>)
               .toList();
         });
@@ -175,52 +151,6 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     }
   }
 
-  // Future<void> bookAppointment() async {
-  //   try {
-  //     String? bearerToken = await getToken();
-  //
-  //     var request = http.MultipartRequest('POST', Uri.parse('$baseapi/patient/book_slot='));
-  //     print('Sending request to: .......$request');
-  //
-  //     request.headers['Authorization'] = 'Bearer $bearerToken';
-  //
-  //     request.fields['doctor_id'] = selectedDoctor.toString();
-  //     request.fields['date'] = DateFormat('yyyy-MM-dd').format(selectedDate);
-  //     request.fields['time'] = selectedTimeSlot!;
-  //
-  //     // var response = await request.send();
-  //     // print('Request fields: ${request.fields}');
-  //     // print('Response Status Code: ${response.statusCode}');
-  //     // print('Response Body: ${response}');
-  //
-  //
-  //     print('Request fields:******${request.fields}');
-  //     var streamedResponse = await request.send();
-  //     var response = await http.Response.fromStream(streamedResponse);
-  //     print('Response Status Code: -----${response.statusCode}');
-  //     print('Response Body: +++++${response.body}');
-  //
-  //
-  //
-  //
-  //     if (response.statusCode == 200) {
-  //       print('$response');
-  //       // Appointment booked successfully
-  //       Navigator.push(
-  //         context,
-  //         MaterialPageRoute(
-  //           builder: (context) => const PaymentScreen(),
-  //         ),
-  //       );
-  //     } else {
-  //       // throw Exception('Failed to book appointment');
-  //     }
-  //   } catch (e) {
-  //     print('Error booking appointment: $e');
-  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to book appointment: ')));
-  //     // print('$e');
-  //   }
-  // }
 
   Future<void> bookAppointment() async {
     setState(() => isLoading = true);
@@ -389,10 +319,9 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   }
 
   Widget _buildDoctorDropdown() {
-    return doctors.length  == 0
+    return doctors.isEmpty
         ? const Text("No Doctors Found Please Select Other Specialty",
-      style: TextStyle(color: Colors.red,fontSize: 10),
-    )
+      style: TextStyle(color: Colors.red,fontSize: 10))
         : DropdownButtonFormField<int>(
       decoration: InputDecoration(
         border: OutlineInputBorder(
@@ -508,53 +437,6 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     );
   }
 
-  // Widget _buildTimeSlots() {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       const SizedBox(height: 12),
-  //       availableTimeSlots.isEmpty
-  //           ? const Center(child: CircularProgressIndicator())
-  //           : GridView.builder(
-  //         shrinkWrap: true,
-  //         physics: const NeverScrollableScrollPhysics(),
-  //         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-  //           crossAxisCount: 3,
-  //           childAspectRatio: 3,
-  //           crossAxisSpacing: 20,
-  //           mainAxisSpacing: 10,
-  //         ),
-  //         itemCount: availableTimeSlots.length,
-  //         itemBuilder: (context, index) {
-  //           final slot = availableTimeSlots[index];
-  //           return ElevatedButton(
-  //             style: ElevatedButton.styleFrom(
-  //               foregroundColor: selectedTimeSlot == slot['time'] ? Colors.white : Colors.purple,
-  //               backgroundColor: selectedTimeSlot == slot['time'] ? Colors.orange : Colors.white,
-  //               shape: RoundedRectangleBorder(
-  //                 borderRadius: BorderRadius.circular(5),
-  //               ),
-  //             ),
-  //             onPressed: slot['available'] ? () {
-  //               setState(() {
-  //                 selectedTimeSlot = slot['time'];
-  //                 currentStep = 5;
-  //               });
-  //             } : null,
-  //             child: Text(
-  //               slot['time'],
-  //               style: TextStyle(
-  //                 fontSize: 11,
-  //                 fontWeight: FontWeight.bold,
-  //                 color: slot['available'] ? null : Colors.purple,
-  //               ),
-  //             ),
-  //           );
-  //         },
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget _buildTimeSlots() {
     return Column(

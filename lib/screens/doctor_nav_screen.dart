@@ -5,7 +5,7 @@ import 'package:hive/hive.dart';
 import '../APIServices/api_services.dart';
 import '../APIServices/base_api.dart';
 // import '../models/doctor.dart';
-import 'book_appoinment_dialog_status.dart';
+// import 'book_appoinment_dialog_status.dart';
 // import 'book_appointment_dialog.dart';
 // import '../widgets/doctor_detail_screen.dart';
 import 'booking_confirmation_screen.dart';
@@ -14,34 +14,32 @@ import 'doctor_detail_screen.dart';
 
 
 
-
-
 class Doctor {
-  final int id;
   final String fullName;
-  final String specialty;
+  final String about;
+  final String qualification;
+  final int speciality;
   final int experience;
-  final int consultationFee;
-
 
   Doctor({
-    required this.id,
     required this.fullName,
-    required this.specialty,
+    required this.about,
+    required this.qualification,
+    required this.speciality,
     required this.experience,
-    required this.consultationFee,
   });
 
   factory Doctor.fromJson(Map<String, dynamic> json) {
     return Doctor(
-      id: json['id'],
-      fullName: json['full_name'],
-      specialty: json['specialty'] ?? '',
+      fullName: json['full_name'] ?? '',
+      about: json['about'] ?? '',
+      qualification: json['qualification'] ?? '',
+      speciality: json['speciality'] ?? 0,
       experience: json['experience'] ?? 0,
-      consultationFee: json['consultation_fee'] ?? 0,
     );
   }
 }
+
 
 class DoctorListScreen extends StatefulWidget {
   const DoctorListScreen({Key? key}) : super(key: key);
@@ -105,6 +103,19 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
     }
   }
 
+  final Map<int, String> specialties = {
+    1: 'General Physician',
+    2: 'Dentist',
+    3: 'Child specialists',
+    4: 'Counselling Psychologist',
+    5: 'Diabetologist',
+    6: 'Family Physician',
+    7: 'Orthologist ',
+    8: 'General Surgery',
+    9: 'Gynaecologist & OB',
+    10: 'Head andNeckSurgery',
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,14 +127,13 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
           fontWeight: FontWeight.bold, // Make text bold
           // fontFamily: 'Schyler', // Optional: Set a custom font family if you have one
         )),
-
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
       ),
       body: RefreshIndicator(
         onRefresh: fetchDoctors,
         child: isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator(color: Colors.blue,))
             : errorMessage.isNotEmpty
             ? Center(child: Text(errorMessage))
             : doctors.isEmpty
@@ -146,9 +156,45 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            backgroundImage: AssetImage('assets/default_avatar.png'),
-                            radius: 35,
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10.0),
+                            child: Image.network(
+                              // widget.appointment['image_url'] ??
+                                  "https://via.placeholder.com/50", // Replace with actual image URL
+                              height: 70.0,
+                              width: 70.0,
+                              fit: BoxFit.cover,
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if (loadingProgress == null) {
+                                  return child; // Image is fully loaded
+                                }
+                                return Container(
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                  ),
+                                  height: 50.0,
+                                  width: 50.0,
+                                  alignment: Alignment.center,
+                                  child: CircularProgressIndicator(
+                                    value: loadingProgress.expectedTotalBytes != null
+                                        ? loadingProgress.cumulativeBytesLoaded /
+                                        (loadingProgress.expectedTotalBytes ?? 1)
+                                        : null,
+                                  ),
+                                );
+                              },
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  height: 50.0,
+                                  width: 50.0,
+                                  color: Colors.grey[300],
+                                  child: Icon(
+                                    Icons.person,
+                                    color: Colors.grey,
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                           const SizedBox(width: 16),
                           Expanded(
@@ -163,7 +209,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                                   ),
                                 ),
                                 Text(
-                                  doctor.specialty,
+                                  specialties[doctor.speciality] ?? '--',
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.grey[600],
@@ -180,9 +226,10 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                                     'Video Consult',
                                     style: TextStyle(
                                       color: Colors.blue[900],
-                                      fontSize: 12,
+                                      fontSize: 9,
                                     ),
                                   ),
+
                                 ),
                               ],
                             ),
@@ -193,19 +240,21 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
                                   color: Colors.green,
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(5),
                                 ),
                                 child: Text(
                                   '${doctor.experience} Y. Exp',
                                   style: const TextStyle(
                                     color: Colors.white,
-                                    fontSize: 12,
+                                    fontSize: 8,
                                   ),
                                 ),
+
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                '₹${doctor.consultationFee}',
+                                // '₹${doctor.consultationFee}',
+                                '₹ 100',
                                 style: const TextStyle(
                                   color: Colors.blue,
                                   fontWeight: FontWeight.bold,
@@ -215,7 +264,8 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20),
+                      Divider(color: Colors.grey, thickness: 1, height: 20),
+                      // const SizedBox(height: 20),
                       Row(
                         children: [
                           Expanded(
@@ -224,12 +274,20 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                                 // Navigate to DoctorDetailScreen with the selected doctor
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => DoctorDetailScreen(doctor: doctor,),
+                                  MaterialPageRoute(builder: (context) => DoctorDetailScreen(doctor: doctor, appointment: {},),
                                   ),
                                 );
                               },
 
-                              child: const Text('View Profile',style: TextStyle(fontSize: 10),),
+                              child: const Text('View Profile',style: TextStyle(fontSize: 10,color: Colors.white,fontWeight: FontWeight.bold),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.indigo, // Background color
+                                padding: const EdgeInsets.symmetric(vertical: 14,horizontal: 14), // Padding
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8), // Rounded corners
+                                ),
+                              ),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -238,14 +296,26 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                               onPressed: () => Navigator.of(context).push(
                                 MaterialPageRoute(builder: (context) => AppointmentBookingScreen(doctors: const [], onBookAppointment: (Doctor p1, DateTime p2) {  },)),
                               ),
-                              child: const Text(' Book Appointment',style: TextStyle(fontSize: 10),),
+                              child: const Text(' Book Appointment',style: TextStyle(fontSize: 10,color: Colors.white,fontWeight: FontWeight.bold),
+
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orange, // Background color
+                                padding: const EdgeInsets.symmetric(vertical: 14,horizontal: 14), // Padding
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8), // Rounded corners
+                                ),
+                              ),
                             ),
                           ),
-                        ],
-                            // onBookAppointment: (Doctor p1, DateTime p2) {  },
+                        ],                            // onBookAppointment: (Doctor p1, DateTime p2) {  },
                         ),
                     ],
                   ),
+
+
+
+
                 ),
               ),
             );

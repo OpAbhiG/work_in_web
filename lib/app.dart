@@ -44,9 +44,7 @@ class _BharatTeleClinicAppState extends State<BharatTeleClinicApp> {
       title: 'Bharat Tele Clinic',
       theme: ThemeData(
         primaryColor: const Color(0xFF1A237E),
-        colorScheme: ColorScheme.fromSwatch().copyWith(
-          secondary: Colors.orange,
-        ),
+
       ),
       debugShowCheckedModeBanner: false,
       home: isLogined == null
