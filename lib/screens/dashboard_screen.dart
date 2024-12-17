@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../APIServices/base_api.dart';
+import '../VitalsHistory/HistoryScreen.dart';
 import '../models/appointment.dart';
 import 'AppointmentDetailScreen.dart';
 import 'appointments_nav_screen.dart';
@@ -253,7 +254,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0x80F2F2F2), // Semi-transparent light gray
+      // backgroundColor: const Color(0x80F2F2F2), // Semi-transparent light gray
+      backgroundColor: Colors.grey[50],
         appBar: AppBar(
         automaticallyImplyLeading: false, // Remove back arrow
         title: const Text('Dashboard',style: TextStyle(
@@ -268,6 +270,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(15.0),
+
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -290,16 +293,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildProfileCard() {
     return Card(
+      // margin: EdgeInsets.symmetric(vertical: 10.0),
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
              Row(
-              children: [
+               crossAxisAlignment: CrossAxisAlignment.center,
+
+               children: [
                 const CircleAvatar(
-                  radius: 30,
+                  radius: 25,
                   backgroundImage: AssetImage('assets/limg.jpg'),
                 ),
                 SizedBox(width: 20),
@@ -320,7 +326,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
 
           // const VerticalDivider(color: Colors.grey,thickness: 1,width: 20,),
-          const SizedBox(height: 10),
+          const SizedBox(height: 5.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -331,8 +337,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
             ),
 
-            Divider(color: Colors.grey, thickness: 1, height: 20),
-
+            Divider(color: Colors.grey[300], thickness: 1, height: 20),
 
             // SizedBox(height: 20), // Add some space between info and action buttons
 
@@ -373,11 +378,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
       children: [
         Text(
           title,
-          style: const TextStyle(color: Colors.grey,fontSize: 12),
+          style: const TextStyle(color: Colors.grey,fontSize: 10),
         ),
         Text(
           value,
-          style: const TextStyle( fontSize: 10),
+          style: const TextStyle( fontSize: 9),
         ),
       ],
     );
@@ -394,14 +399,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(9),
             decoration: BoxDecoration(
               color: Colors.orange,
               borderRadius: BorderRadius.circular(30),
             ),
             child: Icon(icon, color: Colors.white),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 5),
           Text(label, style: const TextStyle(fontSize: 9)),
         ],
       ),
@@ -419,7 +424,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void _onMedicalHistoryTapped(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => MedicalHistoryScreen()),
+      MaterialPageRoute(builder: (context) => HistoryScreen(historyList: [],)),
     );
   }
   // Action for Drugs/Tests
@@ -431,209 +436,212 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildUpcomingAppointments() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Upcoming Appointments',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-            ),
-
-            TextButton(
-              onPressed: () {
-                // Navigate to the AppointmentsScreen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) =>  AppointmentScreen(isFromDashboard: true)),
-                );
-              },
-              child: Text(
-                'View all',
-                style: TextStyle(
-                  color: Colors.orange[700],
-                  fontWeight: FontWeight.bold,
-                  fontSize: 10,
-                ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 0.1),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Upcoming Appointments',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
               ),
-            )
-          ],
-        ),
-        // const SizedBox(height: 10),
-        isLoading
-            ? Center(child: CircularProgressIndicator(color: Colors.blue,))
-            : appointments['today']!.isEmpty
-            ? const Center(child: Text('No appointments today.',style: TextStyle(fontSize: 10),))
-            : ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: appointments['today']!.length,
-          itemBuilder: (context, index) {
-            final appointment = appointments['today']![index];
-            return GestureDetector(
-              onTap: () {
-                // Navigate to appointment detail screen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AppointmentDetailScreen(
-                      appointment: appointment, section: '',
-                    ),
+
+              TextButton(
+                onPressed: () {
+                  // Navigate to the AppointmentsScreen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) =>  AppointmentScreen(isFromDashboard: true)),
+                  );
+                },
+                child: Text(
+                  'View all',
+                  style: TextStyle(
+                    color: Colors.orange[700],
+                    fontWeight: FontWeight.bold,
+                    fontSize: 10,
                   ),
-                );
-              },
-              child: Card(
-                margin: EdgeInsets.symmetric(vertical: 10.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
                 ),
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      // Top section with doctor details
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Doctor profile image
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(10.0),
-                            child: Image.network(
-                              appointment['image_url'] ??
-                                  "https://via.placeholder.com/50",
-                              height: 70.0,
-                              width: 70.0,
-                              fit: BoxFit.cover,
-                              loadingBuilder: (context, child, loadingProgress) {
-                                if (loadingProgress == null) {
-                                  return child;
-                                }
-                                return Container(
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                  ),
-                                  height: 50.0,
-                                  width: 50.0,
-                                  alignment: Alignment.center,
-                                  child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes != null
-                                        ? loadingProgress.cumulativeBytesLoaded /
-                                        (loadingProgress.expectedTotalBytes ?? 1)
-                                        : null,
-                                  ),
-                                );
-                              },
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  height: 50.0,
-                                  width: 50.0,
-                                  color: Colors.grey[300],
-                                  child: Icon(
-                                    Icons.person,
-                                    color: Colors.grey,
-                                  ),
-                                );
-                              },
+              )
+            ],
+          ),
+          // const SizedBox(height: 10),
+          isLoading
+              ? Center(child: CircularProgressIndicator(color: Colors.blue,))
+              : appointments['today']!.isEmpty
+              ? const Center(child: Text('No appointments today.',style: TextStyle(fontSize: 10),))
+              : ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: appointments['today']!.length,
+            itemBuilder: (context, index) {
+              final appointment = appointments['today']![index];
+              return GestureDetector(
+                onTap: () {
+                  // Navigate to appointment detail screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AppointmentDetailScreen(
+                        appointment: appointment, section: '',
+                      ),
+                    ),
+                  );
+                },
+                child: Card(
+                  margin: EdgeInsets.symmetric(vertical: 10.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  elevation: 4,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      children: [
+                        // Top section with doctor details
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Doctor profile image
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Image.network(
+                                appointment['image_url'] ??
+                                    "https://via.placeholder.com/50",
+                                height: 70.0,
+                                width: 70.0,
+                                fit: BoxFit.cover,
+                                loadingBuilder: (context, child, loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+                                  return Container(
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                    ),
+                                    height: 50.0,
+                                    width: 50.0,
+                                    alignment: Alignment.center,
+                                    child: CircularProgressIndicator(
+                                      value: loadingProgress.expectedTotalBytes != null
+                                          ? loadingProgress.cumulativeBytesLoaded /
+                                          (loadingProgress.expectedTotalBytes ?? 1)
+                                          : null,
+                                    ),
+                                  );
+                                },
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    height: 50.0,
+                                    width: 50.0,
+                                    color: Colors.grey[300],
+                                    child: Icon(
+                                      Icons.person,
+                                      color: Colors.grey,
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 10.0),
-                          // Appointment details
-                          Expanded(
-                            child: Column(
+                            SizedBox(width: 10.0),
+                            // Appointment details
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Dr. ${appointment['full_name']}',
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+                                  ),
+                                  SizedBox(height: 5.0),
+                                  Text(
+                                    // '${appointment['speciality']}',
+                                    '${specialties[appointment['speciality']] ?? ''}',
+                                    style: TextStyle(color: Colors.grey[600], fontSize: 12.0),
+                                  ),
+                                  SizedBox(height: 5.0),
+                                  Text(
+                                    'Appointment ID: ${appointment['slot_id']}',
+                                    style: TextStyle(color: Colors.grey[600], fontSize: 12.0),
+                                  ),
+
+                                ],
+
+                              ),
+
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                // Handle video call button press
+                                print('Initiate Video Call');
+                              },
+                              icon: Container(
+                                padding: const EdgeInsets.all(12), // Add padding to give space around the icon
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.green, // Set the background color to orange
+                                ),
+                                child: const Icon(
+                                  size: 25,
+                                  Icons.video_call,
+                                  color: Colors.white, // Set the icon color to white
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Divider(color: Colors.grey[300], thickness: 1, height: 20),
+                        // Bottom section with appointment type, date, and time
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Appointment type
+                            Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Dr. ${appointment['full_name']}',
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+                                  'Appointment Type',
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0),
                                 ),
                                 SizedBox(height: 5.0),
                                 Text(
-                                  // '${appointment['speciality']}',
-                                  '${specialties[appointment['speciality']] ?? ''}',
-                                  style: TextStyle(color: Colors.grey[600], fontSize: 12.0),
+                                  'Video Consultation',
+                                  style: TextStyle(color: Colors.green, fontSize: 10.0),
                                 ),
-                                SizedBox(height: 5.0),
-                                Text(
-                                  'Appointment ID: ${appointment['slot_id']}',
-                                  style: TextStyle(color: Colors.grey[600], fontSize: 12.0),
-                                ),
-
                               ],
-
                             ),
-
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              // Handle video call button press
-                              print('Initiate Video Call');
-                            },
-                            icon: Container(
-                              padding: const EdgeInsets.all(12), // Add padding to give space around the icon
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.green, // Set the background color to orange
-                              ),
-                              child: const Icon(
-                                size: 25,
-                                Icons.video_call,
-                                color: Colors.white, // Set the icon color to white
-                              ),
+                            // Date and Time
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  'Date & Time',
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0),
+                                ),
+                                SizedBox(height: 5.0),
+                                Text(
+                                  '${appointment['date'] ?? 'N/A'}\t${appointment['start_time']}',
+                                  textAlign: TextAlign.right,
+                                  style: TextStyle(color: Colors.grey[700], fontSize: 10.0),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                      Divider(color: Colors.grey[300], thickness: 1, height: 20),
-                      // Bottom section with appointment type, date, and time
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // Appointment type
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Appointment Type',
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0),
-                              ),
-                              SizedBox(height: 5.0),
-                              Text(
-                                'Video Consultation',
-                                style: TextStyle(color: Colors.green, fontSize: 10.0),
-                              ),
-                            ],
-                          ),
-                          // Date and Time
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                'Date & Time',
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0),
-                              ),
-                              SizedBox(height: 5.0),
-                              Text(
-                                '${appointment['date'] ?? 'N/A'}\t${appointment['start_time']}',
-                                textAlign: TextAlign.right,
-                                style: TextStyle(color: Colors.grey[700], fontSize: 10.0),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
-        ),
+              );
+            },
+          ),
 
 
-      ],
+        ],
+      ),
     );
   }
 
@@ -644,10 +652,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         onPressed: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => AppointmentBookingScreen(doctors: const [], onBookAppointment: (Doctor p1, DateTime p2) {  },)),
           ),
-        icon: const Icon(Icons.calendar_today,color: Colors.white,),
-        label: const Text('Book an Appointment',style: TextStyle(color: Colors.white)),
+        icon: const Icon(Icons.calendar_today,color: Colors.white,size: 18,),
+        label: const Text('Book an Appointment',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.orange,
+
           padding: const EdgeInsets.symmetric(vertical: 10),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),

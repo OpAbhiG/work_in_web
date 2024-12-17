@@ -162,7 +162,7 @@ class _MedicalRecordsScreenState extends State<MedicalRecordsScreen> {
                           backgroundColor: Color(0xFF1A237E),
                         ),
                         onPressed: pickFile,
-                        child: Text('Choose File'),
+                        child: Text('Choose File',style: TextStyle(color: Colors.white)),
                       ),
                       SizedBox(width: 8),
                       Expanded(
@@ -205,7 +205,7 @@ class _MedicalRecordsScreenState extends State<MedicalRecordsScreen> {
                         padding: EdgeInsets.symmetric(vertical: 16),
                       ),
                       onPressed: uploadFile,
-                      child: Text('Upload'),
+                      child: Text('Upload',style: TextStyle(color: Colors.white)),
                     ),
                   ),
                 ],

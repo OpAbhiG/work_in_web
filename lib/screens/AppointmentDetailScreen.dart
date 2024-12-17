@@ -1,10 +1,12 @@
 
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 import '../APIServices/base_api.dart';
+import '../VitalsHistory/PatientDetailsForm.dart';
+import 'medical/medical1.dart';
+
 class AppointmentDetailScreen extends StatefulWidget {
   final Map<String, dynamic> appointment;
   final String section; // Add the section parameter
@@ -48,8 +50,6 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
       print('API call failed: ${response.body}');
     }
   }
-
-
   Future<void> cancelAppointment() async {
     setState(() {
       isLoading = true;
@@ -109,9 +109,6 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
       });
     }
   }
-
-
-
   final Map<int, String> specialties = {
     1: 'General Physician',
     2: 'Dentist',
@@ -135,7 +132,7 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
       ),
 
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(8.0),
         child: isLoading
             ? Center(child: CircularProgressIndicator())
             : Card(
@@ -163,7 +160,6 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                           }
                           return Container(
                             decoration: BoxDecoration(
-
                               shape: BoxShape.circle,
                             ),
                             height: 50.0,
@@ -205,18 +201,30 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                         ),
                       ],
                     ),
-                    Spacer(),
+                    const Spacer(),
                     IconButton(
-                      icon: Icon(Icons.video_call, color: Colors.green, size: 28),
                       onPressed: () {
-                        // Add video call functionality here
+                        // Handle video call button press
+                        print('Initiate Video Call');
                       },
+                      icon: Container(
+                        padding: const EdgeInsets.all(10), // Add padding to give space around the icon
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.green, // Set the background color to orange
+                        ),
+                        child: const Icon(
+                          size: 20,
+                          Icons.video_call,
+                          color: Colors.white, // Set the icon color to white
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                // SizedBox(height: 20),
                 // Appointment Info Section
-                Divider(color: Colors.grey[300], thickness: 1, height: 20),
+                Divider(color: Colors.grey, thickness: 1, height: 20),
                 ListTile(
                   leading: Icon(Icons.calendar_today, color: Colors.blue),
                   title: Text('Date & Time'),
@@ -235,7 +243,7 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                   subtitle: Text('${appointment['slot_id'] ?? 'N/A'}'),
                 ),
 
-                SizedBox(height: 20),
+                // SizedBox(height: 20),
                 // Action Buttons
                 if (widget.section != 'past' && widget.section != 'canceled')
                   Row(
@@ -297,14 +305,113 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                           ),
                         ),
                       ),
-
                     ],
                   ),
+                SizedBox(height: 20,),
+                Column(
+                  children: [
+                    // Vitals Group Card
+                    Card(
+                      color: Colors.blue[50],
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Medical Records",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        MedicalRecordsScreen(),
+                                  ),
+                                );
+                              },
+                              icon: Icon(Icons.file_upload_outlined, color: Colors.white), // Add upload icon here
+                              label: Text(
+                                "Upload",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orange, // Set the button color
+                              ),
+                            ),
+
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 16,),
+                Column(
+                  children: [
+                    // Vitals Group Card
+                    Card(
+                      color: Colors.blue[50],
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Vitals Group",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PatientDetailsForm(),
+                                  ),
+                                );
+                              },
+                              icon: SizedBox.shrink(), // No icon before text
+                              label: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "View History",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  SizedBox(width: 8), // Add spacing between text and icon
+                                  Icon(Icons.arrow_forward_ios, color: Colors.white), // Right-arrow icon
+                                ],
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orange,
+                              ),
+                            ),
+
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
           ),
 
         ),
+
       ),
 
     );
