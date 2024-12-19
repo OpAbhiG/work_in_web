@@ -656,7 +656,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: true, // Remove back arrow
+        // automaticallyImplyLeading: true, // Remove back arrow
         title: Text('My Appointments', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         bottom: TabBar(
           controller: _tabController,

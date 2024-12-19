@@ -7,7 +7,7 @@ class CustomCard extends StatelessWidget {
       backgroundColor: Colors.grey[200], // Background color
       body: Center(
         child: Card(
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             // borderRadius: BorderRadius.circular(15), // Rounded corners
           ),
           elevation: 5,
@@ -26,7 +26,7 @@ class CustomCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   padding: const EdgeInsets.all(8),
-                  child: Column(
+                  child: const Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
@@ -49,7 +49,7 @@ class CustomCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(width: 16), // Space between columns
+                const SizedBox(width: 16), // Space between columns
                 // Right Column: Details
                 Expanded(
                   child: Column(
@@ -61,7 +61,7 @@ class CustomCard extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 "Dr. John Doe", // Doctor Name
                                 style: TextStyle(
                                   fontSize: 18,
@@ -78,14 +78,14 @@ class CustomCard extends StatelessWidget {
                               ),
                             ],
                           ),
-                          Icon(
+                          const Icon(
                             Icons.arrow_forward_ios, // Arrow Icon
                             color: Colors.grey,
                             size: 20,
                           ),
                         ],
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         "Appointment ID: 123456", // Appointment ID
                         style: TextStyle(
@@ -93,7 +93,7 @@ class CustomCard extends StatelessWidget {
                           color: Colors.grey[700],
                         ),
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Text(
                         "Time: 10:30 AM", // Appointment Time
                         style: TextStyle(

@@ -2,9 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+// import 'package:untitled10/vide_call/home_page.dart';
 import '../APIServices/base_api.dart';
 import '../VitalsHistory/HistoryScreen.dart';
+// import '../home_page.dart';
 import '../models/appointment.dart';
+
+
+// import '../video_all_zego/home_page.dart';  //zego
+
+
 import 'AppointmentDetailScreen.dart';
 import 'appointments_nav_screen.dart';
 import 'booking_screen.dart';
@@ -293,11 +300,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildProfileCard() {
     return Card(
-      // margin: EdgeInsets.symmetric(vertical: 10.0),
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
              Row(
@@ -305,7 +311,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                children: [
                 const CircleAvatar(
-                  radius: 25,
+                  radius: 30,
                   backgroundImage: AssetImage('assets/limg.jpg'),
                 ),
                 SizedBox(width: 20),
@@ -314,11 +320,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
                     Text(
                        '$fname $lname',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       'Clinic Patient ID $id', // Show user ID
-                      style: TextStyle(fontSize: 10, color: Colors.grey),
+                      style: TextStyle(fontSize: 13, color: Colors.grey),
                     ),
                   ],
                 ),
@@ -326,9 +332,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
 
           // const VerticalDivider(color: Colors.grey,thickness: 1,width: 20,),
-          const SizedBox(height: 5.0),
+          const SizedBox(height: 9.0),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildInfoItem('Blood Group', '$blood_group'),
                 _buildInfoItem('Weight', '-'),
@@ -343,7 +349,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
             // Action Buttons Section
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildActionButton(
                   context,
@@ -382,7 +388,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         Text(
           value,
-          style: const TextStyle( fontSize: 9),
+          style: const TextStyle(fontSize: 9),
         ),
       ],
     );
@@ -437,7 +443,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildUpcomingAppointments() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0.1),
+      padding: const EdgeInsets.symmetric(vertical: 0.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -575,9 +581,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                             IconButton(
                               onPressed: () {
-                                // Handle video call button press
                                 print('Initiate Video Call');
+                                // Navigate to the HomePage
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(builder: (context) => HomePage()),
+                                //
+                                // );
                               },
+
                               icon: Container(
                                 padding: const EdgeInsets.all(12), // Add padding to give space around the icon
                                 decoration: const BoxDecoration(
