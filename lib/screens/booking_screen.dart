@@ -10,7 +10,8 @@ import 'doctor_nav_screen.dart';
 import 'profile_screen.dart';
 
 class AppointmentBookingScreen extends StatefulWidget {
-  const AppointmentBookingScreen({super.key, required List<Doctor> doctors, required Function(Doctor p1, DateTime p2) onBookAppointment,
+  const AppointmentBookingScreen({super.key, required List<Doctor> doctors,
+    required Function(Doctor p1, DateTime p2) onBookAppointment,
 
   });
 
@@ -43,6 +44,9 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
 
   List<Map<String, dynamic>> doctors = [];
   List<Map<String, dynamic>> availableTimeSlots = [];
+
+
+  String errorMessage = '';
 
   @override
   void initState() {
@@ -104,7 +108,8 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
             .map((item) => item as Map<String, dynamic>)
             .toList();
 
-        print("!!!!!!!!!133344!!!!!!!");
+        // print("!!!!!!!!!133344!!!!!!!");
+
         print(doctorData);
 
         return doctorData;
@@ -120,6 +125,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
     }
   }
 
+
   Future<void> fetchAvailableSlots() async {
     setState(() => isLoading = true);
     try {
@@ -132,24 +138,142 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
       );
 
       if (response.statusCode == 200) {
+        print('patient/get_slote');
+
+        print(response);
         final data = json.decode(response.body);
-        setState(() {
-          availableTimeSlots = (data['slots']['slots'] as List<dynamic>? ?? [] )
+
+        // Check if the response contains any available slots
+        if (data['data'] != null && data['data']['slots'] != null) {
+          List<dynamic> slots = data['data']['slots'];
+
+          // Filter the slots to only include available ones
+          List<Map<String, dynamic>> availableSlots = slots
+              .where((slot) => slot['available'] == true)
               .map((slot) => slot as Map<String, dynamic>)
               .toList();
-        });
+
+          if (availableSlots.isNotEmpty) {
+            setState(() {
+              availableTimeSlots = availableSlots;
+              errorMessage = ""; // Clear any error message
+            });
+          } else {
+            setState(() {
+              availableTimeSlots = [];
+              errorMessage = "No available slots today"; // Set error message for no available slots
+            });
+          }
+        } else {
+          setState(() {
+            availableTimeSlots = [];
+            errorMessage = "Failed to load available slots"; // Handle if slots or data are missing
+          });
+        }
       } else {
         throw Exception('Failed to load available slots');
       }
     } catch (e) {
-      print('Error fetching available slots: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load available slots: $e')),
-      );
+      print('Error fetching available slots');
+      setState(() {
+        availableTimeSlots = []; // Clear available slots on error
+        errorMessage = 'Failed to load available slots'; // Set error message
+      });
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text('Failed to load available slots')),
+      // );
     } finally {
       setState(() => isLoading = false);
     }
   }
+
+
+// // 1.1 version
+//   Future<void> fetchAvailableSlots() async {
+//     setState(() => isLoading = true);
+//     try {
+//       String? bearerToken = await getToken();
+//       final response = await http.get(
+//         Uri.parse('$baseapi/patient/get_slote?doctor_id=$selectedDoctor&date=${DateFormat('yyyy-MM-dd').format(selectedDate)}'),
+//         headers: {
+//           'Authorization': 'Bearer $bearerToken',
+//         },
+//       );
+//
+//       if (response.statusCode == 200) {
+//         final data = json.decode(response.body);
+//         setState(() {
+//           availableTimeSlots = (data['data']['slots'] as List<dynamic>? ?? [])
+//               .map((slot) => slot as Map<String, dynamic>)
+//               .toList();
+//         });
+//       } else {
+//         throw Exception('Failed to load available slots');
+//       }
+//     } catch (e) {
+//       print('Error fetching available slots: $e');
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         SnackBar(content: Text('Failed to load available slots: $e')),
+//       );
+//     } finally {
+//       setState(() => isLoading = false);
+//     }
+//   }
+
+
+
+  // Future<void> fetchAvailableSlots() async {
+  //1.2 error display
+  //   setState(() => isLoading = true);
+  //
+  //   try {
+  //     String? bearerToken = await getToken();
+  //     final response = await http.get(
+  //       Uri.parse('$baseapi/patient/get_slote?doctor_id=$selectedDoctor&date=${DateFormat('yyyy-MM-dd').format(selectedDate)}'),
+  //       headers: {
+  //         'Authorization': 'Bearer $bearerToken',
+  //       },
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       final data = json.decode(response.body);
+  //
+  //       // Check if the response contains an error message for unavailable doctors
+  //       if (data[0]['error'] != null) {
+  //         setState(() {
+  //           availableTimeSlots = []; // No available slots
+  //           errorMessage = data[0]['error']; // Display the error message from backend (e.g., "Doctor not available")
+  //         });
+  //       } else if (data['data']['slots'] == null || (data['data']['slots'] as List).isEmpty) {
+  //         // No slots available for the selected date
+  //         setState(() {
+  //           availableTimeSlots = [];
+  //           errorMessage = "No slots available today"; // Set error message
+  //         });
+  //       } else {
+  //         // Available slots found
+  //         setState(() {
+  //           availableTimeSlots = (data['data']['slots'] as List<dynamic>? ?? [])
+  //             .map((slot) => slot as Map<String, dynamic>)
+  //             .toList();
+  //           errorMessage = ""; // Clear any error message
+  //         });
+  //       }
+  //     } else {
+  //       // Handle other status codes or failures
+  //       throw Exception('Failed to load available slots');
+  //     }
+  //   } catch (e) {
+  //     print('Error fetching available slots');
+  //     setState(() {
+  //       availableTimeSlots = [];
+  //       errorMessage = 'Doctor is not available'; // Set error message in case of exception
+  //     });
+  //   } finally {
+  //     setState(() => isLoading = false);
+  //   }
+  // }
+
 
 
   Future<void> bookAppointment() async {
@@ -187,11 +311,25 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
 
       if (response.statusCode == 200) {
         print('Appointment booked successfully');
+        // Show a SnackBar with success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(' ${response.body}')),
+        );
+
         // Navigate to the PaymentScreen
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const PaymentScreen(),
+            builder: (context) => PaymentScreen(
+              full_name: selectedDoctor.toString(), // Replace with actual data
+              doctor_id: 0, // Replace with actual doctor ID
+              amount: 199.0, // Replace with actual amount
+              time:selectedTimeSlot.toString(),
+              date:selectedDate,
+
+                doctors: doctors,
+                selectedDoctor: selectedDoctor
+            ),
           ),
         );
       } else {
@@ -215,7 +353,7 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E3A8A),
+        backgroundColor: Color(0xFF243B6D),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
@@ -233,6 +371,19 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
             if (currentStep >= 2) _buildStep(2, 'Consultation Type', _buildConsultationType()),
             if (currentStep >= 0) _buildStep(3, '', _buildDateSelection()),
             if (currentStep >= 4) _buildStep(4, 'Available Time Slots', _buildTimeSlots()),
+
+            // Show error message if availableTimeSlots is empty
+            if (errorMessage.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 9),
+                child: Center(
+                  child: Text(
+                    errorMessage,
+                    style: TextStyle(color: Colors.red, fontSize: 16),
+                  ),
+                ),
+              ),
+
             const SizedBox(height: 16),
             if (currentStep == 5)
               ElevatedButton(
@@ -242,6 +393,16 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                 ),
                 onPressed: () {
                   bookAppointment();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PaymentScreen(
+                      full_name: selectedDoctor.toString(), // Replace with actual data
+                      doctor_id: 123, // Replace with actual doctor ID
+                      amount: 199.0, // Replace with actual amount
+                      time:  selectedTimeSlot.toString(),
+                      date:selectedDate, doctors: [],
+                    )),
+                  );
                 },
                 child: const Text('Confirm', style: TextStyle(color: Colors.white)),
               ),

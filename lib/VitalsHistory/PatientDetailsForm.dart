@@ -10,7 +10,7 @@ class PatientDetailsForm extends StatefulWidget {
 
 class _PatientDetailsFormState extends State<PatientDetailsForm> {
   final _formKey = GlobalKey<FormState>();
-
+  late final Map<String, dynamic> appointment;  // Add this line to accept appointment data
   String? name, age, gender;
   String? bloodPressure, temperature, pulseRate, weight;
 
@@ -141,12 +141,13 @@ class _PatientDetailsFormState extends State<PatientDetailsForm> {
 
                 SizedBox(height: 18,),
                 // View History Button
+
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HistoryScreen(historyList: historyList),
+                        builder: (context) => VitalHistoryScreen(slotId:appointment['slot_id']),
                       ),
                     );
                   },
@@ -173,3 +174,4 @@ class _PatientDetailsFormState extends State<PatientDetailsForm> {
     );
   }
 }
+

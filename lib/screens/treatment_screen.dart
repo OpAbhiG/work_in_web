@@ -2,19 +2,25 @@
 
 import 'package:flutter/material.dart';
 
-class TreatmentScreen extends StatelessWidget{
+class TreatmentScreen extends StatefulWidget{
   const TreatmentScreen({super.key});
+
+  @override
+  State<TreatmentScreen> createState() => _TreatmentScreenState();
+}
+
+class _TreatmentScreenState extends State<TreatmentScreen> {
   @override
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xFF243B6D),
         automaticallyImplyLeading: false,
         title: const Text('Treatment',style: TextStyle(
           fontSize: 18, // Adjust font size
           fontWeight: FontWeight.bold, // Make text bold
           // fontFamily: 'Schyler',
         )),
-        backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
       ),
       body: const Center(
@@ -22,5 +28,4 @@ class TreatmentScreen extends StatelessWidget{
       ),
     );
   }
-
 }

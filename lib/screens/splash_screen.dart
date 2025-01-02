@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void startSplashScreen() {
-    var duration = const Duration(seconds: 5);
+    var duration = const Duration(seconds: 3);
     _timer = Timer(duration, () {
       if (mounted) {
         Navigator.of(context).pushReplacement(
@@ -99,12 +99,12 @@ class _SplashScreenState extends State<SplashScreen> {
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 12,
-                    color: Colors.indigo,
+                    color: Color(0xFF243B6D),
                     fontWeight: FontWeight.w800,
                   ),
                 ),
                 const SizedBox(height: 100),
-                const CircularProgressIndicator(color: Colors.indigo),
+                const CircularProgressIndicator(color: Color(0xFF243B6D),),
               ],
             ),
           ),

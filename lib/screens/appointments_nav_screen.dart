@@ -493,6 +493,7 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 import '../APIServices/base_api.dart';
+import '../main.dart';
 import 'AppointmentDetailScreen.dart';
 
 class AppointmentScreen extends StatefulWidget {
@@ -656,7 +657,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // automaticallyImplyLeading: true, // Remove back arrow
+        backgroundColor: Color(0xFF243B6D),
+
+        automaticallyImplyLeading: true, // Remove back arrow
         title: Text('My Appointments', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         bottom: TabBar(
           controller: _tabController,
@@ -686,10 +689,11 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
             Tab(text: 'Canceled'),
           ],
         ),
-        backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
       ),
+
       body: TabBarView(
+
         controller: _tabController,
         children: [
           buildAppointmentList('today'),
@@ -706,7 +710,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
 
     if (isLoading) {
       return const Center(
-        child: CircularProgressIndicator(color: Colors.blue),
+        child: CircularProgressIndicator( color: Color(0xFF243B6D),),
       );
     }
 
@@ -883,6 +887,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
                           width: 50.0,
                           alignment: Alignment.center,
                           child: CircularProgressIndicator(
+                            color: Color(0xFF243B6D),
                             value: loadingProgress.expectedTotalBytes != null
                                 ? loadingProgress.cumulativeBytesLoaded /
                                 (loadingProgress.expectedTotalBytes ?? 1)
@@ -933,8 +938,11 @@ class _AppointmentCardState extends State<AppointmentCard> {
                   if (widget.section == 'today' || widget.section == 'upcoming')
                   IconButton(
                     onPressed: () {
-                      // Handle video call button press
-                      print('Initiate Video Call');
+                      // Navigate to MyHomePage
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyHomePage(appoinmentId: widget.appointment['slot_id'].toString(), appointmentId: null,)),
+                      );
                     },
                     icon: Container(
                       padding: const EdgeInsets.all(12), // Add padding to give space around the icon

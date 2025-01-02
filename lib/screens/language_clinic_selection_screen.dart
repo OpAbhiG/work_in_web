@@ -31,7 +31,7 @@ class _LanguageClinicSelectionScreenState extends State<LanguageClinicSelectionS
           // Background Image
           SizedBox.expand(
             child: Image.asset(
-              'assets/bottomdesignbk.jpg', // background img login 2nd screen
+              'assets/bkimg.jpg', // background img login 2nd screen
               fit: BoxFit.cover,
             ),
           ),
@@ -66,16 +66,12 @@ class _LanguageClinicSelectionScreenState extends State<LanguageClinicSelectionS
                     ),
                   ),
 
-
-
-
-
                   const SizedBox(height: 40),//Container adjusting point
                   // Blue container around the dropdowns and button
                   Container(
                     padding: const EdgeInsets.all(30),
                     decoration: BoxDecoration(
-                      color: Colors.indigo,
+                      color: Color(0xFF243B6D),
                       borderRadius: BorderRadius.circular(15), // Rounded corners
                     ),
                     child: Column(

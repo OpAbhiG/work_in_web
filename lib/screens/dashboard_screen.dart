@@ -2,16 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-// import 'package:untitled10/vide_call/home_page.dart';
+import 'package:untitled10/screens/roundrd_appbar.dart';
 import '../APIServices/base_api.dart';
 import '../VitalsHistory/HistoryScreen.dart';
-// import '../home_page.dart';
+import '../call_page.dart';
+import '../main.dart';
 import '../models/appointment.dart';
-
-
-// import '../video_all_zego/home_page.dart';  //zego
-
-
 import 'AppointmentDetailScreen.dart';
 import 'appointments_nav_screen.dart';
 import 'booking_screen.dart';
@@ -23,6 +19,8 @@ import 'medical_history_screen.dart';
 import 'package:http/http.dart' as http;
 
 class DashboardScreen extends StatefulWidget {
+
+  
   final Function(Doctor, DateTime) onBookAppointment;
   final List<Doctor> doctors;
   const DashboardScreen({
@@ -36,6 +34,10 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
 
+
+
+
+
   String fname = '';
   String lname = '';
   int id = 0 ;
@@ -48,6 +50,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     fetchProfile();
     fetchTodayAppointments();
+    fetchCanceledAppointments();
   }
 
   // Save the token to Hive
@@ -152,7 +155,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
 
-
   Map<String, List<dynamic>> appointments = {
     'today': [],
   };
@@ -218,6 +220,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Uri.parse("$baseapi/patient/list_appoint/today"),
         headers: {'Authorization': 'Bearer $bearerToken'},
       );
+
+      
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {
@@ -242,6 +246,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       isLoading = false;
     });
   }
+
   final Map<int, String> specialties = {
     1: 'General Physician',
     2: 'Dentist',
@@ -255,6 +260,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     10: 'Head andNeckSurgery',
   };
 
+  late final int slotId;
 
 
 
@@ -262,41 +268,49 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: const Color(0x80F2F2F2), // Semi-transparent light gray
-      backgroundColor: Colors.grey[50],
-        appBar: AppBar(
+      // backgroundColor: Color(0xFFF2F2F2),
+      appBar: AppBar(
         automaticallyImplyLeading: false, // Remove back arrow
         title: const Text('Dashboard',style: TextStyle(
           fontSize: 18, // Adjust font size
           fontWeight: FontWeight.bold, // Make text bold
-          // fontFamily: 'Schyler', // Optional: Set a custom font family if you have one
         )),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: const Color(0xFF243B6D),
         foregroundColor: Colors.white,),
       body: Stack(
         children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
+          RefreshIndicator(
+              onRefresh: fetchTodayAppointments, // Assign the refresh function here
 
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildProfileCard(),
-                  SizedBox(height: 16,),
-                  _buildUpcomingAppointments(),
-                  SizedBox(height: 20,),
-                  _buildBookAppointmentButton(context),
-                  SizedBox(height: 16,),
-                  _recentInvice(),
-                ],
+            displacement: 40,
+            strokeWidth: 4,
+            color: Color(0xFF243B6D),
+            backgroundColor: Colors.white,
+
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(), // Ensure the content is scrollable even when it's short
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildProfileCard(),
+                      SizedBox(height: 16,),
+                      _buildUpcomingAppointments(),
+                      SizedBox(height: 16,),
+                      _buildBookAppointmentButton(context),
+                      SizedBox(height: 16,),
+                      _recentInvice(),
+                    ],
+                  ),
+                ),
               ),
-            ),
           ),
+
         ],
       ),
     );
   }
-
 
   Widget _buildProfileCard() {
     return Card(
@@ -357,12 +371,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   'Medical Record',
                       () => _onMedicalRecordTapped(context),
                 ),
-                _buildActionButton(
-                  context,
-                  Icons.history_outlined,
-                  'Medical History',
-                      () => _onMedicalHistoryTapped(context),
-                ),
+                // _buildActionButton(
+                //   context,
+                //   Icons.history_outlined,
+                //   'Medical History',
+                //       () => _onMedicalHistoryTapped(context),
+                // ),
                 _buildActionButton(
                   context,
                   Icons.medication,
@@ -377,7 +391,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     );
   }
-
 
   Widget _buildInfoItem(String title, String value) {
     return Column(
@@ -430,16 +443,56 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void _onMedicalHistoryTapped(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => HistoryScreen(historyList: [],)),
+      MaterialPageRoute(builder: (context) => VitalHistoryScreen(slotId: 0,)),
     );
   }
-  // Action for Drugs/Tests
+
+
   void _onDrugsTestsTapped(BuildContext context) {
+    // Initialize slotId to a default value
+    int slotId = 0;
+
+    // Check if appointments['today'] is not null and has data
+    if (appointments['today'] != null && appointments['today']!.isNotEmpty) {
+      print(appointments['today']);
+
+      var firstAppointment = appointments['today']![0];
+      if (firstAppointment.containsKey('slot_id')) {
+        slotId = firstAppointment['slot_id']; // Set slotId from the first item
+      } else {
+        print("slot_id key not found in the first appointment.");
+      }
+    }
+    // If there are no appointments today, check canceled appointments
+    else if (appointments['canceled'] != null && appointments['canceled']!.isNotEmpty) {
+      var firstCanceledAppointment = appointments['canceled']![0];
+      if (firstCanceledAppointment.containsKey('slot_id')) {
+        slotId = firstCanceledAppointment['slot_id']; // Set slotId from the canceled appointment
+      } else {
+        print("slot_id key not found in the canceled appointment.");
+      }
+    } else {
+      print("No appointments available today or canceled.");
+    }
+
+    // Debugging: Verify slotId
+    print("Fetched Slot ID: $slotId");
+    // print("Appointments Data: ${appointments}");
+
+    // Navigate to DrugsTestsScreen with the fetched slotId
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => DrugsTestsScreen()),
+      MaterialPageRoute(
+        builder: (context) => DrugsTestsScreen(
+          slotId: slotId.toString(), // Pass slotId as a string
+        ),
+      ),
     );
   }
+
+
+
+
 
   Widget _buildUpcomingAppointments() {
     return Padding(
@@ -476,7 +529,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           // const SizedBox(height: 10),
           isLoading
-              ? Center(child: CircularProgressIndicator(color: Colors.blue,))
+              ? Center(child: CircularProgressIndicator( color: Color(0xFF243B6D),))
+              // ? Center(child: Center(child: Lottie.asset('assets/loading.json', fit: BoxFit.contain,))
               : appointments['today']!.isEmpty
               ? const Center(child: Text('No appointments today.',style: TextStyle(fontSize: 10),))
               : ListView.builder(
@@ -532,6 +586,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     width: 50.0,
                                     alignment: Alignment.center,
                                     child: CircularProgressIndicator(
+                                      color: Color(0xFF243B6D),
                                       value: loadingProgress.expectedTotalBytes != null
                                           ? loadingProgress.cumulativeBytesLoaded /
                                           (loadingProgress.expectedTotalBytes ?? 1)
@@ -581,15 +636,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                             IconButton(
                               onPressed: () {
-                                print('Initiate Video Call');
-                                // Navigate to the HomePage
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(builder: (context) => HomePage()),
-                                //
-                                // );
+                                // Navigate to MyHomePage
+                                Navigator.push(
+                                  context,
+                                  // MaterialPageRoute(
+                                  //     builder: (context) => MyHomePage(
+                                  //       appoinmentId: appointment['slot_id'].toString(), appointmentId: null,
+                                  //     )
+                                  // ),
+                                  MaterialPageRoute(
+                                    builder: (context) => CallPage(
+                                      localUserId: localUserID, // Replace with actual user ID
+                                      id: appointment['slot_id'].toString(), // Pass slot_id directly
+                                    ),
+                                  ),
+                                );
                               },
-
                               icon: Container(
                                 padding: const EdgeInsets.all(12), // Add padding to give space around the icon
                                 decoration: const BoxDecoration(
@@ -662,7 +724,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       width: double.infinity,
       child: ElevatedButton.icon(
         onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => AppointmentBookingScreen(doctors: const [], onBookAppointment: (Doctor p1, DateTime p2) {  },)),
+            MaterialPageRoute(builder: (context) => AppointmentBookingScreen(
+              doctors: const [], onBookAppointment: (Doctor p1, DateTime p2) {  },)),
           ),
         icon: const Icon(Icons.calendar_today,color: Colors.white,size: 18,),
         label: const Text('Book an Appointment',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
@@ -711,7 +774,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         const SizedBox(height: 18,),
         isLoading
-        ? Center( child: CircularProgressIndicator(color: Colors.blue,),)
+        ? Center( child: CircularProgressIndicator( color: Color(0xFF243B6D),),)
         : Center(child: Text('No payment found.',style: TextStyle(fontSize: 10),))
         ],
       );

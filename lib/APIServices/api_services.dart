@@ -81,12 +81,13 @@ class ApiServices{
   // }
 
 
-  Future<LoginModel?> loginWithModel(String email, String password) async {
+  Future<LoginModel?> loginWithModel(String email, String password,BuildContext context) async {
     try {
       var url = Uri.parse("$baseapi/user/login");
       var response = await http.post(url, body: {
         "email": email,
-        "password": password
+        "password": password,
+        "user_type":"3"
       });
 
       if (response.statusCode == 200) {
@@ -94,8 +95,28 @@ class ApiServices{
         Map<String, dynamic> responseBody = jsonDecode(response.body);
 
 
+        // // Check if the user_type is 3
+        // if (responseBody['user_data']['user_type'] != 3) {
+        //   print('Invalid username or password');
+        //   // You can show a message to the user here (e.g., using a Snackbar)
+        //   return null; // Return null if user_type is not 3
+        // }
+
+            // Check if the user_type is 3
+        if (responseBody['user_data']['user_type'] != 3) {
+          // Display invalid username or password message in UI
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Invalid username or password'),
+            ),
+          );
+          return null; // Return null if user_type is not 3
+        }
+
+
+
         // await saveToken(token);
-        // print(response.body);
+        print(response.body);
 
         // Extract the token from the response
         String? accessToken = responseBody['user_data']['access_token'];
@@ -125,15 +146,15 @@ class ApiServices{
     return null;
   }
 
-  Future<void> logout(BuildContext context) async {
-    var box = Hive.box('userBox');
-    await box.delete('authToken');
-    print('Token cleared.');
-    Navigator.of(BuildContext as BuildContext).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
-          (route) => false,
-    );
-  }
+  // Future<void> logout(BuildContext context) async {
+  //   var box = Hive.box('userBox');
+  //   await box.delete('authToken');
+  //   print('Token cleared.');
+  //   Navigator.of(BuildContext as BuildContext).pushAndRemoveUntil(
+  //     MaterialPageRoute(builder: (context) => const LoginScreen()),
+  //         (route) => false,
+  //   );
+  // }
 
 
 

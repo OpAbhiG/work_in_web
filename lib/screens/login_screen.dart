@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // import 'main_screen.dart';
 import '../APIServices/api_services.dart';
 import '../models/model.dart';
+import 'log_forgot_screen.dart';
 import 'main_screen.dart';
 import 'registration_screen.dart';
 
@@ -84,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
               // padding: const EdgeInsets.all(18.0),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 90),
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(0.0),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -105,49 +106,75 @@ class _LoginScreenState extends State<LoginScreen> {
                       Center(
                         child: Image.asset(
                           'assets/btclogo.png', // Logo path
-                          height: 60,
+                          height: 70,
                         ),
                       ),
 
 
-                      const SizedBox(height: 20),
-                      // Register Button aligned to the left
+                      const SizedBox(height: 30),
                       Align(
-                        // alignment: Alignment.center,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => RegistrationScreen()),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange,
-                            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                            textStyle: const TextStyle(fontSize: 14),
-                          ),
-
-
-                          child: const Text(
-                            'New user Register Here',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'First time user?',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Color(0xFF243B6D),
+                              ),
                             ),
-                          ),
+                            const SizedBox(width: 20), // Adds spacing between the text and button
+                            ElevatedButton(
+                              onPressed: () {
+                                // Navigate to registration screen
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => RegistrationScreen()),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orange,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                  horizontal: 16,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min, // Shrinks the row to fit its content
+                                children: const [
+                                  Text(
+                                    'Register Here',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  SizedBox(width: 8), // Adds spacing between text and icon
+                                  Icon(
+                                    Icons.arrow_forward, // Use any arrow icon you prefer
+                                    color: Colors.white,
+                                    size: 18, // Adjust size if needed
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
 
-                      const SizedBox(height: 50),
+
+                      const SizedBox(height: 25),
                       // Form section
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: Colors.indigo,
+                          color: Color(0xFF243B6D),
                           borderRadius: BorderRadius.circular(15),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black26,
+                              color: Colors.white,
                               blurRadius: 6,
                               offset: Offset(0, 2),
                             ),
@@ -167,13 +194,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
 
                             const SizedBox(height: 20),
-
                             // Email/Mobile Number Field
                             TextFormField(
                               controller: email,
                               decoration: const InputDecoration(
                                 labelText: 'Enter Email',
-                                labelStyle: TextStyle(color: Colors.grey,),
+                                labelStyle: TextStyle(color: Colors.white,),
                                 prefixIcon: Icon(Icons.email, color: Colors.white),
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.white),
@@ -182,21 +208,26 @@ class _LoginScreenState extends State<LoginScreen> {
                               style: TextStyle(color: Colors.white), // White text in the input field
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter your email or mobile number';
+                                  setState(() {
+                                    _errorMessage='Please fill current Email'; // Set error message
+                                  });
+                                }else{
+                                  setState(() {
+                                    _errorMessage='';
+                                  });
                                 }
                                 return null;
                               },
                             ),
 
-                            const SizedBox(height: 16),
-
+                            const SizedBox(height: 10),
                             // Password Field
                             TextFormField(
                               controller: password,
                               obscureText: !_isPasswordVisible, // Toggle password visibility
                               decoration: InputDecoration(
                                 labelText: 'Enter Password',
-                                labelStyle: const TextStyle(color: Colors.grey),
+                                labelStyle: const TextStyle(color: Colors.white),
                                 prefixIcon: const Icon(Icons.lock, color: Colors.white),
                                 suffixIcon: IconButton(
                                   icon: Icon(
@@ -221,22 +252,54 @@ class _LoginScreenState extends State<LoginScreen> {
 
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter your password';
+                                  setState(() {
+                                    _errorMessage='Please fill current password'; // Set error message
+                                  });
+                                }else{
+                                  setState(() {
+                                    _errorMessage='';
+                                  });
                                 }
                                 return null;
                               },
                             ),
 
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 10),
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start, // Optional: Centers the texts horizontally
+                              children: const [
+                                Text(
+                                  'Please read our\t',
+                                  style: TextStyle(color: Colors.grey, fontSize: 8),
+                                ),
+                                Text(
+                                  'Privacy Policy\t',
+                                  style: TextStyle(color: Colors.white, fontSize: 8),
+                                ),
+                                Text(
+                                  'and\t',
+                                  style: TextStyle(color: Colors.grey, fontSize: 8),
+                                ),
+                                Text(
+                                  'Terms',
+                                  style: TextStyle(color: Colors.white, fontSize: 8),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 10),
                             // Error message display
                             if (_errorMessage != null)
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 10),
                                 child: Text(
                                   _errorMessage!,
-                                  style: const TextStyle(color: Colors.red,fontSize: 14),
+                                  style: const TextStyle(color: Colors.red,fontSize: 12),
                                 ),
                               ),
+
+
 
                             // Sign In Button
                             ElevatedButton(
@@ -248,24 +311,35 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               // padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01), // 2% of screen height
                               onPressed: (){
-                                setState(() {isReady = true;});
+                                if(email.text.isEmpty || password.text.isEmpty){
+                                  setState(() {
+                                    _errorMessage='Please fill in both email and password'; // Set error message
+                                  });
+                                }else{
+                                  setState(() {
+                                    _errorMessage='';
+                                  });
+                                }
 
+
+                                setState(() {isReady = true;});
                                 // With Model
-                                ApiServices().loginWithModel(email.text.toString(), password.text.toString()).then((value){
+
+                                ApiServices().loginWithModel(email.text.toString(), password.text.toString(),context).then((value){
+
                                   setState(() {
                                     loginModel = value!;
                                     isReady = false;
                                     // print(loginModel.token);
                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>MainScreen()
-
                                     ));
-
                                   });
                                 }).onError((error, stackTrace){
                                   setState(() {isReady = false;});
-
                                   print(error);
                                 });
+
+
 
                                 // Without Model
                                 // ApiServices().loginWithOutModel(email.text.toString(), password.text.toString()).then((value){
@@ -297,27 +371,36 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
                             const SizedBox(height: 10),
-                            // Forgot Password Button
-                            TextButton(
-                              onPressed: () {
-                                // Implement forgot password logic
-                              },
-                              child: const Text(
-                                'Forgot Password?',
-                                style: TextStyle(color: Colors.white, fontSize: 14),
+                              // Forgot Password Button
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton(
+                                onPressed: () {
+                                  // Implement forgot password logic
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const ForgotPasswordScreen(),
+                                    ),
+                                  );
+                                },
+                                child: const Text(
+                                  'Forgot Password?',
+                                  style: TextStyle(color: Colors.white, fontSize: 14),
+                                ),
                               ),
                             ),
                           ],
                         ),
                       ),
 
-                      // const SizedBox(height: 330),
-                      // Footer text
-                      // const Spacer(),
+                      // const SizedBox(height: 300),
+                      // // Footer text
+                      // // const Spacer(),
                       // const Text(
                       //   '© BharatTeleClinic, 2024 - All Rights Reserved.',
                       //   textAlign: TextAlign.center,
-                      //   style: TextStyle(color: Colors.white, fontSize: 10),
+                      //   style: TextStyle(color: Color(0xFF243B6D), fontSize: 10),
                       // ),
                     ],
                   ),
@@ -325,6 +408,18 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
 
           ),
+          ),
+             // Footer at the bottom of the screen
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: const Text(
+                '© BharatTeleClinic, 2024 - All Rights Reserved.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Color(0xFF243B6D), fontSize: 10),
+              ),
+            ),
           ),
         ],
       ),

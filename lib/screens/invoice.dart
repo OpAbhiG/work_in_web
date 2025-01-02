@@ -78,7 +78,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
       ),
       body: Center(
         child: isLoading
-            ? CircularProgressIndicator(color: Colors.indigo,)
+            ? CircularProgressIndicator(color: Color(0xFF243B6D),)
             : isInvoiceAvailable
             ? InvoiceDetails(invoice: invoiceData)
             : Text(

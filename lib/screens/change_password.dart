@@ -63,10 +63,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xFF243B6D),
         title: const Text('Change Password',
           style: TextStyle(fontSize: 18,color: Colors.white),),
-        backgroundColor: Colors.indigo,
-        elevation: 0,
       ),
 
 
@@ -206,7 +205,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   ),
                 ),
                 child: _isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
+                    ? const CircularProgressIndicator( color: Color(0xFF243B6D),)
                     : const Text(
                   'Reset Password',
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,color: Colors.white),

@@ -127,7 +127,7 @@ class _MedicalRecordsScreenState extends State<MedicalRecordsScreen> {
     return Scaffold(
       appBar: AppBar(
 
-        backgroundColor: Color(0xFF1A237E),
+        backgroundColor: Color(0xFF243B6D),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -140,6 +140,7 @@ class _MedicalRecordsScreenState extends State<MedicalRecordsScreen> {
       body: Column(
         children: [
           Card(
+            elevation: 4,
             margin: EdgeInsets.all(16),
             child: Padding(
               padding: EdgeInsets.all(16),
@@ -151,7 +152,7 @@ class _MedicalRecordsScreenState extends State<MedicalRecordsScreen> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF1A237E),
+                      color: Color(0xFF243B6D),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -159,7 +160,7 @@ class _MedicalRecordsScreenState extends State<MedicalRecordsScreen> {
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF1A237E),
+                          backgroundColor: Color(0xFF243B6D),
                         ),
                         onPressed: pickFile,
                         child: Text('Choose File',style: TextStyle(color: Colors.white)),
@@ -173,9 +174,10 @@ class _MedicalRecordsScreenState extends State<MedicalRecordsScreen> {
                       ),
                     ],
                   ),
+                  SizedBox(height: 10,),
                   Text(
                     'Note - Maximum upload file size : 5 MB',
-                    style: TextStyle(color: Colors.red),
+                    style: TextStyle(color: Colors.red,fontSize: 10),
                   ),
                   SizedBox(height: 16),
                   DropdownButtonFormField<String>(
@@ -201,7 +203,7 @@ class _MedicalRecordsScreenState extends State<MedicalRecordsScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF1A237E),
+                        backgroundColor: Color(0xFF243B6D),
                         padding: EdgeInsets.symmetric(vertical: 16),
                       ),
                       onPressed: uploadFile,
@@ -213,7 +215,7 @@ class _MedicalRecordsScreenState extends State<MedicalRecordsScreen> {
             ),
           ),
           Container(
-            color: Color(0xFF1A237E),
+            color: Color(0xFF243B6D),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -256,7 +258,7 @@ class _MedicalRecordsScreenState extends State<MedicalRecordsScreen> {
                     'File',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF1A237E),
+                      color: Color(0xFF243B6D),
                     ),
                   ),
                 ),
@@ -264,7 +266,7 @@ class _MedicalRecordsScreenState extends State<MedicalRecordsScreen> {
                   'Action',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A237E),
+                    color: Color(0xFF243B6D),
                   ),
                 ),
               ],

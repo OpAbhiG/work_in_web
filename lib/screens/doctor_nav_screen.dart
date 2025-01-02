@@ -8,7 +8,7 @@ import '../APIServices/base_api.dart';
 // import 'book_appoinment_dialog_status.dart';
 // import 'book_appointment_dialog.dart';
 // import '../widgets/doctor_detail_screen.dart';
-import 'booking_confirmation_screen.dart';
+// import 'booking_confirmation_screen.dart';
 import 'booking_screen.dart';
 import 'doctor_detail_screen.dart';
 
@@ -90,7 +90,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
           throw Exception('Invalid data format received from the server');
         }
       } else if (response.statusCode == 401) {
-        await ApiServices().logout(context);
+        // await ApiServices().logout(context);
         throw Exception('Authentication failed. Please log in again.');
       } else {
         throw Exception('Failed to load doctors. Status code: ${response.statusCode}');
@@ -120,6 +120,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xFF243B6D),
         automaticallyImplyLeading: false, // Remove back arrow
         title: const Text('Doctors',
           style: TextStyle(
@@ -127,11 +128,14 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
           fontWeight: FontWeight.bold, // Make text bold
           // fontFamily: 'Schyler', // Optional: Set a custom font family if you have one
         )),
-        backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
       ),
       body: RefreshIndicator(
         onRefresh: fetchDoctors,
+        displacement: 40,
+        strokeWidth: 4,
+        color: Color(0xFF243B6D),
+        backgroundColor: Colors.white,
         child: isLoading
             ? const Center(child: CircularProgressIndicator(color: Colors.blue,))
             : errorMessage.isNotEmpty
@@ -143,10 +147,10 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
           itemBuilder: (context, index) {
             final doctor = doctors[index];
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(16.0),
                 ),
                 elevation: 4,
                 child: Padding(
@@ -209,7 +213,7 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                                   ),
                                 ),
                                 Text(
-                                  specialties[doctor.speciality] ?? '--',
+                                  specialties[doctor.speciality] ?? '',
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.grey[600],
@@ -265,7 +269,8 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                         ],
                       ),
                       Divider(color: Colors.grey, thickness: 1, height: 20),
-                      // const SizedBox(height: 20),
+
+                      const SizedBox(height: 10),
                       Row(
                         children: [
                           Expanded(
@@ -278,44 +283,42 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
                                   ),
                                 );
                               },
-
-                              child: const Text('View Profile',style: TextStyle(fontSize: 10,color: Colors.white,fontWeight: FontWeight.bold),
-                              ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.indigo, // Background color
-                                padding: const EdgeInsets.symmetric(vertical: 14,horizontal: 14), // Padding
+                                backgroundColor: Color(0xFF243B6D),
+                                padding: const EdgeInsets.symmetric(vertical: 5), // Reduced padding for smaller height
+                                // padding: const EdgeInsets.symmetric(vertical: 18), // Padding
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8), // Rounded corners
+                                  borderRadius: BorderRadius.circular(5), // Rounded corners
                                 ),
+                              ),
+                              child: const Text('View Profile',
+                                style: TextStyle(fontSize: 12,color: Colors.white,fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),
+
                           const SizedBox(width: 8),
                           Expanded(
                             child: ElevatedButton(
                               onPressed: () => Navigator.of(context).push(
-                                MaterialPageRoute(builder: (context) => AppointmentBookingScreen(doctors: const [], onBookAppointment: (Doctor p1, DateTime p2) {  },)),
-                              ),
-                              child: const Text(' Book Appointment',style: TextStyle(fontSize: 10,color: Colors.white,fontWeight: FontWeight.bold),
-
+                                MaterialPageRoute(builder: (context) => AppointmentBookingScreen(doctors: const [], onBookAppointment: (Doctor p1, DateTime p2) {},)),
                               ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.orange, // Background color
-                                padding: const EdgeInsets.symmetric(vertical: 14,horizontal: 14), // Padding
+                                backgroundColor: Color(0xFFF29200),
+                                padding: const EdgeInsets.symmetric(vertical: 5), // Reduced padding for smaller height
+                                // padding: const EdgeInsets.symmetric(vertical: 18), // Padding
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8), // Rounded corners
+                                  borderRadius: BorderRadius.circular(5), // Rounded corners
                                 ),
                               ),
+                              child: const Text('Book Appointment',
+                                style: TextStyle(fontSize: 12,color: Colors.white,fontWeight: FontWeight.bold),),
                             ),
                           ),
                         ],                            // onBookAppointment: (Doctor p1, DateTime p2) {  },
                         ),
                     ],
                   ),
-
-
-
-
                 ),
               ),
             );

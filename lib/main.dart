@@ -1,10 +1,26 @@
 import 'package:flutter/material.dart';
 // import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:untitled10/screens/booking_screen.dart';
+// import 'package:untitled10/screens/booking_screen.dart';
 import 'package:untitled10/screens/medical/medical1.dart';
 import 'package:untitled10/screens/medical/medical2.dart';
-import 'app.dart';
+// import 'app.dart';
+//////
+// import 'package:flutter/material.dart';
+// import 'package:hive/hive.dart';
+// import 'package:untitled10/screens/booking_screen.dart';
+// import 'package:untitled10/screens/language_clinic_selection_screen.dart';
+import 'package:untitled10/screens/login_screen.dart';
+import 'package:untitled10/screens/main_screen.dart';
+import 'package:untitled10/screens/splash_screen.dart';
+/////
+// import 'package:video_calling_using_zegocloud_in_flutter/call_page.dart';
+import 'dart:math' as math;
+
+import 'call_page.dart';
+
+final String localUserID = math.Random().nextInt(10000).toString();
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized(); // Initialize Flutter bindings
   await Hive.initFlutter(); // Initialize Hive for Flutter
@@ -20,6 +36,343 @@ void main() async{
 
   runApp(const BharatTeleClinicApp());
 }
+//v1
+// class BharatTeleClinicApp extends StatefulWidget {
+//   const BharatTeleClinicApp({super.key});
+//
+//   @override
+//   State<BharatTeleClinicApp> createState() => _BharatTeleClinicAppState();
+// }
+// class _BharatTeleClinicAppState extends State<BharatTeleClinicApp> {
+//   bool? isLogined;
+//
+//   // Retrieve token from Hive
+//   Future verifyToken() async {
+//     try {
+//       var box = await Hive.openBox('userBox');
+//       final token = box.get('authToken');
+//       if (token != null) {
+//         isLogined = true;
+//       } else {
+//         isLogined = false;
+//       }
+//     } catch (e) {
+//       isLogined = false;
+//     }
+//   }
+//   @override
+//   void initState() {
+//     setState(()  {
+//       verifyToken();});
+//     // TODO: implement initState
+//     super.initState();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Bharat Tele Clinic',
+//       theme: ThemeData(
+//         // primaryColor: const Color(0xFF1A237E),
+//       ),
+//       debugShowCheckedModeBanner: false,
+//       home: isLogined == null
+//           ?
+//       const SplashScreen(user:true)
+//           : isLogined == false
+//           ? const LoginScreen()
+//           : const MainScreen(),
+//     );
+//   }
+// }
+
+//v2
+// class BharatTeleClinicApp extends StatefulWidget {
+//   const BharatTeleClinicApp({super.key});
+//
+//   @override
+//   State<BharatTeleClinicApp> createState() => _BharatTeleClinicAppState();
+// }
+// class _BharatTeleClinicAppState extends State<BharatTeleClinicApp> {
+//   bool? isLogined;
+//
+//
+//   // Retrieve token from Hive
+//   Future<void> verifyToken() async {
+//     try {
+//       var box = await Hive.openBox('userBox');
+//       final token = box.get('authToken');
+//       setState(() {
+//         isLogined = token != null; // Update isLogined based on token presence
+//       });
+//     } catch (e) {
+//       setState(() {
+//         isLogined = false; // Handle error case
+//       });
+//     }
+//   }
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     // verifyToken(); // Call verifyToken asynchronously
+//     Future.delayed(Duration(seconds: 3), () {
+//       verifyToken(); // Call verifyToken after the splash screen delay
+//     });
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Bharat Tele Clinic',
+//       theme: ThemeData(
+//         // primaryColor: const Color(0xFF1A237E),
+//       ),
+//       debugShowCheckedModeBanner: false,
+//
+//       home: isLogined == null
+//           ? const SplashScreen(user: false) // Show a loading screen while verifying
+//           : isLogined == false
+//           ? const LoginScreen() // Show LoginScreen if not logged in
+//           : const MainScreen(), // Skip login and go to MainScreen if logged in
+//     );
+//   }
+// }
+class BharatTeleClinicApp extends StatefulWidget {
+  const BharatTeleClinicApp({super.key});
+
+  @override
+  State<BharatTeleClinicApp> createState() => _BharatTeleClinicAppState();
+}
+
+class _BharatTeleClinicAppState extends State<BharatTeleClinicApp> {
+  bool? isLogined;
+
+  // Retrieve token from Hive
+  Future<void> verifyToken() async {
+    try {
+      var box = await Hive.openBox('userBox');
+      final token = box.get('authToken');
+      setState(() {
+        isLogined = token != null; // Update state based on token presence
+      });
+    } catch (e) {
+      setState(() {
+        isLogined = false; // Handle error case
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    verifyToken();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Bharat Tele Clinic',
+      theme: ThemeData(),
+      debugShowCheckedModeBanner: false,
+      home: isLogined == null
+          ? const SplashScreen(user: false)
+          : isLogined!
+          ? const MainScreen()
+          : const LoginScreen(),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  final String appoinmentId;
+  const MyHomePage({super.key,
+    required this.appoinmentId, required appointmentId});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+
+  // final callIdTextCtrl = TextEditingController(text: '');
+  late final TextEditingController callIdTextCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the controller with the appointmentId
+    callIdTextCtrl = TextEditingController(text: widget.appoinmentId);
+  }
+
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     appBar: AppBar(
+  //       backgroundColor: Colors.indigo,
+  //       title: Text(
+  //         'Video Calling',
+  //         style: Theme.of(context).textTheme.titleLarge?.copyWith(
+  //           color: Colors.white,
+  //         ),
+  //       ),
+  //     ),
+  //     body: Center(
+  //       child: Padding(
+  //         padding: const EdgeInsets.all(20),
+  //         child: Column(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           crossAxisAlignment: CrossAxisAlignment.center,
+  //           children: [
+  //
+  //             Text(
+  //               'Join a Call',
+  //               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+  //                 fontWeight: FontWeight.bold,
+  //                 color: Theme.of(context).colorScheme.primary,
+  //               ),
+  //             ),
+  //             const SizedBox(height: 30),
+  //             TextFormField(
+  //               controller: callIdTextCtrl,
+  //               decoration: InputDecoration(
+  //                 labelText: 'Enter Call ID',
+  //                 border: OutlineInputBorder(
+  //                   borderRadius: BorderRadius.circular(10),
+  //                 ),
+  //                 prefixIcon: Icon(
+  //                   Icons.video_call,
+  //                   color: Theme.of(context).colorScheme.primary,
+  //                 ),
+  //               ),
+  //             ),
+  //             const SizedBox(height: 20),
+  //             ElevatedButton.icon(
+  //               onPressed: () {
+  //                 Navigator.push(
+  //                   context,
+  //                   MaterialPageRoute(
+  //                     builder: (context) => CallPage(
+  //                       localUserId: localUserID,
+  //                       id: callIdTextCtrl.text.toString().trim(),
+  //                     ),
+  //                   ),
+  //                 );
+  //               },
+  //               // icon: const Icon(Icons.video_call),
+  //               label: const Text('Join Call'),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xFF243B6D),
+        title: Text(
+          'Video Calling',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            color: Colors.white,
+          ),
+        ),
+      ),
+      body: Center(
+        child: Card(
+          elevation: 4,
+          shadowColor: Colors.grey.withOpacity(0.3),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Join a Call',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Enter the Call ID below to join.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: callIdTextCtrl,
+                  decoration: InputDecoration(
+                    hintText: 'Enter Call ID',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 16,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      backgroundColor: Color(0xFF243B6D), // Primary color
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CallPage(
+                            localUserId: localUserID,
+                            id: callIdTextCtrl.text.toString().trim(),
+                          ),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Join Call',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+
+
+}
+
 
 // class BharatTeleClinicApp extends StatelessWidget {
 //   const BharatTeleClinicApp({super.key});

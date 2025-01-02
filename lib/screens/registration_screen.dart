@@ -43,7 +43,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('bottomdesignbk.jpg'), // Path to your background image
+                image: AssetImage('assets/bkimg.jpg'), // Path to your background image
                 fit: BoxFit.cover, // Cover the entire screen
               ),
             ),
@@ -71,7 +71,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   Container(
                     padding: EdgeInsets.all(screenWidth * 0.05),
                     decoration: BoxDecoration(
-                      color: Colors.indigo,
+                      color: Color(0xFF243B6D),
                       borderRadius: BorderRadius.circular(15), // Rounded corners
                     ),
                     child: Column(
@@ -119,7 +119,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 onChanged: (String? newVal) {
                                     gender=newVal;
                                 },
-                                dropdownColor: Colors.indigo, // Set the background color of the dropdown
+                                dropdownColor: Color(0xFF243B6D), // Set the background color of the dropdown
 
                               ),
 
@@ -279,9 +279,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: const Text('Existing User? Sign In',style: TextStyle(color: Colors.white),),
+                    child: const Text('Existing User? Sign In',style: TextStyle(color: Color(0xFF243B6D),),),
                   ),
                 ],
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: const Text(
+                '© BharatTeleClinic, 2024 - All Rights Reserved.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Color(0xFF243B6D), fontSize: 10),
               ),
             ),
           ),

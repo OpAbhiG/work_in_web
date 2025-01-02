@@ -8,6 +8,7 @@ class ConfirmationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xFF243B6D),
         title: Text('Confirmation'),
       ),
       body: Center(

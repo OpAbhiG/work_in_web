@@ -749,7 +749,7 @@ class _ProfileState extends State<Profile> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Color(0xFF243B6D),
         foregroundColor: Colors.white,
       ),
       body: Column(
@@ -770,7 +770,8 @@ class _ProfileState extends State<Profile> {
                     radius: 30,
                     backgroundImage: AssetImage('assets/limg.jpg'),
                   ),
-                  const SizedBox(width: 20),
+
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -784,6 +785,7 @@ class _ProfileState extends State<Profile> {
                               color: Colors.black,
                             ),
                           ),
+
                         ),
                         Text(
                           'Clinics Patient ID $id',
@@ -793,7 +795,7 @@ class _ProfileState extends State<Profile> {
                           ),
                         ),
                         Align(
-                          alignment: Alignment.centerRight,
+                          alignment: Alignment.topRight,
                           child: IconButton(
                             onPressed: () async {
                               final result = await Navigator.push(
@@ -807,7 +809,7 @@ class _ProfileState extends State<Profile> {
                                     number: number,
                                     dob: dob,
                                     gender:gender,
-                                    blood_group: '',
+                                    blood_group:blood_group,
 
                                   ),
                                 ),
@@ -914,7 +916,7 @@ class _ProfileState extends State<Profile> {
                     const SizedBox(height: 25),
                     // Change Password Option
                     ListTile(
-                      tileColor: Colors.white,
+                      // tileColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
@@ -958,9 +960,8 @@ class _ProfileState extends State<Profile> {
                                     Align(
                                       alignment: Alignment.topRight,
                                       child: IconButton(
-                                        icon: const Icon(Icons.close_rounded),
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(),
+                                        icon: const Icon(Icons.cancel),
+                                        onPressed: () => Navigator.of(context).pop(),
                                       ),
                                     ),
                                     Container(
@@ -973,7 +974,7 @@ class _ProfileState extends State<Profile> {
                                       child: const Icon(
                                         Icons.logout_rounded,
                                         color: Colors.white,
-                                        size: 35,
+                                        size: 30,
                                       ),
                                     ),
                                     const SizedBox(height: 15),
@@ -1016,17 +1017,12 @@ class _ProfileState extends State<Profile> {
                                               await Hive.openBox('userBox');
                                               await box.delete('authToken');
                                               widget.onLogout();
-                                              Navigator.of(context)
-                                                  .pushAndRemoveUntil(
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                  const LoginScreen(),
-                                                ),
-                                                    (route) => false,
+                                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()),
+                                                // (route) => false,
                                               );
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.indigo[900],
+                                              backgroundColor: Color(0xFF243B6D),
                                               foregroundColor: Colors.white,
                                             ),
                                             child: const Text('Logout'),
@@ -1060,25 +1056,27 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                     ),
-
-                    const SizedBox(height: 10),
-                    // Footer Text
-                    const Text(
-                      '© BharatTeleClinic, 2024 - All Rights Reserved.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.orange,
-                        fontSize: 12,
-                      ),
-                    ),
                   ],
                 ),
               ),
             ),
           ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: const Text(
+                '© BharatTeleClinic, 2024 - All Rights Reserved.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Color(0xFF243B6D), fontSize: 10),
+              ),
+            ),
+          ),
         ],
       ),
+
     );
+
   }
 
 

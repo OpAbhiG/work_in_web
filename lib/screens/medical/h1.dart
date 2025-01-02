@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
-class CustomCard extends StatelessWidget {
+class CustomCard extends StatefulWidget {
+  @override
+  State<CustomCard> createState() => _CustomCardState();
+}
+
+class _CustomCardState extends State<CustomCard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,7 +67,7 @@ class CustomCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                "Dr. John Doe", // Doctor Name
+                                "", // Doctor Name
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,

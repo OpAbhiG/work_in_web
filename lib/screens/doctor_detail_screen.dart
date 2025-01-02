@@ -8,7 +8,10 @@ import 'doctor_nav_screen.dart';
 class DoctorDetailScreen extends StatefulWidget {
   final Doctor doctor;
   final Map<String, dynamic> appointment;
-  const DoctorDetailScreen({super.key, required this.doctor, required this.appointment});
+  const DoctorDetailScreen({super.key,
+    required this.doctor,
+    required this.appointment
+  });
 
   @override
   State<DoctorDetailScreen> createState() => _DoctorDetailScreenState();
@@ -34,8 +37,8 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
     // final appointment = widget.appointment;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Doctor Profile'),
-        backgroundColor: Theme.of(context).primaryColor,
+        title: Text('Doctor Profile',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18)),
+        backgroundColor: const Color(0xFF243B6D),
         foregroundColor: Colors.white,
       ),
       body: Padding(
@@ -66,6 +69,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                         width: 50.0,
                         alignment: Alignment.center,
                         child: CircularProgressIndicator(
+                          color: Color(0xFF243B6D),
                           value: loadingProgress.expectedTotalBytes != null
                               ? loadingProgress.cumulativeBytesLoaded /
                               (loadingProgress.expectedTotalBytes ?? 1)
@@ -134,35 +138,38 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
               widget.doctor.about,
               style: const TextStyle(fontSize: 13),
             ),
+
+             SizedBox(height: 30,),
              Center(
-              child: ElevatedButton.icon(
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => AppointmentBookingScreen(
-                      doctors: const [],
-                      onBookAppointment: (Doctor p1, DateTime p2) {
-                      },
+                child: ElevatedButton.icon(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => AppointmentBookingScreen(
+                        doctors: const [],
+                        onBookAppointment: (Doctor p1, DateTime p2) {
+                        },
+                      ),
+                    ),
+                  ),
+                  icon: const Icon(
+                    size: 13,
+                    Icons.calendar_today,
+                    color: Colors.white,
+                  ),
+                  label: const Text(
+                    'Book an Appointment',
+                    style: TextStyle(color: Colors.white,fontSize: 10),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange, // Background color
+                    padding: const EdgeInsets.symmetric(vertical: 18,horizontal: 10), // Padding
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5), // Rounded corners
                     ),
                   ),
                 ),
-                icon: const Icon(
-                  size: 13,
-                  Icons.calendar_today,
-                  color: Colors.white,
-                ),
-                label: const Text(
-                  'Book an Appointment',
-                  style: TextStyle(color: Colors.white,fontSize: 15),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange, // Background color
-                  padding: const EdgeInsets.symmetric(vertical: 14,horizontal: 14), // Padding
-                  shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8), // Rounded corners
-                  ),
-                ),
-              ),
-            ),
+
+             ),
 
           ],
         ),

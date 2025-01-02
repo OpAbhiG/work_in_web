@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 // import '../DOCTOR_SCREEN/doctor_nav.dart';
 import '../DOCTOR_SCREEN/today.dart';
 import '../models/appointment.dart';
@@ -70,15 +71,15 @@ class MainScreenState extends State<MainScreen> {
         unselectedItemColor: const Color.fromARGB(255, 75, 75, 75),
         // Customize the text size for selected and unselected labels
         selectedLabelStyle: const TextStyle(
-          fontSize: 13,  // Adjust text size for selected item
+          fontSize: 9,  // Adjust text size for selected item
           fontWeight: FontWeight.bold,  // Optional: Make it bold for selected item
         ),
         unselectedLabelStyle: const TextStyle(
-          fontSize: 10,  // Adjust text size for unselected items
+          fontSize: 8,  // Adjust text size for unselected items
         ),
 
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.grid_view), label: 'Dashboard'),
+          BottomNavigationBarItem(icon: Icon(Icons.grid_view_sharp), label: 'Dashboard'),
           BottomNavigationBarItem(icon: Icon(Icons.monitor_heart), label: 'Doctors'),
 
           // BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Profile'),

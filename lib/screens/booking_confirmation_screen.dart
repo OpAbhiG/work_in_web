@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'main_screen.dart';
 // import 'package:login_registration_screen/screens/dashboard_screen.dart';
@@ -6,7 +7,23 @@ import 'main_screen.dart';
 
 // import 'dashboard_screen.dart';
 
-class BookingConfirmationScreen extends StatelessWidget {
+class BookingConfirmationScreen extends StatefulWidget {
+
+  final String fullName;
+  final int doctorId;
+  final DateTime date;
+  final String time;
+  final double amount;
+
+  const BookingConfirmationScreen({super.key, required this.fullName, required this.doctorId, required this.date, required this.time, required this.amount});
+
+
+  @override
+  State<BookingConfirmationScreen> createState() => _BookingConfirmationScreenState();
+}
+
+class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,23 +71,28 @@ class BookingConfirmationScreen extends StatelessWidget {
                   color: Colors.grey[600],
                 ),
               ),
-              SizedBox(height: 5),
+
+              const SizedBox(height: 16),
+
+              // SizedBox(height: 5),
               Text(
-                'Appointment ID : 37832',
+                // 'Appointment ID : ${widget.doctorId}',
+                '',
+
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 32),
-              _buildInfoRow('Date', 'Time', 'Nov 23, 2024', '10:10 AM',),
+              SizedBox(height: 3),
+              _buildInfoRow('Date  ${DateFormat('MMM dd, yyyy').format(widget.date)}', 'Time ${widget.time}', '', '',),
 
 
 
               SizedBox(height: 16),
               _buildInfoRow(
                 'Appointment Type',
-                'Dr. Kulsum Khan',
+                'Dr.${widget.fullName}',
                 'Video Consultation',
                 'General Physician',
               ),

@@ -36,8 +36,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late TextEditingController numberController;
   late TextEditingController dobController;
   String? selectedBloodGroup;
-
-
   String? selectedGender;
 
   @override
@@ -49,6 +47,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     aadharController = TextEditingController(text: widget.aadhar_no);
     numberController = TextEditingController(text: widget.number);
     dobController = TextEditingController(text: widget.dob);
+
 
   }
 
@@ -162,11 +161,27 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Profile', style: TextStyle(color: Colors.white, fontSize: 18)),
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
+      // appBar: AppBar(
+      //   title: const Text('Edit Profile', style: TextStyle(color: Colors.white, fontSize: 18)),
+      //   backgroundColor: Theme.of(context).primaryColor,
+      //   foregroundColor: Colors.white,
+      // ),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(80), // Set the height of the AppBar
+        child: AppBar(
+          title: const Text('Edit Profile', style: TextStyle(color: Colors.white, fontSize: 18,fontWeight: FontWeight.bold)),
+          backgroundColor: Color(0xFF243B6D),
+          foregroundColor: Colors.white,
+          centerTitle: true,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(30), // Apply rounded corners to the bottom of the AppBar
+            ),
+          ),
+        ),
       ),
+
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(  // To handle keyboard appearance on smaller screens
