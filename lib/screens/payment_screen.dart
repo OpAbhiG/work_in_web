@@ -156,16 +156,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-
-              selectedDoctor != null && doctors.any((doctor) => doctor['id'] == selectedDoctor)
-                  ? 'Dr. ${doctors.firstWhere((doctor) => doctor['id'] == selectedDoctor)['full_name']}'
-                  : 'No doctor selected',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black87,
-              ),
-            ),
+            // Text(
+            //
+            //   selectedDoctor != null && doctors.any((doctor) => doctor['id'] == selectedDoctor)
+            //       ? 'Dr. ${doctors.firstWhere((doctor) => doctor['id'] == selectedDoctor)['full_name']}'
+            //       : 'No doctor selected',
+            //   style: TextStyle(
+            //     fontSize: 16,
+            //     color: Colors.black87,
+            //   ),
+            // ),
 
             SizedBox(height: 16),
             Row(

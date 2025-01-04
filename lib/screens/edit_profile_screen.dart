@@ -1,7 +1,10 @@
 // import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../APIServices/base_api.dart';
 
@@ -9,7 +12,7 @@ class EditProfileScreen extends StatefulWidget {
   final String fname, lname, email, aadhar_no, number, dob,blood_group, gender;
 
   const EditProfileScreen({
-    Key? key,
+    super.key,
     required this.fname,
     required this.lname,
     required this.email,
@@ -18,9 +21,9 @@ class EditProfileScreen extends StatefulWidget {
     required this.dob,
     // required String gender,
     required this.blood_group,
-    required this.gender,
+    required this.gender, String? profileImage,
 
-  }) : super(key: key);
+  });
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -37,6 +40,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late TextEditingController dobController;
   String? selectedBloodGroup;
   String? selectedGender;
+  File? _profileImage;
 
   @override
   void initState() {
@@ -50,7 +54,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
 
   }
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery); // Or use ImageSource.camera to capture an image
 
+    if (pickedFile != null) {
+      setState(() {
+        _profileImage = File(pickedFile.path);
+      });
+    }
+  }
   Future<String?> getToken() async {
     try {
       var box = await Hive.openBox('userBox');
@@ -87,6 +100,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           'number': numberController.text,
           'dob': dobController.text,
           'blood_group': selectedBloodGroup ?? '',
+
         },
       );
 
@@ -195,6 +209,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    GestureDetector(
+                      onTap: _pickImage,
+                      child: Center(
+                        child: CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Colors.grey[300],
+                          backgroundImage: _profileImage != null
+                              ? FileImage(_profileImage!)
+                              : AssetImage('assets/placeholder.png') as ImageProvider,
+                          child: _profileImage == null
+                              ? Icon(Icons.person, color: Colors.white, size: 40)
+                              : null,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     _buildTextField(fnameController, 'First Name', (value) => value!.isEmpty ? 'First name is required' : null),
                     _buildTextField(lnameController, 'Last Name', (value) => value!.isEmpty ? 'Last name is required' : null),
                     _buildTextField(emailController, 'Email', (value) => value!.isEmpty ? 'Email is required' : null, keyboardType: TextInputType.emailAddress),

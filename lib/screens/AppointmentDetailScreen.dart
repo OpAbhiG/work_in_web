@@ -7,6 +7,7 @@ import '../APIServices/base_api.dart';
 // art';
 import '../VitalsHistory/HistoryScreen.dart';
 // import '../VitalsHistory/PatientDetailsForm.dart';
+import '../call_page.dart';
 import '../main.dart';
 import 'medical/medical1.dart';
 
@@ -780,14 +781,31 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                             child: Row(
                               children: [
                                 IconButton(
+                                  // onPressed: () {
+                                  //   // Navigate to MyHomePage
+                                  //   Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(builder: (context) => MyHomePage(
+                                  //       appoinmentId: appointment['slot_id'].toString(),
+                                  //       appointmentId: null,
+                                  //     )),
+                                  //   );
+                                  // },
                                   onPressed: () {
                                     // Navigate to MyHomePage
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => MyHomePage(
-                                        appoinmentId: appointment['slot_id'].toString(),
-                                        appointmentId: null,
-                                      )),
+                                      // MaterialPageRoute(
+                                      //     builder: (context) => MyHomePage(
+                                      //       appoinmentId: appointment['slot_id'].toString(), appointmentId: null,
+                                      //     )
+                                      // ),
+                                      MaterialPageRoute(
+                                        builder: (context) => CallPage(
+                                          localUserId: localUserID, // Replace with actual user ID
+                                          id: appointment['slot_id'].toString(), // Pass slot_id directly
+                                        ),
+                                      ),
                                     );
                                   },
                                   icon: Container(

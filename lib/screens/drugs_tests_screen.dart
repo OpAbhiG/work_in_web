@@ -466,7 +466,7 @@ class _PrescriptionDetailScreenState extends State<PrescriptionDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Prescription Details'),
+        title: const Text('Prescription Details',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
         backgroundColor: Color(0xFF243B6D),
         foregroundColor: Colors.white,
       ),

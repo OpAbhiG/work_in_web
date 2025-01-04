@@ -122,6 +122,8 @@ class _DoctorListScreenState extends State<DoctorListScreen> {
       appBar: AppBar(
         backgroundColor: Color(0xFF243B6D),
         automaticallyImplyLeading: false, // Remove back arrow
+        centerTitle: true,
+
         title: const Text('Doctors',
           style: TextStyle(
           fontSize: 18, // Adjust font size

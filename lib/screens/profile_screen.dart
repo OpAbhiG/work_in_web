@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -6,6 +8,8 @@ import '../APIServices/base_api.dart';
 import 'change_password.dart';
 import 'edit_profile_screen.dart';
 import 'login_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 class Profile extends StatefulWidget {
   final VoidCallback onLogout;
   const Profile({super.key, required this.onLogout});
@@ -15,16 +19,9 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  String fname = '';
-  String lname = '';
-  String aadhar_no='';
-  String blood_group = '';
-  String email='';
-  String gender='';
-  String number='';
-  String dob='';
-  String id='';
+  String fname = '',lname = '', aadhar_no='', blood_group = '', email='', gender='', number='', dob='', id='';
   bool isLoading = true;
+  String? profileImage;
 
   @override
   void initState() {
@@ -108,6 +105,7 @@ class _ProfileState extends State<Profile> {
           dob = data['data']['dob'] ?? '';
           id = data['data']['id'].toString(); // Convert id to String
           blood_group=data['data']['blood_group']?? '';
+          profileImg = data['data']['profile_img'] ?? ''; // Fetch the profile image URL
 
           isLoading = false;
         });
@@ -736,15 +734,18 @@ class _ProfileState extends State<Profile> {
   //     ),
   //   );
   // }
+  String profileImg = ''; // To hold the profile image URL
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text(
+        centerTitle: true,
+
+        title: Text(
           'Profile',
-          style: TextStyle(
+          style: GoogleFonts.poppins(
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
@@ -755,164 +756,371 @@ class _ProfileState extends State<Profile> {
       body: Column(
         children: [
           // Fixed Profile Card
-          Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            elevation: 2,
-            margin: const EdgeInsets.symmetric(horizontal: 15),
-            child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start, // Aligns at the top
-                children: [
-                  const CircleAvatar(
-                    radius: 30,
-                    backgroundImage: AssetImage('assets/limg.jpg'),
-                  ),
-
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20.0),
-                          child: Text(
-                            '$fname $lname',
-                            style: const TextStyle(
-                              fontSize: 15,
-                              color: Colors.black,
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: CachedNetworkImage(
+                        imageUrl: profileImg ?? 'https://via.placeholder.com/150', // Replace with the actual image URL
+                        fit: BoxFit.cover,
+                        width: 70, // Adjust size as needed
+                        height: 70, // Adjust size as needed
+                        placeholder: (context, url) => Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        errorWidget: (context, url, error) {
+                          return Container(
+                            width: 70,
+                            height: 70,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.grey[300],
                             ),
-                          ),
-
-                        ),
-                        Text(
-                          'Clinics Patient ID $id',
-                          style: const TextStyle(
-                            fontSize: 10,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: IconButton(
-                            onPressed: () async {
-                              final result = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EditProfileScreen(
-                                    fname: fname,
-                                    lname: lname,
-                                    email: email,
-                                    aadhar_no: aadhar_no,
-                                    number: number,
-                                    dob: dob,
-                                    gender:gender,
-                                    blood_group:blood_group,
-
-                                  ),
-                                ),
-                              );
-                              if (result == true) {
-                                fetchProfile(); // Refresh profile data
-                              }
-                            },
-                            icon: Container(
-                              padding: const EdgeInsets.all(5), // Add padding to give space around the icon
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.orange, // Set the background color to orange
-                              ),
-                              child: const Icon(
-                                size: 15,
-                                Icons.edit_rounded,
-                                color: Colors.white, // Set the icon color to white
-                              ),
+                            alignment: Alignment.center,
+                            child: Icon(
+                              Icons.person,
+                              color: Colors.grey,
                             ),
-
-                          ),
-                        ),
-                      ],
+                          );
+                        },
+                        // imageUrl: '',
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                    GestureDetector(
+                      onTap: () async {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditProfileScreen(
+                              fname: fname,
+                              lname: lname,
+                              email: email,
+                              aadhar_no: aadhar_no,
+                              number: number,
+                              dob: dob,
+                              gender: gender,
+                              blood_group: blood_group,
+                              profileImage: profileImage,
+                            ),
+                          ),
+                        );
+                        if (result == true) {
+                          fetchProfile(); // Refresh profile data
+                        }
+                      },
+                      child: CircleAvatar(
+                        radius: 12,
+                        backgroundColor: const Color(0xFF243B6D),
+                        child: const Icon(
+                          Icons.edit,
+                          color: Colors.white,
+                          size: 14,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '$fname $lname',
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF243B6D),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Clinics Patient ID $id',
+                      style: GoogleFonts.poppins(
+                        fontSize: 15,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-
+          const Divider(),
           // Scrollable Section
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Second Card (Profile Details)
+                    // Section Title
+                    Text(
+                      'Personal Information',
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF243B6D),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    // Information Cards
                     Card(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
                       elevation: 4,
-                      child: Padding(
-                        padding: const EdgeInsets.all(15),
-                        child: Column(
-                          children: [
-                            _buildProfileDetail(
-                              label: 'First Name',
-                              value: '$fname',
-                              isEditable: false,
-                              hasCalendarIcon: false,
-                            ),
-                            _buildProfileDetail(
-                              label: 'Last Name',
-                              value: '$lname',
-                              isEditable: false,
-                              hasCalendarIcon: false,
-                            ),
-
-                            _buildProfileDetail(
-                              label: 'Gender',
-                              value: '$gender',
-                              isEditable: false,
-                              hasCalendarIcon: false,
-                            ),
-                            _buildProfileDetail(
-                              label: 'Aadhaar Number',
-                              value: '$aadhar_no',
-                              isEditable: false,
-                              hasCalendarIcon: false,
-                            ),
-                            _buildProfileDetail(
-                              label: 'Date of Birth',
-                              value: '$dob',
-                              isEditable: false,
-                              hasCalendarIcon: true,
-                            ),
-                            _buildProfileDetail(
-                              label: 'Email',
-                              value: '$email',
-                              isEditable: false,
-                              hasCalendarIcon: false,
-                            ),
-                            _buildProfileDetail(
-                              label: 'Mobile Number',
-                              value: '$number',
-                              isEditable: false,
-                              hasCalendarIcon: false,
-                            ),
-                            // Add this inside your Column widget under the second Card
-                            _buildProfileDetail(
-                              label: 'Blood Group',
-                              value: '$blood_group',  // Display the blood group
-                              isEditable: false,
-                              hasCalendarIcon: false,
-                            ),
-
-                          ],
+                      child: ListTile(
+                        leading: const Icon(Icons.drive_file_rename_outline, color:Color(0xFF243B6D),),
+                        title: Text(
+                          'First Name',
+                          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          '$fname',
+                          style: GoogleFonts.poppins(),
                         ),
                       ),
                     ),
+                    const SizedBox(height: 10),
+                    // Information Cards
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      elevation: 4,
+                      child: ListTile(
+                        leading: const Icon(Icons.drive_file_rename_outline, color: Color(0xFF243B6D),),
+                        title: Text(
+                          'Last Name',
+                          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          '$lname',
+                          style: GoogleFonts.poppins(),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    // Information Cards
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      elevation: 4,
+                      child: ListTile(
+                        leading: const Icon(Icons.email, color: Color(0xFF243B6D),),
+                        title: Text(
+                          'Email ID',
+                          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          '$email',
+                          style: GoogleFonts.poppins(),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      elevation: 4,
+                      child: ListTile(
+                        leading: const Icon(Icons.phone, color: Color(0xFF243B6D),),
+                        title: Text(
+                          'Phone',
+                          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          '$number',
+                          style: GoogleFonts.poppins(),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      elevation: 4,
+                      child: ListTile(
+                        leading: const Icon(Icons.location_on, color: Color(0xFF243B6D),),
+                        title: Text(
+                          'Adhar Card',
+                          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          '$aadhar_no',
+                          style: GoogleFonts.poppins(),
+                        ),
+                      ),
+                    ),
+
+                    Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        elevation: 4,
+                        child: ListTile(
+                          leading: const Icon(Icons.bloodtype, color: Color(0xFF243B6D),),
+                          title: Text(
+                            'Blood Group',
+                            style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(
+                            '$blood_group',
+                            style: GoogleFonts.poppins(),
+                          ),
+                        ),
+                      ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Age
+                        Expanded(
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            elevation: 4,
+                            child: ListTile(
+                              leading: const Icon(Icons.cake, color: Color(0xFF243B6D),),
+                              title: Text(
+                                'Age',
+                                style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text(
+                                '$dob',
+                                style: GoogleFonts.poppins(),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        // Gender
+                        Expanded(
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            elevation: 4,
+                            child: ListTile(
+                              leading: const Icon(Icons.male, color: Color(0xFF243B6D),),
+                              title: Text(
+                                'Gender',
+                                style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text(
+                                '$gender',
+                                style: GoogleFonts.poppins(),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Age
+                        Expanded(
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            elevation: 4,
+                            child: ListTile(
+                              leading: const Icon(Icons.location_city, color: Color(0xFF243B6D),),
+                              title: Text(
+                                'City',
+                                style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text(
+                                'Solapur',
+                                style: GoogleFonts.poppins(),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        // Gender
+                        // Expanded(
+                        //   child:
+                        // ),
+                      ],
+                    ),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      elevation: 4,
+                      child: ListTile(
+                        leading: const Icon(Icons.location_city, color: Color(0xFF243B6D),),
+                        title: Text(
+                          'State',
+                          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          'Maharashtra',
+                          style: GoogleFonts.poppins(),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      elevation: 4,
+                      child: ListTile(
+                        leading: const Icon(Icons.location_on, color: Color(0xFF243B6D),),
+                        title: Text(
+                          'Location',
+                          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          'Mumbai, India',
+                          style: GoogleFonts.poppins(),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      elevation: 4,
+                      child: ListTile(
+                        leading: const Icon(Icons.family_restroom, color: Color(0xFF243B6D),),
+                        title: Text(
+                          'Family Members',
+                          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.add),
+                          onPressed: () {
+                            // Add Family Member logic
+                          },
+                          tooltip: 'Add Family Member',
+
+                        ),
+                        subtitle: Text(
+                          'no member added',
+                          style: GoogleFonts.poppins(),
+                        ),
+                      ),
+                    ),
+
                     const SizedBox(height: 25),
                     // Change Password Option
                     ListTile(
@@ -1017,9 +1225,7 @@ class _ProfileState extends State<Profile> {
                                               await Hive.openBox('userBox');
                                               await box.delete('authToken');
                                               widget.onLogout();
-                                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()),
-                                                // (route) => false,
-                                              );
+                                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()),);
                                             },
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: Color(0xFF243B6D),
@@ -1047,18 +1253,23 @@ class _ProfileState extends State<Profile> {
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
-                      child: const Text(
-                        'Logout',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
+                      child: Center(
+                        child: const Text(
+                          'Logout',
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white
+                          ),
                         ),
                       ),
                     ),
                   ],
                 ),
+
               ),
+
+
             ),
           ),
           Align(
@@ -1080,64 +1291,64 @@ class _ProfileState extends State<Profile> {
   }
 
 
-  Widget _buildProfileDetail({
-    required String label,
-    required String value,
-    bool isEditable = false,
-    required bool hasCalendarIcon,
-    bool isDropdown = false,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 10, color: Colors.grey),
-          ),
-          const SizedBox(height: 5.0),
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),  // Add a gray border
-              // color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                // BoxShadow(
-                //   color: Colors.grey.withOpacity(0.2),
-                //   blurRadius: 5,
-                //   offset: const Offset(0, 3),
-                // ),
-              ],
-            ),
-            padding: const EdgeInsets.symmetric(horizontal:15),
-            child: isDropdown
-                ? DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: value,
-                items: const [
-                  DropdownMenuItem(value: 'Male', child: Text('Male')),
-                  DropdownMenuItem(value: 'Female', child: Text('Female')),
-                ],
-                onChanged: isEditable ? (String? newValue) {} : null,
-              ),
-            )
-                : TextField(
-              controller: TextEditingController(text: value),
-              enabled: isEditable,
-              decoration: InputDecoration(
-                suffixIcon: hasCalendarIcon
-                    ? const Icon(Icons.calendar_today, color: Colors.orange)
-                    : null,
-                border: InputBorder.none,
-              ),
-              style: TextStyle(color: isEditable ? Colors.grey[800] : Colors.grey[600]),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildProfileDetail({
+  //   required String label,
+  //   required String value,
+  //   bool isEditable = false,
+  //   required bool hasCalendarIcon,
+  //   bool isDropdown = false,
+  // }) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 5.0),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Text(
+  //           label,
+  //           style: const TextStyle(fontSize: 10, color: Colors.grey),
+  //         ),
+  //         const SizedBox(height: 5.0),
+  //         Container(
+  //           decoration: BoxDecoration(
+  //             border: Border.all(color: Colors.grey),  // Add a gray border
+  //             // color: Colors.grey[100],
+  //             borderRadius: BorderRadius.circular(10),
+  //             boxShadow: [
+  //               // BoxShadow(
+  //               //   color: Colors.grey.withOpacity(0.2),
+  //               //   blurRadius: 5,
+  //               //   offset: const Offset(0, 3),
+  //               // ),
+  //             ],
+  //           ),
+  //           padding: const EdgeInsets.symmetric(horizontal:15),
+  //           child: isDropdown
+  //               ? DropdownButtonHideUnderline(
+  //             child: DropdownButton<String>(
+  //               value: value,
+  //               items: const [
+  //                 DropdownMenuItem(value: 'Male', child: Text('Male')),
+  //                 DropdownMenuItem(value: 'Female', child: Text('Female')),
+  //               ],
+  //               onChanged: isEditable ? (String? newValue) {} : null,
+  //             ),
+  //           )
+  //               : TextField(
+  //             controller: TextEditingController(text: value),
+  //             enabled: isEditable,
+  //             decoration: InputDecoration(
+  //               suffixIcon: hasCalendarIcon
+  //                   ? const Icon(Icons.calendar_today, color: Colors.orange)
+  //                   : null,
+  //               border: InputBorder.none,
+  //             ),
+  //             style: TextStyle(color: isEditable ? Colors.grey[800] : Colors.grey[600]),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 }
 
 

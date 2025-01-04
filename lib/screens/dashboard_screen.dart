@@ -1,13 +1,16 @@
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:untitled10/screens/roundrd_appbar.dart';
+// import 'package:untitled10/screens/roundrd_appbar.dart';
 import '../APIServices/base_api.dart';
 import '../VitalsHistory/HistoryScreen.dart';
 import '../call_page.dart';
 import '../main.dart';
-import '../models/appointment.dart';
+// import '../models/appointment.dart';
 import 'AppointmentDetailScreen.dart';
 import 'appointments_nav_screen.dart';
 import 'booking_screen.dart';
@@ -15,7 +18,7 @@ import 'doctor_nav_screen.dart';
 import 'drugs_tests_screen.dart';
 import 'invoice.dart';
 import 'medical/medical1.dart';
-import 'medical_history_screen.dart';
+// import 'medical_history_screen.dart';
 import 'package:http/http.dart' as http;
 
 class DashboardScreen extends StatefulWidget {
@@ -128,6 +131,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           id = data['data']['id'] ??''; // Convert id to String
           dob = data['data']['dob'] ?? '';
           blood_group=data['data']['blood_group']??'';
+          profileImg = data['data']['profile_img'] ?? ''; // Fetch the profile image URL
+
 
 
           isLoading = false;
@@ -230,7 +235,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               'full_name': item['full_name'] ?? 'Unknown Patient',
               'start_time': item['start_time'] ?? 'N/A',
               'speciality': item['speciality'] ?? 'Unknown Clinic',
-              'image_url': item['image_url'] ?? '', // Add image URL field
+              // 'image_url': item['image_url'] ?? '', // Add image URL field
               'slot_id': item['slot_id'] ?? 'N/A', // Slot ID
               'date':item['date']??'na',
             };
@@ -262,6 +267,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   late final int slotId;
 
+  String profileImg = ''; // To hold the profile image URL
 
 
   @override
@@ -271,7 +277,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       // backgroundColor: Color(0xFFF2F2F2),
       appBar: AppBar(
         automaticallyImplyLeading: false, // Remove back arrow
-        title: const Text('Dashboard',style: TextStyle(
+        title:  Text('Dashboard',
+            style: GoogleFonts.poppins(
           fontSize: 18, // Adjust font size
           fontWeight: FontWeight.bold, // Make text bold
         )),
@@ -322,23 +329,114 @@ class _DashboardScreenState extends State<DashboardScreen> {
           children: [
              Row(
                crossAxisAlignment: CrossAxisAlignment.center,
-
                children: [
-                const CircleAvatar(
-                  radius: 30,
-                  backgroundImage: AssetImage('assets/limg.jpg'),
-                ),
+                 // CircleAvatar(
+                 //                  //   radius: 30,
+                 //                  //   backgroundColor: Colors.grey[300],
+                 //                  //   backgroundImage: profileImg.isNotEmpty
+                 //                  //       ? NetworkImage(profileImg) // Use the API-provided image
+                 //                  //       : NetworkImage('https://via.placeholder.com/150') as ImageProvider, // Fallback to a local asset
+                 //                  // ),
+                 // CircleAvatar(
+                 //   radius: 30,
+                 //   backgroundColor: Colors.grey[200],
+                 //   child: ClipOval(
+                 //     child: CachedNetworkImage(
+                 //       imageUrl: profileImg ??'',
+                 //       fit: BoxFit.cover,
+                 //       width: 80,
+                 //       height: 80,
+                 //       placeholder: (context, url) => const Center(
+                 //         child: CircularProgressIndicator(),
+                 //       ),
+                 //       errorWidget: (context, url, error) {
+                 //         if (kDebugMode) {
+                 //           print('Error loading profile image: $error');
+                 //         }
+                 //         return Image.asset(
+                 //           'assets/d3.jpeg',
+                 //           fit: BoxFit.cover,
+                 //           width: 80,
+                 //           height: 80,
+                 //         );
+                 //       },
+                 //     ),
+                 //   ),
+                 // ),
+      //   ClipRRect(
+      //   borderRadius: BorderRadius.circular(10.0),
+      //   child: CachedNetworkImage(
+      //     imageUrl: profileImg,
+      //     fit: BoxFit.cover,
+      //     width: 70, // Adjust size as needed
+      //     height: 70, // Adjust size as needed
+      //     placeholder: (context, url) => Center(
+      //       child: CircularProgressIndicator(),
+      //     ),
+      //     errorWidget: (context, url, error) {
+      //       return Container(
+      //         width: 70,
+      //         height: 70,
+      //         decoration: BoxDecoration(
+      //           shape: BoxShape.circle,
+      //           color: Colors.grey[300],
+      //         ),
+      //         alignment: Alignment.center,
+      //         child: Icon(
+      //           Icons.person,
+      //           color: Colors.grey,
+      //         ),
+      //       );
+      //     },
+      //     // imageUrl: '',
+      //   ),
+      // ),
+
+                 CircleAvatar(
+                   radius: 40,
+                   backgroundColor: Colors.grey[200],
+                   child: ClipOval(
+                     child: CachedNetworkImage(
+                       imageUrl: profileImg,
+                       fit: BoxFit.cover,
+                       width: 70,
+                       height: 70,
+                       placeholder: (context, url) => const Center(
+                         child: CircularProgressIndicator(),
+                       ),
+                       errorWidget: (context, url, error) {
+                         if (kDebugMode) {
+                           print('Error loading profile image: $error');
+                         }
+                         return Container(
+                           width: 70,
+                           height: 70,
+                           decoration: BoxDecoration(
+                             shape: BoxShape.circle,
+                             color: Colors.grey[300],
+                           ),
+                           alignment: Alignment.center,
+                           child: Icon(
+                             Icons.person,
+                             color: Colors.grey,
+                           ),
+                         );
+                       },
+                     ),
+                   ),
+                 ),
+
                 SizedBox(width: 20),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                        '$fname $lname',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       'Clinic Patient ID $id', // Show user ID
-                      style: TextStyle(fontSize: 13, color: Colors.grey),
+                      style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey),
                     ),
                   ],
                 ),
@@ -447,7 +545,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-
   void _onDrugsTestsTapped(BuildContext context) {
     // Initialize slotId to a default value
     int slotId = 0;
@@ -513,9 +610,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   // Navigate to the AppointmentsScreen
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) =>  AppointmentScreen(isFromDashboard: true)),
+                    MaterialPageRoute(builder: (context) =>  AppointmentScreen()),
                   );
                 },
+
                 child: Text(
                   'View all',
                   style: TextStyle(
@@ -628,11 +726,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     'Appointment ID: ${appointment['slot_id']}',
                                     style: TextStyle(color: Colors.grey[600], fontSize: 12.0),
                                   ),
-
                                 ],
-
                               ),
-
                             ),
                             IconButton(
                               onPressed: () {

@@ -118,7 +118,7 @@ class _VitalHistoryScreenState extends State<VitalHistoryScreen> {
       appBar: AppBar(
         title: const Text(
           'Appointment Details',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 18),
         ),
         backgroundColor: const Color(0xFF243B6D),
       ),

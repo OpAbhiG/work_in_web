@@ -491,15 +491,19 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:untitled10/screens/dashboard_screen.dart';
+import 'package:untitled10/screens/main_screen.dart';
 
 import '../APIServices/base_api.dart';
+import '../call_page.dart';
 import '../main.dart';
 import 'AppointmentDetailScreen.dart';
 
 class AppointmentScreen extends StatefulWidget {
-  final bool isFromDashboard;
+  // final bool isFromDashboard;
   const AppointmentScreen({
-    this.isFromDashboard = false, Key? key}) : super(key: key);
+    // this.isFromDashboard = false,
+    Key? key}) : super(key: key);
 
   @override
   _AppointmentScreenState createState() => _AppointmentScreenState();
@@ -657,10 +661,16 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF243B6D),
 
-        automaticallyImplyLeading: true, // Remove back arrow
+        backgroundColor: Color(0xFF243B6D),
+          // automaticallyImplyLeading: false,
+
+        leading: IconButton(
+        icon: Icon(Icons.arrow_back, color: Color(0xFF243B6D),),
+        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MainScreen()))),
+
         title: Text('My Appointments', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: Colors.orange,
@@ -937,11 +947,28 @@ class _AppointmentCardState extends State<AppointmentCard> {
                   // Video call button
                   if (widget.section == 'today' || widget.section == 'upcoming')
                   IconButton(
+                    // onPressed: () {
+                    //   // Navigate to MyHomePage
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(builder: (context) => MyHomePage(appoinmentId: widget.appointment['slot_id'].toString(), appointmentId: null,)),
+                    //   );
+                    // },
                     onPressed: () {
                       // Navigate to MyHomePage
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => MyHomePage(appoinmentId: widget.appointment['slot_id'].toString(), appointmentId: null,)),
+                        // MaterialPageRoute(
+                        //     builder: (context) => MyHomePage(
+                        //       appoinmentId: appointment['slot_id'].toString(), appointmentId: null,
+                        //     )
+                        // ),
+                        MaterialPageRoute(
+                          builder: (context) => CallPage(
+                            localUserId: localUserID, // Replace with actual user ID
+                            id: widget.appointment['slot_id'].toString(), // Pass slot_id directly
+                          ),
+                        ),
                       );
                     },
                     icon: Container(

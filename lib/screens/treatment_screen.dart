@@ -16,10 +16,11 @@ class _TreatmentScreenState extends State<TreatmentScreen> {
       appBar: AppBar(
         backgroundColor: Color(0xFF243B6D),
         automaticallyImplyLeading: false,
+        centerTitle: true,
+
         title: const Text('Treatment',style: TextStyle(
           fontSize: 18, // Adjust font size
           fontWeight: FontWeight.bold, // Make text bold
-          // fontFamily: 'Schyler',
         )),
         foregroundColor: Colors.white,
       ),
