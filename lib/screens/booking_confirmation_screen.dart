@@ -78,21 +78,22 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
               Text(
                 // 'Appointment ID : ${widget.doctorId}',
                 '',
-
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               SizedBox(height: 3),
-              _buildInfoRow('Date  ${DateFormat('MMM dd, yyyy').format(widget.date)}', 'Time ${widget.time}', '', '',),
+              _buildInfoRow('Date', 'Time', '${DateFormat('MMM dd, yyyy').format(widget.date)}', '${widget.time}',),
+
+
 
 
 
               SizedBox(height: 16),
               _buildInfoRow(
                 'Appointment Type',
-                'Dr.${widget.fullName}',
+                'Id.${widget.fullName}',
                 'Video Consultation',
                 'General Physician',
               ),

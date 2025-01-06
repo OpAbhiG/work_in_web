@@ -313,7 +313,32 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
         print('Appointment booked successfully');
         // Show a SnackBar with success message
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(' ${response.body}')),
+          SnackBar(
+            content: Container(
+              alignment: Alignment.center,
+              height: 12, // Adjust height if needed
+              child: Center(
+                child: Text(
+                  'Appointment booked successfully',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            // backgroundColor: Colors.black.withOpacity(0.7), // Transparent black
+            backgroundColor: Color(0xFF40BF78), // Background color
+            behavior: SnackBarBehavior.floating, // Floating SnackBar
+            margin: EdgeInsets.symmetric(horizontal: 120, vertical: 10), // Adjust padding
+            elevation: 0, // Remove shadow
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5), // Rounded corners
+            ),
+            duration: Duration(seconds: 2), // Visible for 2 seconds
+          ),
         );
 
         // Navigate to the PaymentScreen

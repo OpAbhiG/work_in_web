@@ -13,7 +13,6 @@ class PaymentScreen extends StatefulWidget {
 
 
   final String full_name;
-
   final int doctor_id;
   final DateTime date;
   final String time;
@@ -199,7 +198,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 leading: Icon(Icons.money, color: Colors.green),
                 title: Text('Cash'),
                 trailing: Radio(
-                  value: false,
+                  value: true,
                   groupValue: isCashSelected,
                   onChanged: (bool? value) {
                     setState(() {
@@ -211,27 +210,91 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ),
             // Spacer(),
 
-            SizedBox(height: 80),
+            const SizedBox(height: 80),
             Row(
               children: [
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      // bookAppointment();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BookingConfirmationScreen(
-                            fullName: widget.full_name,
-                            doctorId: widget.doctor_id,
-                            date: widget.date,
-                            time: widget.time,
-                            amount: widget.amount,
 
 
+                      if (isCashSelected) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Container(
+                              alignment: Alignment.center,
+                              height: 12, // Adjust height if needed
+                              child: Center(
+                                child: Text(
+                                  'Payment successfully Done',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                            // backgroundColor: Colors.black.withOpacity(0.7), // Transparent black
+                            backgroundColor: Color(0xFF40BF78), // Background color
+                            behavior: SnackBarBehavior.floating, // Floating SnackBar
+                            margin: EdgeInsets.symmetric(horizontal: 120, vertical: 10), // Adjust padding
+                            elevation: 0, // Remove shadow
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5), // Rounded corners
+                            ),
+                            duration: Duration(seconds: 2), // Visible for 2 seconds
                           ),
-                        ),
-                      );
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BookingConfirmationScreen(
+                              fullName: widget.full_name,
+                              doctorId: widget.doctor_id,
+                              date: widget.date,
+                              time: widget.time,
+                              amount: widget.amount,
+                            ),
+                          ),
+                        );
+                      } else {
+                        // ScaffoldMessenger.of(context).showSnackBar(
+                        //   const SnackBar(
+                        //     content: Text('Please select Cash as the payment method.'),
+                        //     duration: Duration(seconds: 2),
+                        //   ),
+                        // );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Container(
+                              alignment: Alignment.center,
+                              height: 12, // Adjust height if needed
+                              child: Center(
+                                child: Text(
+                                  'Please select payment method',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                            // backgroundColor: Colors.black.withOpacity(0.7), // Transparent black
+                            backgroundColor: Colors.red,
+                            behavior: SnackBarBehavior.floating, // Floating SnackBar
+                            margin: EdgeInsets.symmetric(horizontal: 120, vertical: 10), // Adjust padding
+                            elevation: 0, // Remove shadow
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5), // Rounded corners
+                            ),
+                            duration: Duration(seconds: 2), // Visible for 2 seconds
+                          ),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF1A237E),

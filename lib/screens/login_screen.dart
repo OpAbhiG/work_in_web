@@ -302,71 +302,116 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
                             // Sign In Button
+                            // ElevatedButton(
+                            //   // onPressed: _login,
+                            //   style: ElevatedButton.styleFrom(
+                            //     backgroundColor: Colors.orange,
+                            //     padding: const EdgeInsets.symmetric(vertical: 12),
+                            //     textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            //   ),
+                            //   // padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01), // 2% of screen height
+                            //   onPressed: (){
+                            //     if(email.text.isEmpty || password.text.isEmpty){
+                            //       setState(() {
+                            //         _errorMessage='Please fill in both email and password'; // Set error message
+                            //       });
+                            //     }else{
+                            //       setState(() {
+                            //         _errorMessage='';
+                            //       });
+                            //     }
+                            //
+                            //
+                            //     setState(() {isReady = true;});
+                            //     // With Model
+                            //
+                            //     ApiServices().loginWithModel(email.text.toString(), password.text.toString(),context).then((value){
+                            //
+                            //       setState(() {
+                            //         loginModel = value!;
+                            //         isReady = false;
+                            //         // print(loginModel.token);
+                            //         Navigator.push(context, MaterialPageRoute(builder: (context)=>MainScreen()
+                            //         ));
+                            //       });
+                            //     }).onError((error, stackTrace){
+                            //       setState(() {isReady = false;});
+                            //       print(error);
+                            //     });
+                            //
+                            //
+                            //
+                            //     // Without Model
+                            //     // ApiServices().loginWithOutModel(email.text.toString(), password.text.toString()).then((value){
+                            //     //   setState(() {
+                            //     //     isReady = false;
+                            //     //     print(value["token"]);
+                            //     //
+                            //     //     Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen(
+                            //     //         token : value["token"].toString()
+                            //     //     )));
+                            //     //
+                            //     //   });
+                            //     // }).onError((error, stackTrace){
+                            //     //   setState(() {isReady = false;});
+                            //     //   print(error);
+                            //     // });
+                            //
+                            //
+                            //   },
+                            //
+                            //   child: const Text('Sign In',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+                            //
+                            //
+                            //
+                            // ),
+
                             ElevatedButton(
-                              // onPressed: _login,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.orange,
                                 padding: const EdgeInsets.symmetric(vertical: 12),
                                 textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                               ),
-                              // padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01), // 2% of screen height
-                              onPressed: (){
-                                if(email.text.isEmpty || password.text.isEmpty){
+                              onPressed: () async {
+                                if (email.text.isEmpty || password.text.isEmpty) {
                                   setState(() {
-                                    _errorMessage='Please fill in both email and password'; // Set error message
+                                    _errorMessage = 'Please fill in both email and password'; // Set error message
                                   });
-                                }else{
+                                } else {
                                   setState(() {
-                                    _errorMessage='';
+                                    _errorMessage = '';
+                                    isReady = true; // Show loading
+                                  });
+
+                                  // Simulate network delay
+                                  await Future.delayed(const Duration(seconds: 2));
+
+                                  // Perform the login logic
+                                  ApiServices().loginWithModel(email.text, password.text, context).then((value) {
+                                    setState(() {
+                                      loginModel = value!;
+                                      isReady = false;
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => MainScreen()),
+                                      );
+                                    });
+                                  }).onError((error, stackTrace) {
+                                    setState(() {
+                                      isReady = false;
+                                      _errorMessage = 'An error occurred. Please try again later.';
+                                    });
                                   });
                                 }
-
-
-                                setState(() {isReady = true;});
-                                // With Model
-
-                                ApiServices().loginWithModel(email.text.toString(), password.text.toString(),context).then((value){
-
-                                  setState(() {
-                                    loginModel = value!;
-                                    isReady = false;
-                                    // print(loginModel.token);
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>MainScreen()
-                                    ));
-                                  });
-                                }).onError((error, stackTrace){
-                                  setState(() {isReady = false;});
-                                  print(error);
-                                });
-
-
-
-                                // Without Model
-                                // ApiServices().loginWithOutModel(email.text.toString(), password.text.toString()).then((value){
-                                //   setState(() {
-                                //     isReady = false;
-                                //     print(value["token"]);
-                                //
-                                //     Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen(
-                                //         token : value["token"].toString()
-                                //     )));
-                                //
-                                //   });
-                                // }).onError((error, stackTrace){
-                                //   setState(() {isReady = false;});
-                                //   print(error);
-                                // });
-
-
                               },
-
-                              child: const Text('Sign In',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
-
-
-
+                              child: isReady
+                                  ? const SizedBox(
+                                  width: 24, height: 24, child: CircularProgressIndicator(color: Colors.white))
+                                  : const Text(
+                                'Sign In',
+                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                              ),
                             ),
-
-
 
 
 

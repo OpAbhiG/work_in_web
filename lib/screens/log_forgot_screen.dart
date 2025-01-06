@@ -19,6 +19,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         child: ClipRRect(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
           child: AppBar(
+            centerTitle: true,
             leading: IconButton(
               icon: const Icon(
                 Icons.arrow_back,  // Back arrow icon
@@ -34,7 +35,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               'Forgot Password',
               style: TextStyle(
                 fontSize: 18,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),

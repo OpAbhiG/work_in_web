@@ -12,61 +12,62 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
   bool isInvoiceAvailable = false;
   Map<String, dynamic> invoiceData = {};
 
-  @override
-  void initState() {
-    super.initState();
-    fetchInvoice();
-  }
-  Future<void> fetchInvoice() async {
-    setState(() {
-      isLoading = true;
-    });
-
-    try {
-      // Example API call to fetch invoice data
-      final response = await http.get(Uri.parse('https://api.example.com/invoice'));
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-
-        if (data['invoice'] != null) {
-          setState(() {
-            isInvoiceAvailable = true;
-            invoiceData = data['invoice']; // Assign fetched invoice data
-            isLoading = false;
-          });
-        } else {
-          setState(() {
-            isInvoiceAvailable = false;
-            isLoading = false;
-          });
-        }
-      } else {
-        setState(() {
-          isInvoiceAvailable = false;
-          isLoading = false;
-        });
-        showError('Failed to fetch invoice.');
-      }
-    } catch (e) {
-      setState(() {
-        isInvoiceAvailable = false;
-        isLoading = false;
-      });
-      showError('Error fetching invoice: $e');
-    }
-  }
-  void showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   fetchInvoice();
+  // }
+  // Future<void> fetchInvoice() async {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //
+  //   try {
+  //     // Example API call to fetch invoice data
+  //     final response = await http.get(Uri.parse('https://api.example.com/invoice'));
+  //
+  //     if (response.statusCode == 200) {
+  //       final data = jsonDecode(response.body);
+  //
+  //       if (data['invoice'] != null) {
+  //         setState(() {
+  //           isInvoiceAvailable = true;
+  //           invoiceData = data['invoice']; // Assign fetched invoice data
+  //           isLoading = false;
+  //         });
+  //       } else {
+  //         setState(() {
+  //           isInvoiceAvailable = false;
+  //           isLoading = false;
+  //         });
+  //       }
+  //     } else {
+  //       setState(() {
+  //         isInvoiceAvailable = false;
+  //         isLoading = false;
+  //       });
+  //       showError('Failed to fetch invoice.');
+  //     }
+  //   } catch (e) {
+  //     setState(() {
+  //       isInvoiceAvailable = false;
+  //       isLoading = false;
+  //     });
+  //     showError('Error fetching invoice: $e');
+  //   }
+  // }
+  // void showError(String message) {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(content: Text(message)),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF1A237E),
+        centerTitle: true,
+        backgroundColor: Color(0xFF243B6D),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -77,14 +78,13 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
         ),
       ),
       body: Center(
-        child: isLoading
-            ? CircularProgressIndicator(color: Color(0xFF243B6D),)
-            : isInvoiceAvailable
-            ? InvoiceDetails(invoice: invoiceData)
-            : Text(
-          'No invoice found.',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
+        child:
+        // isLoading
+        //     ? CircularProgressIndicator(color: Color(0xFF243B6D),)
+        //     : isInvoiceAvailable
+        //     ? InvoiceDetails(invoice: invoiceData)
+        //     :
+        Text('No invoice found', style: TextStyle(fontSize: 16)),
       ),
     );
   }

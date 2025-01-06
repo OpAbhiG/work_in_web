@@ -21,6 +21,8 @@ import 'medical/medical1.dart';
 // import 'medical_history_screen.dart';
 import 'package:http/http.dart' as http;
 
+import 'medical/medical_history_and_edit.dart';
+
 class DashboardScreen extends StatefulWidget {
 
   
@@ -465,7 +467,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 _buildActionButton(
                   context,
-                  Icons.medical_information_rounded,
+                  Icons.history_rounded,
                   'Medical Record',
                       () => _onMedicalRecordTapped(context),
                 ),
@@ -477,7 +479,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 // ),
                 _buildActionButton(
                   context,
-                  Icons.medication,
+                  Icons.medication_liquid_sharp,
                   'Drugs/Tests',
                       () => _onDrugsTestsTapped(context),
                 ),
@@ -530,11 +532,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // Action for Medical Record
+  // // Action for Medical Record
+  // void _onMedicalRecordTapped(BuildContext context) {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => const MedicalRecordsScreen()),
+  //   );
+  // }
+  // // Action for Medical Record
   void _onMedicalRecordTapped(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const MedicalRecordsScreen()),
+      MaterialPageRoute(builder: (context) => PatientHealthDataScreen()),
     );
   }
   // Action for Medical History
@@ -625,7 +634,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               )
             ],
           ),
-          // const SizedBox(height: 10),
+          const SizedBox(height: 18),
           isLoading
               ? Center(child: CircularProgressIndicator( color: Color(0xFF243B6D),))
               // ? Center(child: Center(child: Lottie.asset('assets/loading.json', fit: BoxFit.contain,))

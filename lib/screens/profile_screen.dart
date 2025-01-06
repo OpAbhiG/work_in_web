@@ -1225,6 +1225,34 @@ class _ProfileState extends State<Profile> {
                                               await Hive.openBox('userBox');
                                               await box.delete('authToken');
                                               widget.onLogout();
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content: Container(
+                                                    alignment: Alignment.center,
+                                                    height: 12, // Adjust height if needed
+                                                    child: Center(
+                                                      child: Text(
+                                                        'Logout successfully',
+                                                        style: TextStyle(
+                                                          fontSize: 10,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Colors.white,
+                                                        ),
+                                                        textAlign: TextAlign.center,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  // backgroundColor: Colors.black.withOpacity(0.7), // Transparent black
+                                                  backgroundColor: Color(0xFF40BF78), // Background color
+                                                  behavior: SnackBarBehavior.floating, // Floating SnackBar
+                                                  margin: EdgeInsets.symmetric(horizontal: 120, vertical: 10), // Adjust padding
+                                                  elevation: 0, // Remove shadow
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(5), // Rounded corners
+                                                  ),
+                                                  duration: Duration(seconds: 2), // Visible for 2 seconds
+                                                ),
+                                              );
                                               Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()),);
                                             },
                                             style: ElevatedButton.styleFrom(

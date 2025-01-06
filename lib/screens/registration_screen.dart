@@ -324,20 +324,52 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Incomplete Form', style: TextStyle(color: Colors.red)),
-          content: Text(message),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15), // Rounded corners
+          ),
+          backgroundColor: Color(0xFFF8D7DA), // Soft red background
+          title: Row(
+            children: [
+              Icon(Icons.error_outline, color: Colors.red, size: 28), // Error icon
+              SizedBox(width: 10),
+              Text(
+                'Incomplete Form',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            message,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black87,
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.center, // Center the actions
           actions: [
-            TextButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: const Text('OK'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red, // Red button background
+                foregroundColor: Colors.white, // White text color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text('OK', style: TextStyle(fontSize: 14)),
             ),
           ],
         );
       },
     );
   }
+
   Future<void> RegistrationScreen() async {
     if (
     email.text.isEmpty || password.text.isEmpty || fname.text.isEmpty || lname.text.isEmpty || gender!.isEmpty||
@@ -361,12 +393,94 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Sign up successful!')),
+        SnackBar(
+          content: Container(
+            alignment: Alignment.center,
+            height: 12, // Adjust height if needed
+            child: Center(
+              child: Text(
+                'Sign up successful',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          // backgroundColor: Colors.black.withOpacity(0.7), // Transparent black
+          backgroundColor: const Color(0xFF40BF78), // Background color
+          behavior: SnackBarBehavior.floating, // Floating SnackBar
+          margin: const EdgeInsets.symmetric(horizontal: 120, vertical: 10), // Adjust padding
+          elevation: 0, // Remove shadow
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5), // Rounded corners
+          ),
+          duration: const Duration(seconds: 2), // Visible for 2 seconds
+        ),
+
       );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Container(
+      //       alignment: Alignment.center,
+      //       height: 12, // Adjust height if needed
+      //       child: Center(
+      //         child: Text(
+      //           'Sign up successful!',
+      //           style: TextStyle(
+      //             fontSize: 10,
+      //             fontWeight: FontWeight.bold,
+      //             color: Colors.white,
+      //           ),
+      //           textAlign: TextAlign.center,
+      //         ),
+      //       ),
+      //     ),
+      //     // backgroundColor: Colors.black.withOpacity(0.7), // Transparent black
+      //     backgroundColor: Color(0xFF40BF78), // Background color
+      //     behavior: SnackBarBehavior.floating, // Floating SnackBar
+      //     margin: EdgeInsets.symmetric(horizontal: 120, vertical: 10), // Adjust padding
+      //     elevation: 0, // Remove shadow
+      //     shape: RoundedRectangleBorder(
+      //       borderRadius: BorderRadius.circular(5), // Rounded corners
+      //     ),
+      //     duration: Duration(seconds: 2), // Visible for 2 seconds
+      //   ),
+      // );
       Navigator.pop(context);
     } catch (e) {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text('Error: ${e.toString()}')),
+      // );
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}')),
+        SnackBar(
+          content: Container(
+            alignment: Alignment.center,
+            height: 12, // Adjust height if needed
+            child: Center(
+              child: Text(
+                'Error: ${e.toString()}',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          // backgroundColor: Colors.black.withOpacity(0.7), // Transparent black
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating, // Floating SnackBar
+          margin: EdgeInsets.symmetric(horizontal: 120, vertical: 10), // Adjust padding
+          elevation: 0, // Remove shadow
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5), // Rounded corners
+          ),
+          duration: Duration(seconds: 2), // Visible for 2 seconds
+        ),
       );
     } finally {
       setState(() {
