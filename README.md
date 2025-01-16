@@ -2,6 +2,9 @@ work in web
 
 ---
 
+
+flutter run -d chrome --web-renderer html // to run the app
+
 ## 🗂️ Project File Structure
 
 lib/

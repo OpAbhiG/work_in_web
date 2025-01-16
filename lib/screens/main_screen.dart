@@ -84,7 +84,7 @@ class MainScreenState extends State<MainScreen> {
 
           // BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Profile'),
 
-          BottomNavigationBarItem(icon: _buildImage('assets/Bharat Icon.jpg'),label: 'Profile'),
+          BottomNavigationBarItem(icon: _buildImage('assets/Bharat Icon.jpg'),label: ''),
 
           BottomNavigationBarItem(icon: Icon(Icons.date_range), label: 'Appointment'),
           BottomNavigationBarItem(icon: Icon(Icons.medical_services), label: 'Treatment'),

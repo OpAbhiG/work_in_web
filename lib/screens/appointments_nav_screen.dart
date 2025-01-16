@@ -493,7 +493,7 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 // import 'package:untitled10/screens/dashboard_screen.dart';
 import 'package:untitled10/screens/main_screen.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import '../APIServices/base_api.dart';
 import '../call_page.dart';
 import '../main.dart';
@@ -651,6 +651,35 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
       if (response.statusCode == 200) {
         fetchCanceledAppointments(); // Refresh the canceled appointments list
         print('Appointment canceled successfully');
+        // Show a SnackBar with success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Container(
+              alignment: Alignment.center,
+              height: 12, // Adjust height if needed
+              child: Center(
+                child: Text(
+                  'Appointment canceled successfully',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            // backgroundColor: Colors.black.withOpacity(0.7), // Transparent black
+            backgroundColor: Color(0xFF40BF78), // Background color
+            behavior: SnackBarBehavior.floating, // Floating SnackBar
+            margin: EdgeInsets.symmetric(horizontal: 120, vertical: 10), // Adjust padding
+            elevation: 0, // Remove shadow
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5), // Rounded corners
+            ),
+            duration: Duration(seconds: 2), // Visible for 2 seconds
+          ),
+        );
       } else {
         print("Error canceling appointment: ${response.body}");
       }
@@ -669,8 +698,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
         icon: Icon(Icons.arrow_back, color: Color(0xFF243B6D),),
         onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MainScreen()))),
 
-        title: Text('My Appointments', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        title: Text('My Appointments', style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold)),
         centerTitle: true,
+
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: Colors.orange,
@@ -693,13 +723,40 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
             }
           },
           tabs: [
-            Tab(text: 'Today'),
-            Tab(text: 'Upcoming'),
-            Tab(text: 'Past'),
-            Tab(text: 'Canceled'),
+            // Tab(text: 'Today',),
+            // Tab(text: 'Upcoming'),
+            // Tab(text: 'Past'),
+            // Tab(text: 'Canceled'),
+
+            Tab(
+              child: Text(
+                'Today',
+                style: GoogleFonts.poppins(fontSize: 10,fontWeight: FontWeight.bold),
+              ),
+            ),
+            Tab(
+              child: Text(
+                'Upcoming',
+                style: GoogleFonts.poppins(fontSize: 10,fontWeight: FontWeight.bold),
+              ),
+            ),
+            Tab(
+              child: Text(
+                'Past',
+                style: GoogleFonts.poppins(fontSize: 10,fontWeight: FontWeight.bold),
+              ),
+            ),
+            Tab(
+              child: Text(
+                'Canceled',
+                style: GoogleFonts.poppins(fontSize: 10,fontWeight: FontWeight.bold),
+              ),
+            ),
+
           ],
         ),
         foregroundColor: Colors.white,
+
       ),
 
       body: TabBarView(
@@ -729,7 +786,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
         child: Text('No Appointments Found'),
       );
     }
-
     return ListView.builder(
       padding: EdgeInsets.all(10.0),
       itemCount: sectionAppointments.length,

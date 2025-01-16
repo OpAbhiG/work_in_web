@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:untitled10/screens/language_clinic_selection_screen.dart';
 // import 'package:untitled10/screens/booking_screen.dart';
 import 'package:untitled10/screens/medical/medical1.dart';
 import 'package:untitled10/screens/medical/medical2.dart';

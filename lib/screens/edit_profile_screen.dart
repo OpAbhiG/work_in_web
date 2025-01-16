@@ -1,29 +1,27 @@
-// import 'dart:convert';
 import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../APIServices/base_api.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  final String fname, lname, email, aadhar_no, number, dob,blood_group, gender;
+  final String fname, lname, email, aadhar_no, number, dob, blood_group, gender;
+  final String? profileImage;
 
   const EditProfileScreen({
-    super.key,
+    Key? key,
     required this.fname,
     required this.lname,
     required this.email,
     required this.aadhar_no,
     required this.number,
     required this.dob,
-    // required String gender,
     required this.blood_group,
-    required this.gender, String? profileImage,
-
-  });
+    required this.gender,
+    this.profileImage,
+  }) : super(key: key);
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -31,6 +29,7 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
 
   late TextEditingController fnameController;
   late TextEditingController lnameController;
@@ -41,6 +40,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   String? selectedBloodGroup;
   String? selectedGender;
   File? _profileImage;
+  String? _networkImageUrl;
 
   @override
   void initState() {
@@ -51,19 +51,34 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     aadharController = TextEditingController(text: widget.aadhar_no);
     numberController = TextEditingController(text: widget.number);
     dobController = TextEditingController(text: widget.dob);
-
-
+    selectedGender = widget.gender;
+    selectedBloodGroup = widget.blood_group;
+    _networkImageUrl = widget.profileImage;
   }
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery); // Or use ImageSource.camera to capture an image
 
-    if (pickedFile != null) {
-      setState(() {
-        _profileImage = File(pickedFile.path);
-      });
+
+
+  Future<void> _pickImage() async {
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1000,
+        maxHeight: 1000,
+        imageQuality: 85,
+      );
+
+      if (pickedFile != null) {
+        setState(() {
+          _profileImage = File(pickedFile.path);
+          _networkImageUrl = null; // Clear network image when new image is picked
+        });
+      }
+    } catch (e) {
+      showError('Error picking image: $e');
     }
   }
+
   Future<String?> getToken() async {
     try {
       var box = await Hive.openBox('userBox');
@@ -77,32 +92,48 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<void> updateProfile() async {
     if (!_formKey.currentState!.validate()) return;
 
-    String? token = await getToken();
-    if (token == null) {
-      showError('Authentication token not found.');
-      return;
-    }
+    setState(() => _isLoading = true);
 
     try {
-      var url = Uri.parse('$baseapi/user/update_profile');
-      var response = await http.post(
-        url,
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: {
-          'fname': fnameController.text,
-          'lname': lnameController.text,
-          'email': emailController.text,
-          'aadhar_no': aadharController.text,
-          'gender': selectedGender ?? '',
-          'number': numberController.text,
-          'dob': dobController.text,
-          'blood_group': selectedBloodGroup ?? '',
+      String? token = await getToken();
+      if (token == null) {
+        showError('Authentication token not found.');
+        return;
+      }
 
-        },
-      );
+      var url = Uri.parse('$baseapi/user/update_profile');
+      var request = http.MultipartRequest('POST', url);
+
+      // Add headers
+      request.headers.addAll({
+        'Authorization': 'Bearer $token',
+      });
+
+      // Add text fields
+      request.fields.addAll({
+        'fname': fnameController.text,
+        'lname': lnameController.text,
+        'email': emailController.text,
+        'aadhar_no': aadharController.text,
+        'gender': selectedGender ?? '',
+        'number': numberController.text,
+        'dob': dobController.text,
+        'blood_group': selectedBloodGroup ?? '',
+      });
+
+      // Add image file if selected
+      if (_profileImage != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'profile_image',
+            _profileImage!.path,
+            filename: 'profile_${DateTime.now().millisecondsSinceEpoch}.jpg',
+          ),
+        );
+      }
+
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -114,14 +145,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       }
     } catch (e) {
       showError('An error occurred while updating profile: $e');
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
   void showError(String message) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
   }
+
+// For both Web and Mobile platforms (dart:html for Web, dart:io for Mobile)
 
   @override
   void dispose() {
@@ -133,8 +169,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     dobController.dispose();
     super.dispose();
   }
-
-
 
   Widget _buildBloodGroupDropdown() {
     return Padding(
@@ -156,134 +190,66 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           labelText: 'Blood Group',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: Colors.grey),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: Colors.blue),
+            borderSide: const BorderSide(color: Colors.blue),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: Colors.green),
+            borderSide: const BorderSide(color: Colors.green),
           ),
         ),
       ),
     );
   }
 
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Edit Profile', style: TextStyle(color: Colors.white, fontSize: 18)),
-      //   backgroundColor: Theme.of(context).primaryColor,
-      //   foregroundColor: Colors.white,
-      // ),
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(80), // Set the height of the AppBar
-        child: AppBar(
-          title: const Text('Edit Profile', style: TextStyle(color: Colors.white, fontSize: 18,fontWeight: FontWeight.bold)),
-          backgroundColor: Color(0xFF243B6D),
-          foregroundColor: Colors.white,
-          centerTitle: true,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(30), // Apply rounded corners to the bottom of the AppBar
+  Widget _buildProfileImage() {
+    return GestureDetector(
+      onTap: _pickImage,
+      child: Center(
+        child: Stack(
+          children: [
+            CircleAvatar(
+              radius: 50,
+              backgroundColor: Colors.grey[300],
+              backgroundImage: _getProfileImage(),
+              child: _getProfileImage() == null
+                  ? const Icon(Icons.person, color: Colors.white, size: 50)
+                  : null,
             ),
-          ),
-        ),
-      ),
-
-
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(  // To handle keyboard appearance on smaller screens
-          child: Card(
-            elevation: 8,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: _pickImage,
-                      child: Center(
-                        child: CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Colors.grey[300],
-                          backgroundImage: _profileImage != null
-                              ? FileImage(_profileImage!)
-                              : AssetImage('assets/placeholder.png') as ImageProvider,
-                          child: _profileImage == null
-                              ? Icon(Icons.person, color: Colors.white, size: 40)
-                              : null,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    _buildTextField(fnameController, 'First Name', (value) => value!.isEmpty ? 'First name is required' : null),
-                    _buildTextField(lnameController, 'Last Name', (value) => value!.isEmpty ? 'Last name is required' : null),
-                    _buildTextField(emailController, 'Email', (value) => value!.isEmpty ? 'Email is required' : null, keyboardType: TextInputType.emailAddress),
-                    _buildTextField(aadharController, 'Aadhaar Number', _validateAadhar, keyboardType: TextInputType.number),
-                    _buildTextField(numberController, 'Mobile Number',_validateMobile, keyboardType: TextInputType.number),
-                    _buildTextField(dobController, 'Date of Birth', null, keyboardType: TextInputType.datetime),
-                    _buildDropdown(),
-                    _buildBloodGroupDropdown(),
-                    const SizedBox(height: 20),
-                    Center(
-                      child: ElevatedButton(
-                        onPressed: updateProfile,
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                          backgroundColor: Theme.of(context).primaryColor,
-                        ),
-                        child: const Text(
-                          'Save Changes',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                      ),
-                    ),
-                  ],
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.edit,
+                  color: Colors.white,
+                  size: 20,
                 ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label, String? Function(String?)? validator, {TextInputType keyboardType = TextInputType.text}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: Colors.grey), // Gray border
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: Colors.blue), // Gray border when enabled
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: Colors.grey), // Gray border when focused
-          ),
-        ),
-        validator: validator,
-        keyboardType: keyboardType,
-      ),
-    );
+  ImageProvider? _getProfileImage() {
+    if (_profileImage != null) {
+      return FileImage(_profileImage!);
+    } else if (_networkImageUrl != null && _networkImageUrl!.isNotEmpty) {
+      return NetworkImage(_networkImageUrl!);
+    }
+    return null;
   }
-  Widget _buildDropdown() {
+
+  Widget _buildGenderDropdown() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: DropdownButtonFormField<String>(
@@ -291,46 +257,202 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         items: const [
           DropdownMenuItem(value: 'Male', child: Text('Male')),
           DropdownMenuItem(value: 'Female', child: Text('Female')),
+          DropdownMenuItem(value: 'Other', child: Text('Other')),
         ],
         onChanged: (value) => setState(() => selectedGender = value),
         decoration: InputDecoration(
           labelText: 'Gender',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: Colors.grey), // Gray border
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: Colors.blue), // Gray border when enabled
+            borderSide: const BorderSide(color: Colors.blue),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: Colors.green), // Gray border when focused
+            borderSide: const BorderSide(color: Colors.green),
           ),
         ),
-        // validator: validator,
-        // keyboardType: keyboardType,
+        validator: (value) => value == null ? 'Please select gender' : null,
       ),
     );
   }
-  String? _validateAadhar(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Aadhaar number is required';
-    }
-    if (value.length != 12) {
-      return 'Aadhaar number must be 12 digits';
-    }
-    return null;
+
+  Widget _buildTextField(
+      TextEditingController controller,
+      String label,
+      String? Function(String?)? validator, {
+        TextInputType keyboardType = TextInputType.text,
+        bool readOnly = false,
+      }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.blue),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.green),
+          ),
+        ),
+        validator: validator,
+        keyboardType: keyboardType,
+        readOnly: readOnly,
+      ),
+    );
   }
 
-  String? _validateMobile(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Mobile number is required';
-    }
-    if (value.length != 10) {
-      return 'Mobile number must be 10 digits';
-    }
-    return null;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(80),
+        child: AppBar(
+          title: const Text(
+            'Edit Profile',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: const Color(0xFF243B6D),
+          foregroundColor: Colors.white,
+          centerTitle: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(30),
+            ),
+          ),
+        ),
+      ),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              child: Card(
+                elevation: 8,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildProfileImage(),
+                        const SizedBox(height: 20),
+                        _buildTextField(
+                          fnameController,
+                          'First Name',
+                              (value) =>
+                          value?.isEmpty ?? true ? 'First name is required' : null,
+                        ),
+                        _buildTextField(
+                          lnameController,
+                          'Last Name',
+                              (value) =>
+                          value?.isEmpty ?? true ? 'Last name is required' : null,
+                        ),
+                        _buildTextField(
+                          emailController,
+                          'Email',
+                              (value) => value?.isEmpty ?? true
+                              ? 'Email is required'
+                              : !value!.contains('@')
+                              ? 'Invalid email format'
+                              : null,
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                        _buildTextField(
+                          aadharController,
+                          'Aadhaar Number',
+                              (value) => value?.isEmpty ?? true
+                              ? 'Aadhaar number is required'
+                              : value!.length != 12
+                              ? 'Aadhaar number must be 12 digits'
+                              : null,
+                          keyboardType: TextInputType.number,
+                        ),
+                        _buildTextField(
+                          numberController,
+                          'Mobile Number',
+                              (value) => value?.isEmpty ?? true
+                              ? 'Mobile number is required'
+                              : value!.length != 10
+                              ? 'Mobile number must be 10 digits'
+                              : null,
+                          keyboardType: TextInputType.number,
+                        ),
+                        _buildTextField(
+                          dobController,
+                          'Date of Birth',
+                              (value) =>
+                          value?.isEmpty ?? true ? 'Date of birth is required' : null,
+                          readOnly: true,
+                        ),
+                        _buildGenderDropdown(),
+                        _buildBloodGroupDropdown(),
+                        const SizedBox(height: 20),
+                        Center(
+                          child: ElevatedButton(
+                            onPressed: _isLoading ? null : updateProfile,
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 50,
+                                vertical: 15,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              backgroundColor: const Color(0xFF243B6D),
+                            ),
+                            child: _isLoading
+                                ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                                : const Text(
+                              'Save Changes',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          if (_isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.3),
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ],
+      ),
+    );
   }
-
 }

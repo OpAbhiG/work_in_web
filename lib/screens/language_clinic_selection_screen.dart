@@ -57,7 +57,7 @@ class _LanguageClinicSelectionScreenState extends State<LanguageClinicSelectionS
                     padding: const EdgeInsets.only(top: 160), // Adjust the top padding as needed
                     child: SizedBox(
                       height: 60, // Adjust height as needed
-                      // width: 60, // Adjust width as needed
+                      width: 60, // Adjust width as needed
 
                       child: Image.asset(
                         'assets/btclogo.png',// logo 1st
@@ -81,8 +81,9 @@ class _LanguageClinicSelectionScreenState extends State<LanguageClinicSelectionS
 
                           'Language',
                           Icons.language,
+                          // ['English', 'Hindi (हिन्दी)', 'Bengali (বাংলা)', 'Marathi (मराठी)', 'Telugu (తెలుగు)', 'Tamil (தமிழ்)'],
+                          ['English'],
 
-                          ['English', 'Hindi (हिन्दी)', 'Bengali (বাংলা)', 'Marathi (मराठी)', 'Telugu (తెలుగు)', 'Tamil (தமிழ்)'],
                           selectedLanguage,
                               (String? newValue) {
                             setState(() {
@@ -94,7 +95,9 @@ class _LanguageClinicSelectionScreenState extends State<LanguageClinicSelectionS
                         _buildDropdownWithIcon(
 
                           'Clinic',Icons.home,// Icon for clinic
-                          ['GTM4Health', 'Prakash Clinic', 'Sehat +', 'Mister Hair Clinic', 'Bharat TeleClinic', 'Krishnabhi Health Point'],
+                          // ['GTM4Health', 'Prakash Clinic', 'Sehat +', 'Mister Hair Clinic', 'Bharat TeleClinic', 'Krishnabhi Health Point'],
+                          ['Bharat TeleClinic'],
+
                           selectedClinic,
                               (String? newValue) {
                             setState(() {
@@ -134,20 +137,28 @@ class _LanguageClinicSelectionScreenState extends State<LanguageClinicSelectionS
                       ],
                     ),
                   ),
-                  const Spacer(),
-                  const Text(
-                    '© BharatTeleClinic, 2024 - All Rights Reserved.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.orange, fontSize: 10),
-                  ),
+
                 ],
               ),
             ),
           ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: const Text(
+                '© BharatTeleClinic, 2025 - All Rights Reserved.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Color(0xFF243B6D), fontSize: 10),
+              ),
+            ),
+          ),
+
         ],
       ),
 
     );
+
   }
 
   // _buildDropdownWithIcon method where icon will stay visible

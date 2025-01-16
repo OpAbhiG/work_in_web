@@ -11,6 +11,7 @@ import '../VitalsHistory/HistoryScreen.dart';
 import '../call_page.dart';
 import '../main.dart';
 // import '../models/appointment.dart';
+import 'ABHA/abha_card_screen.dart';
 import 'AppointmentDetailScreen.dart';
 import 'appointments_nav_screen.dart';
 import 'booking_screen.dart';
@@ -50,6 +51,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String dob='';
   bool isLoading = true;
 
+  String profileImg = ''; // To hold the profile image URL
+
   @override
   void initState() {
     super.initState();
@@ -71,7 +74,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       print('Token not available, please login.');
       return;
     }
-
     var url = Uri.parse('$baseapi/user/get_profile');
     var response = await http.get(
       url,
@@ -122,25 +124,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
           'Content-Type': 'application/json',
         },
       );
-
       // print("================body============\n"+(response.body));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        print(jsonDecode(response.body));
         setState(() {
           fname = data['data']['fname'] ?? '';
           lname = data['data']['lname'] ?? '';
           id = data['data']['id'] ??''; // Convert id to String
           dob = data['data']['dob'] ?? '';
           blood_group=data['data']['blood_group']??'';
-          profileImg = data['data']['profile_img'] ?? ''; // Fetch the profile image URL
-
-
+          profileImg = data['data']['profile_img']; // Convert HTTPS to HTTP
+          print('Converted profile image URL: $profileImg');
 
           isLoading = false;
+
+          print('Fetched profile image URL: $profileImg');
+          if (profileImg.isEmpty) {
+            print('Invalid profile image URL. Using default placeholder.');
+          }
+
         });
-
-
       } else {
         setState(() {
           isLoading = false;
@@ -182,6 +187,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (response.statusCode == 200) {
         fetchCanceledAppointments(); // Refresh the canceled appointments list
         print('Appointment canceled successfully');
+        // Show a SnackBar with success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Container(
+              alignment: Alignment.center,
+              height: 12, // Adjust height if needed
+              child: Center(
+                child: Text(
+                  'Appointment canceled successfully',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            // backgroundColor: Colors.black.withOpacity(0.7), // Transparent black
+            backgroundColor: Color(0xFF40BF78), // Background color
+            behavior: SnackBarBehavior.floating, // Floating SnackBar
+            margin: EdgeInsets.symmetric(horizontal: 120, vertical: 10), // Adjust padding
+            elevation: 0, // Remove shadow
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5), // Rounded corners
+            ),
+            duration: Duration(seconds: 2), // Visible for 2 seconds
+          ),
+        );
       } else {
         print("Error canceling appointment: ${response.body}");
       }
@@ -269,7 +303,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   late final int slotId;
 
-  String profileImg = ''; // To hold the profile image URL
 
 
   @override
@@ -304,11 +337,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildProfileCard(),
-                      SizedBox(height: 16,),
+                      // SizedBox(height: 16,),
                       _buildUpcomingAppointments(),
-                      SizedBox(height: 16,),
+                      SizedBox(height: 12,),
                       _buildBookAppointmentButton(context),
-                      SizedBox(height: 16,),
+                      // SizedBox(height: 16,),
                       _recentInvice(),
                     ],
                   ),
@@ -332,74 +365,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
              Row(
                crossAxisAlignment: CrossAxisAlignment.center,
                children: [
-                 // CircleAvatar(
-                 //                  //   radius: 30,
-                 //                  //   backgroundColor: Colors.grey[300],
-                 //                  //   backgroundImage: profileImg.isNotEmpty
-                 //                  //       ? NetworkImage(profileImg) // Use the API-provided image
-                 //                  //       : NetworkImage('https://via.placeholder.com/150') as ImageProvider, // Fallback to a local asset
-                 //                  // ),
-                 // CircleAvatar(
-                 //   radius: 30,
-                 //   backgroundColor: Colors.grey[200],
-                 //   child: ClipOval(
-                 //     child: CachedNetworkImage(
-                 //       imageUrl: profileImg ??'',
-                 //       fit: BoxFit.cover,
-                 //       width: 80,
-                 //       height: 80,
-                 //       placeholder: (context, url) => const Center(
-                 //         child: CircularProgressIndicator(),
-                 //       ),
-                 //       errorWidget: (context, url, error) {
-                 //         if (kDebugMode) {
-                 //           print('Error loading profile image: $error');
-                 //         }
-                 //         return Image.asset(
-                 //           'assets/d3.jpeg',
-                 //           fit: BoxFit.cover,
-                 //           width: 80,
-                 //           height: 80,
-                 //         );
-                 //       },
-                 //     ),
-                 //   ),
-                 // ),
-      //   ClipRRect(
-      //   borderRadius: BorderRadius.circular(10.0),
-      //   child: CachedNetworkImage(
-      //     imageUrl: profileImg,
-      //     fit: BoxFit.cover,
-      //     width: 70, // Adjust size as needed
-      //     height: 70, // Adjust size as needed
-      //     placeholder: (context, url) => Center(
-      //       child: CircularProgressIndicator(),
-      //     ),
-      //     errorWidget: (context, url, error) {
-      //       return Container(
-      //         width: 70,
-      //         height: 70,
-      //         decoration: BoxDecoration(
-      //           shape: BoxShape.circle,
-      //           color: Colors.grey[300],
-      //         ),
-      //         alignment: Alignment.center,
-      //         child: Icon(
-      //           Icons.person,
-      //           color: Colors.grey,
-      //         ),
-      //       );
-      //     },
-      //     // imageUrl: '',
-      //   ),
-      // ),
 
                  CircleAvatar(
                    radius: 40,
                    backgroundColor: Colors.grey[200],
                    child: ClipOval(
                      child: CachedNetworkImage(
-                       imageUrl: profileImg,
+                       imageUrl: profileImg.isNotEmpty
+                           ? profileImg.replaceFirst('https://', 'http://')
+                           : 'https://via.placeholder.com/150', // Fallback URL in case profileImg is empty
                        fit: BoxFit.cover,
                        width: 70,
                        height: 70,
@@ -411,8 +385,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                            print('Error loading profile image: $error');
                          }
                          return Container(
-                           width: 70,
-                           height: 70,
+                           width: 30,
+                           height: 30,
                            decoration: BoxDecoration(
                              shape: BoxShape.circle,
                              color: Colors.grey[300],
@@ -434,11 +408,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
                     Text(
                        '$fname $lname',
-                      style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold,color: Color(0xFF243B6D),),
                     ),
                     Text(
                       'Clinic Patient ID $id', // Show user ID
-                      style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey),
+                      style: GoogleFonts.poppins(fontSize: 10, color: Color(0xFF243B6D),),
                     ),
                   ],
                 ),
@@ -446,7 +420,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
 
           // const VerticalDivider(color: Colors.grey,thickness: 1,width: 20,),
-          const SizedBox(height: 9.0),
+          const SizedBox(height: 10.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -459,8 +433,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
             Divider(color: Colors.grey[300], thickness: 1, height: 20),
 
-            // SizedBox(height: 20), // Add some space between info and action buttons
-
+            SizedBox(height: 10), // Add some space between info and action buttons
             // Action Buttons Section
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -471,12 +444,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   'Medical Record',
                       () => _onMedicalRecordTapped(context),
                 ),
-                // _buildActionButton(
-                //   context,
-                //   Icons.history_outlined,
-                //   'Medical History',
-                //       () => _onMedicalHistoryTapped(context),
-                // ),
+
+                _buildActionButton(
+                  context,
+                  Icons.energy_savings_leaf_outlined,
+                  'ABHA Card',
+                      () => _onMedicalHistoryTapped(context),
+                ),
                 _buildActionButton(
                   context,
                   Icons.medication_liquid_sharp,
@@ -546,11 +520,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
       MaterialPageRoute(builder: (context) => PatientHealthDataScreen()),
     );
   }
+
+
   // Action for Medical History
   void _onMedicalHistoryTapped(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => VitalHistoryScreen(slotId: 0,)),
+      MaterialPageRoute(builder: (context) => ABHACreationScreen()),
     );
   }
 
@@ -634,7 +610,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               )
             ],
           ),
-          const SizedBox(height: 18),
+          // const SizedBox(height: 18),
           isLoading
               ? Center(child: CircularProgressIndicator( color: Color(0xFF243B6D),))
               // ? Center(child: Center(child: Lottie.asset('assets/loading.json', fit: BoxFit.contain,))
@@ -659,7 +635,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   );
                 },
                 child: Card(
-                  margin: EdgeInsets.symmetric(vertical: 10.0),
+                  margin: EdgeInsets.symmetric(vertical: 0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -831,8 +807,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             MaterialPageRoute(builder: (context) => AppointmentBookingScreen(
               doctors: const [], onBookAppointment: (Doctor p1, DateTime p2) {  },)),
           ),
-        icon: const Icon(Icons.calendar_today,color: Colors.white,size: 18,),
-        label: const Text('Book an Appointment',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+        icon: const Icon(Icons.calendar_month_outlined,color: Colors.white,size: 18,),
+        label: Text('Book an Appointment',style: GoogleFonts.poppins(color: Colors.white,fontWeight: FontWeight.bold)),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.orange,
 

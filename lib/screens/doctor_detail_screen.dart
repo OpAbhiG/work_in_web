@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 // import '../models/doctor.dart';
 import 'booking_screen.dart';
 import 'doctor_nav_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 
 class DoctorDetailScreen extends StatefulWidget {
@@ -139,37 +140,57 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
               style: const TextStyle(fontSize: 13),
             ),
 
-             SizedBox(height: 30,),
-             Center(
-                child: ElevatedButton.icon(
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => AppointmentBookingScreen(
-                        doctors: const [],
-                        onBookAppointment: (Doctor p1, DateTime p2) {
-                        },
-                      ),
-                    ),
-                  ),
-                  icon: const Icon(
-                    size: 13,
-                    Icons.calendar_today,
-                    color: Colors.white,
-                  ),
-                  label: const Text(
-                    'Book an Appointment',
-                    style: TextStyle(color: Colors.white,fontSize: 10),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange, // Background color
-                    padding: const EdgeInsets.symmetric(vertical: 18,horizontal: 10), // Padding
-                    shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5), // Rounded corners
-                    ),
+             // SizedBox(height: 20,),
+             // Center(
+             //    child: ElevatedButton.icon(
+             //      onPressed: () => Navigator.of(context).push(
+             //        MaterialPageRoute(
+             //          builder: (context) => AppointmentBookingScreen(
+             //            doctors: const [],
+             //            onBookAppointment: (Doctor p1, DateTime p2) {
+             //            },
+             //          ),
+             //        ),
+             //      ),
+             //      icon: const Icon(
+             //        size: 13,
+             //        Icons.calendar_today,
+             //        color: Colors.white,
+             //      ),
+             //      label: const Text(
+             //        'Book an Appointment',
+             //        style: TextStyle(color: Colors.white,fontSize: 10),
+             //      ),
+             //      style: ElevatedButton.styleFrom(
+             //        backgroundColor: Colors.orange, // Background color
+             //        padding: const EdgeInsets.symmetric(vertical: 18,horizontal: 10), // Padding
+             //        shape: RoundedRectangleBorder(
+             //        borderRadius: BorderRadius.circular(5), // Rounded corners
+             //        ),
+             //      ),
+             //    ),
+             //
+             // ),
+
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => AppointmentBookingScreen(
+                    doctors: const [], onBookAppointment: (Doctor p1, DateTime p2) {  },)),
+                ),
+                icon: const Icon(Icons.calendar_month_outlined,color: Colors.white,size: 18,),
+                label:  Text('Book an Appointment',style: GoogleFonts.poppins(color: Colors.white,fontWeight: FontWeight.bold)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-
-             ),
+              ),
+            )
 
           ],
         ),

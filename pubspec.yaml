@@ -57,7 +57,7 @@ dependencies:
 #  device_info_plus: any
   device_info_plus: ^11.2.0
 
-  cached_network_image: ^3.3.0
+#  cached_network_image: ^3.3.0
 
 #  zego_uikit: ^2.28.0-beta.3
   zego_uikit: ^2.27.19
@@ -67,6 +67,8 @@ dependencies:
   pdf: ^3.11.1
   printing: ^5.13.4
   image_picker: ^1.1.2
+  cached_network_image: ^3.4.1
+
 
 
 dependency_overrides:

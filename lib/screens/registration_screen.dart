@@ -66,6 +66,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     height: screenHeight * 0.08, // 8% of screen height
                     width: screenHeight * 0.08, // 8% of screen height
                   ),
+
+
                   SizedBox(height: screenHeight * 0.03), // Adjust height as needed
                   // Blue container around the form and button
                   Container(
@@ -242,17 +244,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         ),
 
 
-
                         SizedBox(height: screenHeight * 0.02),
                         const Text(
                           'By Signing up, I agree to Terms & Conditions',
                           style: TextStyle(color: Colors.white, fontSize: 8),
                         ),
+
+
+
                         SizedBox(height: screenHeight * 0.02),
                         ElevatedButton(
-
                           onPressed: isLoading?null:RegistrationScreen,
-
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.orange,
                             padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01), // 2% of screen height
@@ -268,19 +270,40 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               color: Colors.white,
                             ),
                           ),
-
                         ),
+                        // SizedBox(height: screenHeight * 0.03),
+                        // TextButton(
+                        //   onPressed: () {
+                        //     Navigator.pop(context);
+                        //   },
+                        //   child: const Text('Existing User? Sign In',style: TextStyle(color: Color(0xFFFFFFFF),),),
+                        // ),
                       ],
                     ),
                   ),
-
-                  SizedBox(height: screenHeight * 0.03),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Existing User? Sign In',style: TextStyle(color: Color(0xFF243B6D),),),
-                  ),
+            // SizedBox(height: screenHeight * 0.01),
+            // // ABHA Button
+            // ElevatedButton(
+            //   onPressed: _launchABHALink,
+            //   style: ElevatedButton.styleFrom(
+            //     backgroundColor: Color(0xFF243B6D),
+            //     padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+            //     shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.circular(30),
+            //     ),
+            //   ),
+            //   onPressed: () {
+            //
+            //   },
+            //   child: const Text(
+            //     'Register with ABHA',
+            //     style: TextStyle(
+            //       fontSize: 15,
+            //       fontWeight: FontWeight.bold,
+            //       color: Colors.white,
+            //     ),
+            //   ),
+            // ),
                 ],
               ),
             ),
@@ -290,7 +313,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: const Text(
-                '© BharatTeleClinic, 2024 - All Rights Reserved.',
+                '© BharatTeleClinic, 2025 - All Rights Reserved.',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Color(0xFF243B6D), fontSize: 10),
               ),
@@ -322,31 +345,41 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
+      barrierDismissible: false, // Prevent closing by tapping outside
       builder: (context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15), // Rounded corners
+            borderRadius: BorderRadius.circular(25), // Elegant rounded corners
           ),
-          backgroundColor: Color(0xFFF8D7DA), // Soft red background
+          backgroundColor: Colors.white, // Clean white background for better readability
           title: Row(
             children: [
-              Icon(Icons.error_outline, color: Colors.red, size: 28), // Error icon
-              SizedBox(width: 10),
+              Icon(
+                Icons.error_outline,
+                color: Colors.redAccent,
+                size: 32,
+              ), // Error icon with accent color
+              SizedBox(width: 16),
               Text(
                 'Incomplete Form',
                 style: TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+                  color: Colors.redAccent,
+                  fontWeight: FontWeight.w600, // Slightly lighter weight for modern touch
+                  fontSize: 22, // Larger title for impact
                 ),
               ),
             ],
           ),
-          content: Text(
-            message,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.black87,
+          content: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              message,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+                height: 1.5, // Line height for readability
+              ),
+              textAlign: TextAlign.center, // Centered message
             ),
           ),
           actionsAlignment: MainAxisAlignment.center, // Center the actions
@@ -356,13 +389,25 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 Navigator.of(context).pop(); // Close the dialog
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red, // Red button background
-                foregroundColor: Colors.white, // White text color
+                backgroundColor: Colors.redAccent, // Red accent color
+                foregroundColor: Colors.white, // White text for contrast
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(15), // Rounded button edges
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 14), // Spacious padding
+                elevation: 8, // Higher elevation for a subtle 3D effect
+                side: BorderSide(
+                  color: Colors.redAccent, // Matching border color
+                  width: 2, // Thin border
                 ),
               ),
-              child: const Text('OK', style: TextStyle(fontSize: 14)),
+              child: Text(
+                'OK',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold, // Bold text for emphasis
+                ),
+              ),
             ),
           ],
         );

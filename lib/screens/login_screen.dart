@@ -460,7 +460,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: const Text(
-                '© BharatTeleClinic, 2024 - All Rights Reserved.',
+                '© BharatTeleClinic, 2025 - All Rights Reserved.',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Color(0xFF243B6D), fontSize: 10),
               ),
