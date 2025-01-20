@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 // import 'package:untitled10/screens/roundrd_appbar.dart';
 import '../APIServices/base_api.dart';
-import '../VitalsHistory/HistoryScreen.dart';
+// import '../VitalsHistory/HistoryScreen.dart';
 import '../call_page.dart';
 import '../main.dart';
 // import '../models/appointment.dart';
@@ -18,7 +18,7 @@ import 'booking_screen.dart';
 import 'doctor_nav_screen.dart';
 import 'drugs_tests_screen.dart';
 import 'invoice.dart';
-import 'medical/medical1.dart';
+// import 'medical/medical1.dart';
 // import 'medical_history_screen.dart';
 import 'package:http/http.dart' as http;
 
