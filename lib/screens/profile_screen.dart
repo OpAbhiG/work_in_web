@@ -199,9 +199,7 @@ class _ProfileState extends State<Profile> {
                       backgroundColor: Colors.grey[200],
                       child: ClipOval(
                         child: CachedNetworkImage(
-                          imageUrl: profileImg.isNotEmpty
-                              ? profileImg.replaceFirst('https://', 'http://') // Convert HTTPS to HTTP if needed
-                              : 'https://via.placeholder.com/150', // Fallback URL in case profileImg is empty
+                          imageUrl: profileImg.replaceFirst('https://', 'http://'),// Convert HTTPS to HTTP if needed
                           fit: BoxFit.cover,
                           width: 70,
                           height: 70,

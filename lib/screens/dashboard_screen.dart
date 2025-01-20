@@ -339,7 +339,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       _buildProfileCard(),
                       // SizedBox(height: 16,),
                       _buildUpcomingAppointments(),
-                      SizedBox(height: 12,),
+                      SizedBox(height: 16,),
                       _buildBookAppointmentButton(context),
                       // SizedBox(height: 16,),
                       _recentInvice(),
@@ -371,9 +371,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                    backgroundColor: Colors.grey[200],
                    child: ClipOval(
                      child: CachedNetworkImage(
-                       imageUrl: profileImg.isNotEmpty
-                           ? profileImg.replaceFirst('https://', 'http://')
-                           : 'https://via.placeholder.com/150', // Fallback URL in case profileImg is empty
+                       imageUrl: profileImg.replaceFirst('https://', 'http://'),// Convert HTTPS to HTTP if needed
                        fit: BoxFit.cover,
                        width: 70,
                        height: 70,
@@ -635,7 +633,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   );
                 },
                 child: Card(
-                  margin: EdgeInsets.symmetric(vertical: 0),
+                  //between card height
+                  margin: EdgeInsets.symmetric(vertical: 8),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),

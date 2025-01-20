@@ -731,25 +731,25 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
             Tab(
               child: Text(
                 'Today',
-                style: GoogleFonts.poppins(fontSize: 10,fontWeight: FontWeight.bold),
+                style: GoogleFonts.poppins(fontSize: 9,fontWeight: FontWeight.bold),
               ),
             ),
             Tab(
               child: Text(
                 'Upcoming',
-                style: GoogleFonts.poppins(fontSize: 10,fontWeight: FontWeight.bold),
+                style: GoogleFonts.poppins(fontSize: 9,fontWeight: FontWeight.bold),
               ),
             ),
             Tab(
               child: Text(
                 'Past',
-                style: GoogleFonts.poppins(fontSize: 10,fontWeight: FontWeight.bold),
+                style: GoogleFonts.poppins(fontSize: 9,fontWeight: FontWeight.bold),
               ),
             ),
             Tab(
               child: Text(
                 'Canceled',
-                style: GoogleFonts.poppins(fontSize: 10,fontWeight: FontWeight.bold),
+                style: GoogleFonts.poppins(fontSize: 9,fontWeight: FontWeight.bold),
               ),
             ),
 

@@ -208,8 +208,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                             prefixIcon: Icon(Icons.email,color: Colors.white),
                           ),style: const TextStyle(color: Colors.white), // White text in the input field
-
-
                           keyboardType: TextInputType.emailAddress,
                         ),
 
@@ -240,7 +238,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             ),
                           ),
                           style: const TextStyle(color: Colors.white), // White text in the input field
-
                         ),
 
 
@@ -249,8 +246,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           'By Signing up, I agree to Terms & Conditions',
                           style: TextStyle(color: Colors.white, fontSize: 8),
                         ),
-
-
 
                         SizedBox(height: screenHeight * 0.02),
                         ElevatedButton(
@@ -464,7 +459,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           ),
           duration: const Duration(seconds: 2), // Visible for 2 seconds
         ),
-
       );
       // ScaffoldMessenger.of(context).showSnackBar(
       //   SnackBar(

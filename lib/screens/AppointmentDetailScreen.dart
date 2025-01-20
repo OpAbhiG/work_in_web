@@ -1120,7 +1120,7 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                               ),
                               // Rectangular View History Button
                               SizedBox(
-                                height: 30,
+                                height:50,
                                 child: ElevatedButton(
                                   onPressed: () {
                                     // Add your navigation or functionality here
