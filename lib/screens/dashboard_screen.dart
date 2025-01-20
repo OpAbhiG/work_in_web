@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -10,7 +9,6 @@ import '../APIServices/base_api.dart';
 // import '../VitalsHistory/HistoryScreen.dart';
 import '../call_page.dart';
 import '../main.dart';
-// import '../models/appointment.dart';
 import 'ABHA/abha_card_screen.dart';
 import 'AppointmentDetailScreen.dart';
 import 'appointments_nav_screen.dart';
@@ -18,15 +16,10 @@ import 'booking_screen.dart';
 import 'doctor_nav_screen.dart';
 import 'drugs_tests_screen.dart';
 import 'invoice.dart';
-// import 'medical/medical1.dart';
-// import 'medical_history_screen.dart';
 import 'package:http/http.dart' as http;
-
 import 'medical/medical_history_and_edit.dart';
 
 class DashboardScreen extends StatefulWidget {
-
-  
   final Function(Doctor, DateTime) onBookAppointment;
   final List<Doctor> doctors;
   const DashboardScreen({
@@ -187,35 +180,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (response.statusCode == 200) {
         fetchCanceledAppointments(); // Refresh the canceled appointments list
         print('Appointment canceled successfully');
+        //done
         // Show a SnackBar with success message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Container(
-              alignment: Alignment.center,
-              height: 12, // Adjust height if needed
-              child: Center(
-                child: Text(
-                  'Appointment canceled successfully',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle, color: Colors.white),
+                const SizedBox(width: 10),
+                const Expanded(
+                  child: Text(
+                    'Appointment canceled successfully',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
                   ),
-                  textAlign: TextAlign.center,
                 ),
-              ),
+              ],
             ),
-            // backgroundColor: Colors.black.withOpacity(0.7), // Transparent black
-            backgroundColor: Color(0xFF40BF78), // Background color
-            behavior: SnackBarBehavior.floating, // Floating SnackBar
-            margin: EdgeInsets.symmetric(horizontal: 120, vertical: 10), // Adjust padding
-            elevation: 0, // Remove shadow
+            backgroundColor: const Color(0xFF40BF78),
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            elevation: 8,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5), // Rounded corners
+              borderRadius: BorderRadius.circular(12),
             ),
-            duration: Duration(seconds: 2), // Visible for 2 seconds
+            duration: const Duration(seconds: 3),
           ),
         );
+
+
+
+
+
+
       } else {
         print("Error canceling appointment: ${response.body}");
       }

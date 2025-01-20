@@ -90,33 +90,31 @@ class ApiServices{
         "user_type":"3"
       });
 
+      print("Login successfully");
+      //done
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Container(
-              alignment: Alignment.center,
-              height: 12, // Adjust height if needed
-              child: Center(
-                child: Text(
-                  'Login successfully',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle, color: Colors.white),
+                const SizedBox(width: 10),
+                const Expanded(
+                  child: Text(
+                    'Login successfully',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
                   ),
-                  textAlign: TextAlign.center,
                 ),
-              ),
+              ],
             ),
-            // backgroundColor: Colors.black.withOpacity(0.7), // Transparent black
-            backgroundColor: Color(0xFF40BF78), // Background color
-            behavior: SnackBarBehavior.floating, // Floating SnackBar
-            margin: EdgeInsets.symmetric(horizontal: 120, vertical: 10), // Adjust padding
-            elevation: 0, // Remove shadow
+            backgroundColor: const Color(0xFF40BF78),
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            elevation: 8,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5), // Rounded corners
+              borderRadius: BorderRadius.circular(12),
             ),
-            duration: Duration(seconds: 2), // Visible for 2 seconds
+            duration: const Duration(seconds: 3),
           ),
         );
         // Decode the response
