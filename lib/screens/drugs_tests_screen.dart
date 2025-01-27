@@ -10,8 +10,6 @@ import 'dart:io';
 import 'package:printing/printing.dart';
 // import 'appointments_nav_screen.dart';
 
-
-
 class DrugsTestsScreen extends StatefulWidget {
   final String slotId;
   const DrugsTestsScreen({super.key, required this.slotId});
@@ -25,9 +23,6 @@ class _DrugsTestsScreenState extends State<DrugsTestsScreen> {
   bool isDownloading = false;
   bool isLoading = true;
 
-
-
-  // Fetch the token from local storage (Hive)
   Future<String?> getToken() async {
     try {
       var box = await Hive.openBox('userBox');
@@ -39,13 +34,9 @@ class _DrugsTestsScreenState extends State<DrugsTestsScreen> {
     }
   }
 
-  // Fetch prescriptions from the API
   Future<void> fetchPrescriptions() async {
     try {
-
       String? bearerToken = await getToken();
-      print(' ------------ inside tryyy ------------ ');
-
 
       if (bearerToken == null || bearerToken.isEmpty) {
         print('Error: Authentication token is missing');
@@ -54,7 +45,7 @@ class _DrugsTestsScreenState extends State<DrugsTestsScreen> {
         );
         return;
       }
-      print(http.Response);
+
       final url = Uri.parse(
         "$baseapi/patient/get_prescriptions?slot_id=${widget.slotId}",
       );
@@ -65,17 +56,10 @@ class _DrugsTestsScreenState extends State<DrugsTestsScreen> {
       );
 
       if (response.statusCode == 200) {
-
-        print('-------- Drug --------');
-
-        print('Response Status Code: ${response.statusCode}');
-        print('Response Body: ${response.body}');
-
-
-
         final data = json.decode(response.body);
         setState(() {
-          prescriptions = data['data']; // Assuming 'data' holds the list of prescriptions
+          // Update to handle the new response format
+          prescriptions = data['prescriptions'] ?? []; // Get the prescriptions array
           isLoading = false;
         });
       } else {
@@ -90,22 +74,18 @@ class _DrugsTestsScreenState extends State<DrugsTestsScreen> {
       setState(() {
         isLoading = false;
       });
-      print('Error fetching prescriptions: ');
+      print('Error fetching prescriptions: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred')),
+        const SnackBar(content: Text('An error occurred')),
       );
     }
   }
 
-  // Group prescriptions by date
   Map<String, List<dynamic>> _groupPrescriptionsByDate() {
     Map<String, List<dynamic>> groupedPrescriptions = {};
 
-
     for (var prescription in prescriptions) {
-
-
-      String date = prescription['created_at'].split(' ')[0]; // Extract the date part (YYYY-MM-DD)
+      String date = prescription['created_at'].split(' ')[0];
       if (groupedPrescriptions.containsKey(date)) {
         groupedPrescriptions[date]?.add(prescription);
       } else {
@@ -119,44 +99,12 @@ class _DrugsTestsScreenState extends State<DrugsTestsScreen> {
   @override
   void initState() {
     super.initState();
-    fetchPrescriptions(); // Fetch prescriptions when screen loads
+    fetchPrescriptions();
   }
-
-
-
-
-  // Function to simulate downloading a prescription
-  void downloadPrescription() {
-    setState(() {
-      isDownloading = true;
-    });
-
-    // Simulate a download with a delay
-    Future.delayed(const Duration(seconds: 3), () {
-      setState(() {
-        isDownloading = false;
-      });
-    });
-  }
-
-
-  final Map<int, String> specialties = {
-    1: 'General Physician',
-    2: 'Dentist',
-    3: 'Child specialists',
-    4: 'Counselling Psychologist',
-    5: 'Diabetologist',
-    6: 'Family Physician',
-    7: 'Orthologist ',
-    8: 'General Surgery',
-    9: 'Gynaecologist & OB',
-    10: 'Head andNeckSurgery',
-  };
-
 
   @override
   Widget build(BuildContext context) {
-    final groupedPrescriptions = _groupPrescriptionsByDate(); // Group prescriptions by date
+    final groupedPrescriptions = _groupPrescriptionsByDate();
 
     return DefaultTabController(
       length: 1,
@@ -166,7 +114,7 @@ class _DrugsTestsScreenState extends State<DrugsTestsScreen> {
             'Drugs & Tests',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          backgroundColor: Color(0xFF243B6D),
+          backgroundColor: const Color(0xFF243B6D),
           foregroundColor: Colors.white,
           bottom: const TabBar(
             tabs: [
@@ -179,71 +127,81 @@ class _DrugsTestsScreenState extends State<DrugsTestsScreen> {
         ),
         body: TabBarView(
           children: [
-            // ePrescription Tab
             isLoading
-                ? Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator())
                 : RefreshIndicator(
               onRefresh: () async {
-                fetchPrescriptions(); // Refresh data
+                fetchPrescriptions();
               },
               displacement: 40,
               strokeWidth: 4,
-              color: Color(0xFF243B6D),
+              color: const Color(0xFF243B6D),
               backgroundColor: Colors.white,
-              child: ListView.builder(
-                itemCount: groupedPrescriptions.keys.length,
+              child: prescriptions.isEmpty
+                  ? const Center(
+                child: Text('No prescriptions available'),
+              )
+                  : ListView.builder(
+                itemCount: prescriptions.length,
                 itemBuilder: (context, index) {
-                  String date = groupedPrescriptions.keys.elementAt(index);
-                  List<dynamic> prescriptionsForDate = groupedPrescriptions[date]!;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Prescription Cards for this date
-                      ListView.builder(
-                        shrinkWrap: true, // To make it scrollable in the parent
-                        physics: NeverScrollableScrollPhysics(), // Disable scrolling in nested list
-                        itemCount: prescriptionsForDate.length,
-                        itemBuilder: (context, prescriptionIndex) {
-                          final prescription = prescriptionsForDate[prescriptionIndex];
-
-                          return Card(
-                            elevation: 4,
-                            margin: const EdgeInsets.all(8.0),
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.all(8.0),
-                              title: Text('Dr.${prescription['doctor_name']}',style: TextStyle(fontSize: 15,color: Color(0xFF243B6D),fontWeight: FontWeight.bold)),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Speciality: ${specialties[prescription['doctor_speciality']] ?? 'Unknown Specialty'}',style: TextStyle(fontSize: 12,color: Color(0xFF243B6D),),),
-                                  Text('Appointment ID: ${prescription['clinic_slot_id']}',style: TextStyle(fontSize: 12,color: Color(0xFF243B6D))),
-                                  Text('Date & Time ${prescription['created_at']}',style: TextStyle(fontSize: 12,color: Color(0xFF243B6D),),),
-
-                                ],
-                              ),
-                              trailing: const Icon(Icons.chevron_right,
-                                  color: Color(0xFF243B6D),
-                              size: 30,), // Add iOS-style arrow
-                              onTap: () {
-                                // Navigate to Prescription Detail Screen
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => PrescriptionDetailScreen(
-                                      prescriptionId: prescription['prescription_id'],
-                                      slotId: prescription['clinic_slot_id'].toString(),
-                                      prescriptionData: {},
-
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          );
-
-                        },
+                  final prescription = prescriptions[index];
+                  return Card(
+                    elevation: 4,
+                    margin: const EdgeInsets.all(8.0),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(8.0),
+                      title: Text(
+                        prescription['drug_name'] ?? 'No Name',
+                        style: const TextStyle(
+                            fontSize: 15,
+                            color: Color(0xFF243B6D),
+                            fontWeight: FontWeight.bold
+                        ),
                       ),
-                    ],
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Dosage: ${prescription['dosage']} ${prescription['unit']}',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF243B6D),
+                            ),
+                          ),
+                          Text(
+                            'Duration: ${prescription['duration']} days',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF243B6D),
+                            ),
+                          ),
+                          Text(
+                            'Created: ${prescription['created_at']}',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF243B6D),
+                            ),
+                          ),
+                        ],
+                      ),
+                      trailing: const Icon(
+                        Icons.chevron_right,
+                        color: Color(0xFF243B6D),
+                        size: 30,
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PrescriptionDetailScreen(
+                              prescriptionId: prescription['id'],
+                              slotId: prescription['slot_id'].toString(),
+                              prescriptionData: prescription,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   );
                 },
               ),
@@ -257,117 +215,24 @@ class _DrugsTestsScreenState extends State<DrugsTestsScreen> {
 
 class PrescriptionDetailScreen extends StatefulWidget {
   final int prescriptionId;
-  // Make prescriptionId nullable
-  // Map<String, dynamic> prescriptionId;
+  final String slotId;
   final Map<String, dynamic> prescriptionData;
 
-
-
-  final String slotId;
-   const PrescriptionDetailScreen({super.key,
-
-    required this.slotId, required this.prescriptionId, required this.prescriptionData
-
+  const PrescriptionDetailScreen({
+    super.key,
+    required this.prescriptionId,
+    required this.slotId,
+    required this.prescriptionData,
   });
 
   @override
-  _PrescriptionDetailScreenState createState() =>
-      _PrescriptionDetailScreenState();
+  _PrescriptionDetailScreenState createState() => _PrescriptionDetailScreenState();
 }
 
 class _PrescriptionDetailScreenState extends State<PrescriptionDetailScreen> {
-
-  Map<String, dynamic>? prescriptionId;
-
-  // Fetch prescriptions from the API
-  Future<void> fetchPrescriptions() async {
-    try {
-      String? bearerToken = await getToken();
-
-      if (bearerToken == null || bearerToken.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Authentication token is missing')),
-        );
-        return;
-      }
-
-      final url = Uri.parse(
-        "$baseapi/patient/get_prescriptions?slot_id=${widget.slotId}",
-      );
-
-      final response = await http.get(
-        url,
-        headers: {'Authorization': 'Bearer $bearerToken'},
-      );
-
-      if (response.statusCode == 200) {
-        print('-------- prescript --------');
-        print('Response Status Code: ${response.statusCode}');
-        print('Response Body: ${response.body}');
-
-        final data = json.decode(response.body);
-        setState(() {
-          prescriptionId = data['data']; // Assuming 'data' holds the list of prescriptions
-          isLoading = false;
-        });
-      } else {
-        setState(() {
-          isLoading = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to fetch data. Code: ${response.statusCode}')),
-        );
-      }
-    }
-    catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text('An error occurred: $e')),
-      // );
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    isLoading=true;
-    fetchPrescriptions(); // Fetch prescriptions when screen loads
-  }
-
-  // Fetch the token from local storage (Hive)
-  Future<String?> getToken() async {
-    try {
-      var box = await Hive.openBox('userBox');
-      final token = box.get('authToken');
-      return token;
-    } catch (e) {
-      print('Error retrieving token: $e');
-      return null;
-    }
-  }
-
-
-  final Map<int, String> specialties = {
-    1: 'General Physician',
-    2: 'Dentist',
-    3: 'Child specialists',
-    4: 'Counselling Psychologist',
-    5: 'Diabetologist',
-    6: 'Family Physician',
-    7: 'Orthologist ',
-    8: 'General Surgery',
-    9: 'Gynaecologist & OB',
-    10: 'Head andNeckSurgery',
-  };
-
-
-
-
   bool isDownloading = false;
-  late bool isLoading;
-  // late final int prescriptionId;
+  bool isLoading = false;
+
   final Map<String, String> frequencyMapping = {
     '0-0-1': '1',
     '0-1-0': '2',
@@ -377,6 +242,7 @@ class _PrescriptionDetailScreenState extends State<PrescriptionDetailScreen> {
     '1-1-0': '6',
     '1-1-1': '7',
   };
+
   void _showSnackBar(String message) {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -397,118 +263,66 @@ class _PrescriptionDetailScreenState extends State<PrescriptionDetailScreen> {
         .key;
   }
 
-
-
-  // Update prescriptionId to be a Map
-  // late final Map<String, dynamic> prescriptionId;
-
   Future<void> downloadPrescription() async {
-
-
-
-      // Simulate a download with a delay
-      Future.delayed(const Duration(seconds: 3), () {
-        setState(() {
-          isDownloading = false;
-        });
-      });
-
-
-    print("Generating PDF-------------");
-
-    final pdf = pw.Document();
-
-    pdf.addPage(
-      pw.Page(
-        build: (context) => pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.start,
-          children: [
-            pw.Text('Prescription', style: const pw.TextStyle(fontSize: 24)),
-            pw.Divider(),
-            pw.Text('Speciality: ${specialties[prescriptionId!['doctor_speciality']] ?? 'Unknown Specialty'}'),
-            pw.Text('Appointment ID: ${prescriptionId!['clinic_slot_id']}'),
-            pw.Text('Drug Name: ${prescriptionId?['drug_name'] ?? '---'}'),
-            pw.Text('Dosage: ${prescriptionId?['dosage']} ${prescriptionId?['unit']}'),
-            pw.Text('Frequency: ${getFrequencyPattern(prescriptionId?['frequency'])}'),
-            pw.Text('Duration: ${prescriptionId?['duration']} days'),
-            pw.Text('Instruction: ${prescriptionId?['instruction'] ?? '--'}'),
-            pw.Text('Notes: ${prescriptionId?['notes'] ?? '--'}'),
-          ],
-        ),
-      ),
-    );
-
+    setState(() {
+      isDownloading = true;
+    });
 
     try {
-      print("PDF saved successfully");
-      final output = await getApplicationDocumentsDirectory();
-      // final file = File('${output.path}/prescription.pdf');
-      final file = File('${output.path}/prescription_${widget.prescriptionId}.pdf');
+      final pdf = pw.Document();
 
+      pdf.addPage(
+        pw.Page(
+          build: (context) => pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text('Prescription', style: const pw.TextStyle(fontSize: 24)),
+              pw.Divider(),
+              pw.Text('Drug Name: ${widget.prescriptionData['drug_name']}'),
+              pw.Text('Dosage: ${widget.prescriptionData['dosage']} ${widget.prescriptionData['unit']}'),
+              pw.Text('Frequency: ${getFrequencyPattern(widget.prescriptionData['frequency'])}'),
+              pw.Text('Duration: ${widget.prescriptionData['duration']} days'),
+              pw.Text('Instructions: ${widget.prescriptionData['instruction'] ?? '--'}'),
+              pw.Text('Notes: ${widget.prescriptionData['notes'] ?? '--'}'),
+              pw.Text('Created At: ${widget.prescriptionData['created_at']}'),
+            ],
+          ),
+        ),
+      );
+
+      final output = await getApplicationDocumentsDirectory();
+      final file = File('${output.path}/prescription_${widget.prescriptionId}.pdf');
       await file.writeAsBytes(await pdf.save());
 
-      _showSnackBar('PDF saved successfully at ${file.path}');
+      _showSnackBar('PDF saved successfully');
       await Printing.layoutPdf(onLayout: (format) async {
         return pdf.save();
-
       });
     } catch (e) {
-      print('Missing plugin exception caught');
-      _showSnackBar('Error in saving file ');
+      _showSnackBar('Error in saving file');
+    } finally {
+      setState(() {
+        isDownloading = false;
+      });
     }
   }
-
-
-
-  // // Function to simulate downloading a prescription
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Prescription Details',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
-        backgroundColor: Color(0xFF243B6D),
+        title: const Text(
+          'Prescription Details',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: const Color(0xFF243B6D),
         foregroundColor: Colors.white,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Card(
-              elevation: 4,
-              color: Color(0xFFD3D3D3), // Light gray color
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Table(
-                  children: [
-                    TableRow(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          child: const Text(
-                            'Prescription ID',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.start,
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          child: const Text(
-                            'Action',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.end,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 10), // Add spacing between cards
-            // Second Card with ListView.builder
             Card(
               elevation: 4,
               child: Padding(
@@ -516,29 +330,58 @@ class _PrescriptionDetailScreenState extends State<PrescriptionDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(
+                      'Drug: ${widget.prescriptionData['drug_name']}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF243B6D),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Dosage: ${widget.prescriptionData['dosage']} ${widget.prescriptionData['unit']}',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    Text(
+                      'Frequency: ${getFrequencyPattern(widget.prescriptionData['frequency'])}',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    Text(
+                      'Duration: ${widget.prescriptionData['duration']} days',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    if (widget.prescriptionData['instruction'] != null)
+                      Text(
+                        'Instructions: ${widget.prescriptionData['instruction']}',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    if (widget.prescriptionData['notes'] != null)
+                      Text(
+                        'Notes: ${widget.prescriptionData['notes']}',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    const SizedBox(height: 16),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(
-                          widget.prescriptionId.toString(), // Display the prescription ID
-                        ),
-                        isDownloading
-                            ? const SizedBox(
-                          width: 25,
-                          height: 25,
-                          child: CircularProgressIndicator(
-                            color: Color(0xFF243B6D),
-                            strokeWidth: 2,
+                        ElevatedButton.icon(
+                          onPressed: isDownloading ? null : downloadPrescription,
+                          icon: isDownloading
+                              ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                              : const Icon(Icons.download),
+                          label: Text(isDownloading ? 'Downloading...' : 'Download PDF'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF243B6D),
+                            foregroundColor: Colors.white,
                           ),
-                        )
-                            : IconButton(
-                          icon: const Icon(Icons.file_download_outlined, color: Colors.orange),
-                          onPressed: () {
-                            if (!isDownloading) {
-                              downloadPrescription(); // Trigger the download
-
-                            }
-                          },
                         ),
                       ],
                     ),

@@ -613,12 +613,12 @@ class _EMRScreenState extends State<EMRScreen> {
   }
 
 
-var emr='http://192.168.0.150:5000';
+// var emr='http://192.168.0.150:5000';
 
   Future<void> fetchEMRData() async {
     try {
       final response = await http.get(
-        Uri.parse('$emr/patient/get_all_emr?slot_id=${widget.slotId}'),
+        Uri.parse('$baseapi/patient/get_all_emr?slot_id=${widget.slotId}'),
         headers: {'Authorization': 'Bearer ${widget.bearerToken}'},
       );
 
