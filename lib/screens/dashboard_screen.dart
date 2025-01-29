@@ -99,9 +99,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     try {
 
       String? bearerToken = await getToken();
-
       // print("+++++++++ token   +++++++");
-
       // print(bearerToken);
 
       if (bearerToken == null) {
@@ -159,7 +157,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-
   Map<String, List<dynamic>> appointments = {
     'today': [],
   };
@@ -206,11 +203,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
             duration: const Duration(seconds: 3),
           ),
         );
-
-
-
-
-
 
       } else {
         print("Error canceling appointment: ${response.body}");
@@ -296,7 +288,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     9: 'Gynaecologist & OB',
     10: 'Head andNeckSurgery',
   };
-
   late final int slotId;
 
 

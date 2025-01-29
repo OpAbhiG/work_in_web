@@ -6,6 +6,7 @@ import '../APIServices/api_services.dart';
 import '../models/model.dart';
 import 'log_forgot_screen.dart';
 import 'main_screen.dart';
+import 'otp_login.dart';
 import 'registration_screen.dart';
 
 
@@ -413,6 +414,25 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
 
+
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Center(
+                              child: GestureDetector(
+                                onTap: () {
+                                  // Navigate to OtpLoginScreen
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => OtpLoginScreen()),
+                                  );
+                                },
+                                child: Text(
+                                  'Login with OTP',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
 
 
                             const SizedBox(height: 10),
