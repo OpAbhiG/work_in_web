@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:untitled10/APIServices/base_api.dart';
 import 'package:hive/hive.dart';
-
 import 'main_screen.dart';
-
 
 Future<bool> sendOtp(String phoneNumber) async {
   final String apiUrl = "$baseapi/user/send-otp";
@@ -33,7 +32,6 @@ Future<bool> sendOtp(String phoneNumber) async {
   }
   return false;
 }
-
 Future<Map<String, dynamic>?> verifyOtp(String phoneNumber, String otp) async {
   final String apiUrl = "$baseapi/user/verify-otp";
   try {
@@ -59,14 +57,12 @@ Future<Map<String, dynamic>?> verifyOtp(String phoneNumber, String otp) async {
   }
   return null;
 }
-
 class OtpLoginScreen extends StatefulWidget {
   const OtpLoginScreen({super.key});
 
   @override
   _OtpLoginScreenState createState() => _OtpLoginScreenState();
 }
-
 class _OtpLoginScreenState extends State<OtpLoginScreen> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController otpController = TextEditingController();

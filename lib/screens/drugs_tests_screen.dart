@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart' as pw;
 import 'package:pdf/pdf.dart';
-// import 'package:pdf/pdf.dart';
-// import 'package:pdf/pdf.dart';
-// import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'dart:convert';
 import '../APIServices/base_api.dart';
-// import 'package:pdf/widgets.dart' as pw;
-// import 'dart:io';
-// import 'package:printing/printing.dart';
+
 class DrugsTestsScreen extends StatefulWidget {
   final String slotId;
   const DrugsTestsScreen({super.key, required this.slotId});
@@ -20,7 +16,6 @@ class DrugsTestsScreen extends StatefulWidget {
   @override
   _DrugsTestsScreenState createState() => _DrugsTestsScreenState();
 }
-
 class _DrugsTestsScreenState extends State<DrugsTestsScreen> {
   List<dynamic> prescriptions = [];
   bool isDownloading = false;
@@ -49,9 +44,7 @@ class _DrugsTestsScreenState extends State<DrugsTestsScreen> {
         return;
       }
       print("$baseapi/patient/get_prescriptions?slot_id=${widget.slotId}" );
-      final url = Uri.parse(
-        "$baseapi/patient/get_prescriptions?slot_id=${widget.slotId}",
-      );
+      final url = Uri.parse("$baseapi/patient/get_prescriptions?slot_id=${widget.slotId}");
 
       final response = await http.get(
         url,
@@ -233,7 +226,6 @@ class _DrugsTestsScreenState extends State<DrugsTestsScreen> {
     );
   }
 }
-
 class PrescriptionDetailScreen extends StatefulWidget {
   final int prescriptionId;
   final String slotId;
@@ -249,9 +241,7 @@ class PrescriptionDetailScreen extends StatefulWidget {
   @override
   _PrescriptionDetailScreenState createState() => _PrescriptionDetailScreenState();
 }
-
 // ... Previous code remains the same until the PrescriptionDetailScreen class mobile prescription ...
-
 class _PrescriptionDetailScreenState extends State<PrescriptionDetailScreen> {
   bool isDownloading = false;
   bool isLoading = false;
@@ -286,6 +276,15 @@ class _PrescriptionDetailScreenState extends State<PrescriptionDetailScreen> {
         .key;
   }
 
+  // Move date parsing into the build method
+  // String formatPrescriptionDate() {
+  //   // Step 1: Parse the Date from the API
+  //   DateTime apiDate = DateTime.parse(widget.prescriptionData['created_at']);  // Parse the string into DateTime
+  //
+  //   // Step 2: Format the Date to a readable format without UTC conversion
+  //   return DateFormat('yyyy-MM-dd HH:mm:ss').format(apiDate);  // Format without converting to UTC
+  // }
+
   Future<void> printPrescription() async {
     setState(() {
       isDownloading = true;
@@ -293,16 +292,21 @@ class _PrescriptionDetailScreenState extends State<PrescriptionDetailScreen> {
 
     try {
       final pdf = pw.Document();
-
+      final image = await imageFromAssetBundle('assets/btclogo.png');
       pdf.addPage(
         pw.Page(
           pageFormat: PdfPageFormat.a4,
           build: (context) => pw.Container(
-            padding: const pw.EdgeInsets.all(20),
+            padding: const pw.EdgeInsets.all(15),
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                // Header
+                pw.Center(
+                  child: pw.Image(image, width: 50, height: 50), // Adjust size
+                ),
+                pw.SizedBox(height: 20),
+                pw.Divider(thickness: 2),
+                pw.SizedBox(height: 20),                // Header
                 pw.Center(
                   child: pw.Text(
                     'PRESCRIPTION',
@@ -322,6 +326,7 @@ class _PrescriptionDetailScreenState extends State<PrescriptionDetailScreen> {
                   children: [
                     pw.Text(
                       'Date: ${widget.prescriptionData['created_at']}',
+                      // 'Date: ${formatPrescriptionDate()}', // Use the formatted date
                       style: const pw.TextStyle(fontSize: 12),
                     ),
                     pw.Text(
@@ -331,7 +336,6 @@ class _PrescriptionDetailScreenState extends State<PrescriptionDetailScreen> {
                   ],
                 ),
                 pw.SizedBox(height: 30),
-
                 // Medication Details
                 pw.Container(
                   padding: const pw.EdgeInsets.all(10),
@@ -548,6 +552,8 @@ class _PrescriptionDetailScreenState extends State<PrescriptionDetailScreen> {
     );
   }
 }
+
+
 // import 'package:pdf/widgets.dart' as pw;
 // import 'package:printing/printing.dart';
 //tablet prescription design

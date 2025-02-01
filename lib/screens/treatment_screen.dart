@@ -585,8 +585,6 @@ class _TreatmentDetailScreenState extends State<TreatmentDetailScreen> {
   }
 }
 
-
-
 class EMRScreen extends StatefulWidget {
   final String slotId;
   final String bearerToken;
